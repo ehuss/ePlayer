@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2061" systemVersion="11G63b" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Entry" representedClassName="Entry" syncable="YES">
+        <attribute name="addDate" attributeType="Date" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="playCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="playDate" attributeType="Date" syncable="YES"/>
+        <attribute name="releaseDate" attributeType="Date" syncable="YES"/>
+        <relationship name="parents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Folder" inverseName="entries" inverseEntity="Folder" syncable="YES"/>
+    </entity>
+    <entity name="Folder" representedClassName="Folder" parentEntity="Entry" syncable="YES">
+        <attribute name="sortOrder" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="entries" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Entry" inverseName="parents" inverseEntity="Entry" syncable="YES"/>
+    </entity>
+    <entity name="Song" representedClassName="Song" parentEntity="Entry" syncable="YES">
+        <attribute name="persistentID" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <fetchRequest name="RootFolder" entity="Folder" predicateString="name == &quot;Playlists&quot;"/>
+    <elements>
+        <element name="Entry" positionX="0" positionY="0" width="128" height="135"/>
+        <element name="Folder" positionX="0" positionY="0" width="128" height="75"/>
+        <element name="Song" positionX="0" positionY="0" width="128" height="60"/>
+    </elements>
+</model>

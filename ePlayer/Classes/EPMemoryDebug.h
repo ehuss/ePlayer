@@ -1,13 +1,15 @@
 //
-//  FirstViewController.h
+//  EPMemoryDebug.h
 //  ePlayer
 //
 //  Created by Eric Huss on 4/9/13.
 //  Copyright (c) 2013 Eric Huss. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#define EP_MEMORY_DEBUG
 
-@interface FirstViewController : UIViewController
+#ifdef EP_MEMORY_DEBUG
 
-@end
+void logMemUsage(void);
+
+#endif

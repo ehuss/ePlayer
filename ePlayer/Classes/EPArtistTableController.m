@@ -1,0 +1,137 @@
+//
+//  EPMediaTableController.m
+//  ePlayer
+//
+//  Created by Eric Huss on 4/10/13.
+//  Copyright (c) 2013 Eric Huss. All rights reserved.
+//
+
+#import <MediaPlayer/MediaPlayer.h>
+#import "EPArtistTableController.h"
+#import "EPAlbumTableController.h"
+
+@interface EPArtistTableController ()
+
+@end
+
+@implementation EPArtistTableController
+
+- (id)initWithStyle:(UITableViewStyle)style
+{
+    self = [super initWithStyle:style];
+    if (self) {
+        // Custom initialization
+        MPMediaQuery *artists = [[MPMediaQuery alloc] init];
+        [artists setGroupingType:MPMediaGroupingAlbumArtist];
+        self.artists = artists.collections;
+    }
+    return self;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+
+    // Uncomment the following line to preserve selection between presentations.
+    // self.clearsSelectionOnViewWillAppear = NO;
+ 
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    // Return the number of sections.
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    // Return the number of rows in the section.
+    return self.artists.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"ArtistCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell==nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                      reuseIdentifier:CellIdentifier];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    // Configure the cell...
+    MPMediaItemCollection *artist = [self.artists objectAtIndex:indexPath.row];
+    MPMediaItem *song = [artist representativeItem];
+    cell.textLabel.text = [song valueForProperty:MPMediaItemPropertyAlbumArtist];
+    
+    return cell;
+}
+
+/*
+// Override to support conditional editing of the table view.
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Return NO if you do not want the specified item to be editable.
+    return YES;
+}
+*/
+
+/*
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // Delete the row from the data source
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    }   
+    else if (editingStyle == UITableViewCellEditingStyleInsert) {
+        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+    }   
+}
+*/
+
+/*
+// Override to support rearranging the table view.
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+{
+}
+*/
+
+/*
+// Override to support conditional rearranging of the table view.
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Return NO if you do not want the item to be re-orderable.
+    return YES;
+}
+*/
+
+#pragma mark - Table view delegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    MPMediaItemCollection *artist = [self.artists objectAtIndex:indexPath.row];
+    MPMediaItem *song = [artist representativeItem];
+    
+    EPAlbumTableController *albumController = [[EPAlbumTableController alloc]
+                                                     initWithStyle:UITableViewStylePlain];
+    MPMediaQuery *albumsQuery = [[MPMediaQuery alloc] init];
+    [albumsQuery setGroupingType:MPMediaGroupingAlbum];
+    MPMediaPropertyPredicate *pred = [MPMediaPropertyPredicate
+                                      predicateWithValue:[song valueForProperty:MPMediaItemPropertyAlbumArtist]
+                                      forProperty:MPMediaItemPropertyAlbumArtist];
+    [albumsQuery addFilterPredicate:pred];
+    albumController.albums = albumsQuery.collections;
+    [self.navigationController pushViewController:albumController animated:YES];
+}
+
+@end

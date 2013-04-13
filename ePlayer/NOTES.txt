@@ -1,0 +1,4 @@
+- CoreData debugging:
+  Product -> Edit Scheme -> Run APP -> Arguments -> -com.apple.CoreData.SQLDebug 1
+
+resizableImageWithCapInsets
