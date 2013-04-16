@@ -7,8 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EPBrowseTableController.h"
 
-@interface EPArtistTableController : UITableViewController
+@interface EPArtistTableController : EPBrowseTableController
 
+// Array of MPMediaItemCollection.
 @property (nonatomic, strong) NSArray *artists;
+@property (nonatomic, strong) UILocalizedIndexedCollation *collation;
+@property (nonatomic, strong) NSMutableArray *sections;
 @end

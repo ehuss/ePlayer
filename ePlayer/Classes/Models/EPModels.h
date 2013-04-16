@@ -13,7 +13,7 @@ typedef enum {
     EPSortOrderAlpha,
     EPSortOrderAddDate,
     EPSortOrderPlayDate,
-    EPSortOrderSongDate,
+    EPSortOrderReleaseDate,
 } EPSortOrder;
 
 #import "Entry.h"

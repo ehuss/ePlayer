@@ -1,19 +1,19 @@
 //
-//  EPTitleTableController.m
+//  EPBrowseTableController.m
 //  ePlayer
 //
-//  Created by Eric Huss on 4/11/13.
+//  Created by Eric Huss on 4/14/13.
 //  Copyright (c) 2013 Eric Huss. All rights reserved.
 //
 
-#import <MediaPlayer/MediaPlayer.h>
-#import "EPTrackTableController.h"
+#import "EPBrowseTableController.h"
+#import "AppDelegate.h"
 
-@interface EPTrackTableController ()
+@interface EPBrowseTableController ()
 
 @end
 
-@implementation EPTrackTableController
+@implementation EPBrowseTableController
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -27,19 +27,30 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    UINib *entryNib = [UINib nibWithNibName:@"EntryCell" bundle:nil];
+    [self.tableView registerNib:entryNib
+         forCellReuseIdentifier:@"EntryCell"];
+    
+    AppDelegate *appD = [UIApplication sharedApplication].delegate;
 
+    UIBarButtonItem *queueButton = [[UIBarButtonItem alloc]
+                                    initWithTitle:@"Queue"
+                                    style:UIBarButtonItemStylePlain
+                                    target:appD
+                                    action:@selector(queueTapped:)];
+    self.navigationItem.rightBarButtonItem = queueButton;
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+//
+//- (void)didReceiveMemoryWarning
+//{
+//    [super didReceiveMemoryWarning];
+//    // Dispose of any resources that can be recreated.
+//}
 
 #pragma mark - Table view data source
 
@@ -49,23 +60,12 @@
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    // Return the number of rows in the section.
-    return self.tracks.count;
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"TrackCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell==nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                      reuseIdentifier:CellIdentifier];
-    }
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    
     // Configure the cell...
-    MPMediaItem *song = self.tracks[indexPath.row];
-    cell.textLabel.text = [song valueForProperty:MPMediaItemPropertyTitle];
     
     return cell;
 }
@@ -111,15 +111,15 @@
 
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
-}
+//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    // Navigation logic may go here. Create and push another view controller.
+//    /*
+//     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
+//     // ...
+//     // Pass the selected object to the new view controller.
+//     [self.navigationController pushViewController:detailViewController animated:YES];
+//     */
+//}
 
 @end

@@ -7,6 +7,9 @@
 //
 
 #import "EPPlayerController.h"
+#import "EPPlayerCellView.h"
+
+static NSTimeInterval scrubberUpdateTime = 0.300;
 
 @interface EPPlayerController ()
 
@@ -14,149 +17,421 @@
 
 @implementation EPPlayerController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
++ (EPPlayerController *)sharedPlayer
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-        self.hidesBottomBarWhenPushed = YES;
+    static EPPlayerController *sharedSingleton;
+    
+    if (!sharedSingleton) {
+        // A bit messy, but avoids creating another storyboard object.
+        UIStoryboard *storyboard = [UIApplication sharedApplication].delegate.window.rootViewController.storyboard;
+        sharedSingleton = [storyboard instantiateViewControllerWithIdentifier:@"PlayerScene"];
     }
-    return self;
+    
+    return sharedSingleton;
+}
+
+- (void)awakeFromNib
+{
+    self.player = [MPMusicPlayerController iPodMusicPlayer];
+    [self registerNotifications];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Scrubber.
-    self.scrubber = [[UISlider alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-80,
-                                                               self.view.frame.size.width, 200)];
-    self.scrubber.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.scrubber setThumbImage:[UIImage imageNamed:@"Images/scrubber-thumb"] forState:UIControlStateNormal];
-	UIImage *scrubberTrackImage = [UIImage imageNamed:@"Images/scrubber-track"];
-    UIImage *minTrack = [scrubberTrackImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 25, 20)];
-    UIImage *maxTrack = [scrubberTrackImage resizableImageWithCapInsets:UIEdgeInsetsMake(20, 0, 25, 20)];
-    //- (UIImage *)resizableImageWithCapInsets:(UIEdgeInsets)capInsets
-    [self.scrubber setMinimumTrackImage:minTrack forState:UIControlStateNormal];
-    [self.scrubber setMaximumTrackImage:maxTrack forState:UIControlStateNormal];
-    [self.view addSubview:self.scrubber];
-    
-    // The buttons.
-    CGRect vf = self.view.frame;
-    CGRect sf = self.scrubber.frame;
-    self.prevButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.prevButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.prevButton setImage:[UIImage imageNamed:@"Images/queue-prev"] forState:UIControlStateNormal];
-    [self.prevButton sizeToFit];
-//    self.prevButton.frame = CGRectMake(0, vf.size.height-sf.size.height-44,
-//                                       80, 44);
-    [self.view addSubview:self.prevButton];
-    
-    self.playButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.playButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.playButton setImage:[UIImage imageNamed:@"Images/queue-play"] forState:UIControlStateNormal];
-    [self.playButton sizeToFit];
-//    self.playButton.frame = CGRectMake(80, vf.size.height-sf.size.height-44,
-//                                       80, 44);
-    [self.view addSubview:self.playButton];
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
 
-    self.nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.nextButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.nextButton setImage:[UIImage imageNamed:@"Images/queue-next"] forState:UIControlStateNormal];
-    [self.nextButton sizeToFit];
-//    self.nextButton.frame = CGRectMake(160, vf.size.height-sf.size.height-44,
-//                                       80, 44);
-    [self.view addSubview:self.nextButton];
+//- (void)viewWillAppear:(BOOL)animated
+//{
+//    [super viewWillAppear:animated];
+//    [self.tableView reloadData];
+//}
+//
+//- (void)didReceiveMemoryWarning
+//{
+//    [super didReceiveMemoryWarning];
+//    // Dispose of any resources that can be recreated.
+//}
 
-    self.saveButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.saveButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.saveButton setImage:[UIImage imageNamed:@"Images/queue-save"] forState:UIControlStateNormal];
-    [self.saveButton sizeToFit];
-//    self.saveButton.frame = CGRectMake(240, vf.size.height-sf.size.height-44,
-//                                      80, 44);
-    [self.view addSubview:self.saveButton];
-    
-    UIView *containerView = self.view;
-    // setTranslatesAutoreszingMaskIntoConstraints:NO
-//    NSDictionary *views = NSDictionaryOfVariableBindings(containerView,
-//                                                         _scrubber,
-//                                                         _prevButton,
-//                                                         _playButton,
-//                                                         _nextButton,
-//                                                         _saveButton
-//                                                         );
-    // Scrubber at the bottom.
-    [self.view addConstraint:
-     [NSLayoutConstraint constraintWithItem:self.scrubber
-                                  attribute:NSLayoutAttributeBottom
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:self.view
-                                  attribute:NSLayoutAttributeBottom
-                                 multiplier:1 constant:0]];
-    // Buttons in a row, left-to-right.
-    [self.view addConstraint:
-     [NSLayoutConstraint constraintWithItem:self.prevButton
-                                  attribute:NSLayoutAttributeLeft
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:self.view
-                                  attribute:NSLayoutAttributeLeft
-                                 multiplier:1 constant:0]];
-    [self.view addConstraint:
-     [NSLayoutConstraint constraintWithItem:self.playButton
-                                  attribute:NSLayoutAttributeLeft
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:self.prevButton
-                                  attribute:NSLayoutAttributeRight
-                                 multiplier:1 constant:0]];
-    [self.view addConstraint:
-     [NSLayoutConstraint constraintWithItem:self.nextButton
-                                  attribute:NSLayoutAttributeLeft
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:self.playButton
-                                  attribute:NSLayoutAttributeRight
-                                 multiplier:1 constant:0]];
-    [self.view addConstraint:
-     [NSLayoutConstraint constraintWithItem:self.saveButton
-                                  attribute:NSLayoutAttributeLeft
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:self.nextButton
-                                  attribute:NSLayoutAttributeRight
-                                 multiplier:1 constant:0]];
-    // Buttons are just above the scrubber.
-    [self.view addConstraint:
-     [NSLayoutConstraint constraintWithItem:self.prevButton
-                                  attribute:NSLayoutAttributeBottom
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:self.scrubber
-                                  attribute:NSLayoutAttributeTop
-                                 multiplier:1 constant:0]];
-    [self.view addConstraint:
-     [NSLayoutConstraint constraintWithItem:self.playButton
-                                  attribute:NSLayoutAttributeBottom
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:self.scrubber
-                                  attribute:NSLayoutAttributeTop
-                                 multiplier:1 constant:0]];
-    [self.view addConstraint:
-     [NSLayoutConstraint constraintWithItem:self.nextButton
-                                  attribute:NSLayoutAttributeBottom
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:self.scrubber
-                                  attribute:NSLayoutAttributeTop
-                                 multiplier:1 constant:0]];
-    [self.view addConstraint:
-     [NSLayoutConstraint constraintWithItem:self.saveButton
-                                  attribute:NSLayoutAttributeBottom
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:self.scrubber
-                                  attribute:NSLayoutAttributeTop
-                                 multiplier:1 constant:0]];
+/****************************************************************************/
+/* Table Data Source                                                        */
+/****************************************************************************/
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    // Return the number of sections.
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    // Return the number of rows in the section.
+    if (self.queueItems) {
+        return self.queueItems.count;
+    } else {
+        return 0;
+    }
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"PlayerCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell==nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        EPPlayerCellView *cview = [[EPPlayerCellView alloc] initWithFrame:cell.contentView.frame];
+        [cell.contentView addSubview:cview];
+    }
+    EPPlayerCellView *cview = cell.contentView.subviews[0];
+    MPMediaItem *item = self.queueItems.items[indexPath.row];
+    cview.queueNumLabel.text = [NSString stringWithFormat:@"%i.", indexPath.row+1];
+    cview.trackNameLabel.text = [item valueForProperty:MPMediaItemPropertyTitle];
+    int duration = (int)[[item valueForProperty:MPMediaItemPropertyPlaybackDuration] doubleValue];
+    cview.trackTimeLabel.text = [NSString stringWithFormat:@"%i:%02i",
+                                 duration/60, duration%60];
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView
+  willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (!(indexPath.row%2)) {
+        cell.backgroundColor = [UIColor colorWithWhite:0.16f alpha:1.0f];
+    } else {
+        cell.backgroundColor = [UIColor colorWithWhite:0.10f alpha:1.0f];
+    }
+}
+
+/*
+ // Override to support conditional editing of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+ {
+ // Return NO if you do not want the specified item to be editable.
+ return YES;
+ }
+ */
+
+/*
+ // Override to support editing the table view.
+ - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+ {
+ if (editingStyle == UITableViewCellEditingStyleDelete) {
+ // Delete the row from the data source
+ [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+ }
+ else if (editingStyle == UITableViewCellEditingStyleInsert) {
+ // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+ }
+ }
+ */
+
+- (void)tableView:(UITableView *)tableView
+moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
+      toIndexPath:(NSIndexPath *)toIndexPath
+{
+//    MPMediaItem *item = [self.queueItems objectAtIndex:fromIndexPath.row];
+//    [self.queueItems removeObjectAtIndex:fromIndexPath.row];
+//    [self.queueItems insertObject:item atIndex:toIndexPath.row];
+}
+
+
+/*
+ // Override to support conditional rearranging of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+ {
+ // Return NO if you do not want the item to be re-orderable.
+ return YES;
+ }
+ */
+
+/****************************************************************************/
+/* Table Delegate                                                           */
+/****************************************************************************/
+#pragma mark - Table view delegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"Selected cell.");
+}
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    [super setEditing:editing animated:animated];
+    [self.tableView setEditing:editing animated:animated];
     
 }
 
-- (void)didReceiveMemoryWarning
+/****************************************************************************/
+/* Button Actions                                                           */
+/****************************************************************************/
+- (void)tappedPrev:(id)sender
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    [self.player skipToPreviousItem];
+}
+
+- (IBAction)tappedPlay:(id)sender
+{
+    if (self.player.playbackState == MPMusicPlaybackStatePlaying) {
+        [self pause];
+    } else {
+        if (self.queueItems) {
+            if (self.player.playbackState != MPMusicPlaybackStatePlaying) {
+                [self play];
+            }
+        }
+    }
+}
+
+- (IBAction)tappedNext:(id)sender
+{
+    [self.player skipToNextItem];
+}
+
+- (IBAction)tappedSave:(id)sender
+{
+    
+}
+
+- (IBAction)scrubberDidUpdate:(id)sender
+{
+    // XXX: Track change while holding scrubber?  Stop/pause/interrupt?
+    NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+    // Don't update too frequently.
+    if ((now-self.lastScrubberUpdate) > scrubberUpdateTime) {
+        MPMediaItem *item = self.player.nowPlayingItem;
+        // Compute the playback time for this thumb position.
+        NSTimeInterval duration = (int)[[item valueForProperty:MPMediaItemPropertyPlaybackDuration] doubleValue];
+        NSTimeInterval newPlaybackTime = duration*self.scrubber.value;
+        // Only alter it if the change is >= 1 second.
+        if ((int)newPlaybackTime != self.lastScrubberPlayTime) {
+            self.lastScrubberPlayTime = (int)newPlaybackTime;
+            self.lastScrubberUpdate = now;
+            self.player.currentPlaybackTime = duration*self.scrubber.value;
+            NSLog(@"updated to %f", self.player.currentPlaybackTime);
+            [self updateTimeLabels];
+        }
+    }
+    NSLog(@"scrubber update %f %f", self.scrubber.scrubbingSpeed,
+          self.scrubber.value);
+}
+
+- (IBAction)scrubberTouchDown:(id)sender
+{
+    self.scrubberUpdateDisabled = YES;
+    // So first update will update player.
+    self.lastScrubberUpdate = 0;//[NSDate timeIntervalSinceReferenceDate];
+    self.lastScrubberPlayTime = (int)self.player.currentPlaybackTime;
+}
+- (IBAction)scrubberTouchUp:(id)sender
+{
+    self.scrubberUpdateDisabled = NO;
+}
+
+
+/****************************************************************************/
+/* Player/Queue Methods                                                     */
+/****************************************************************************/
+- (void)play
+{
+    NSLog(@"Playing...");
+    [self.player play];
+}
+
+- (void)pause
+{
+    [self.player pause];
+}
+
+- (void)stop
+{
+    NSLog(@"Stop action.");
+    [self.player stop];
+}
+
+- (void)clearQueue
+{
+    NSLog(@"Clearing queue and stopping.");
+    // Ugh, initWithItems raises an exception with an empty array.
+    // Fake it out.
+    MPMediaQuery *q = [[MPMediaQuery alloc] init];
+    [q addFilterPredicate:[MPMediaPropertyPredicate
+                            predicateWithValue:@"__EP_INVALID_NAME__"
+                            forProperty:MPMediaItemPropertyTitle]];
+    self.queueItems = nil;
+    [self.player setQueueWithQuery:q];
+    self.player.nowPlayingItem = nil;
+    [self.player stop];
+    [self.tableView reloadData];
+}
+
+- (void)addQueueItems:(NSArray *)items
+{
+    NSLog(@"Adding to queue: %@", items);
+    NSArray *newItems;
+    if (self.queueItems) {
+        newItems = [self.queueItems.items arrayByAddingObjectsFromArray:items];
+    } else {
+        newItems = items;
+    }
+    self.queueItems = [[MPMediaItemCollection alloc] initWithItems:newItems];
+    [self.player setQueueWithItemCollection:self.queueItems];
+    [self.tableView reloadData];
+}
+
+/****************************************************************************/
+/* Media Player Notifications                                               */
+/****************************************************************************/
+
+- (void)registerNotifications
+{
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter addObserver:self
+                           selector:@selector(nowPlayingItemChanged:)
+                               name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification
+                             object:self.player];
+    [notificationCenter addObserver:self
+                           selector:@selector(playbackStateChanged:)
+                               name:MPMusicPlayerControllerPlaybackStateDidChangeNotification
+                             object:self.player];
+    [notificationCenter addObserver:self
+                           selector:@selector(volumeChanged:)
+                               name:MPMusicPlayerControllerVolumeDidChangeNotification
+                             object:self.player];
+    [notificationCenter addObserver:self
+                           selector:@selector(libraryChanged:)
+                               name:MPMediaLibraryDidChangeNotification
+                             object:self.player];
+    [self.player beginGeneratingPlaybackNotifications];
+}
+
+- (void)nowPlayingItemChanged:(id)notification
+{
+    MPMediaItem *item = self.player.nowPlayingItem;
+    NSLog(@"now playing changed %@.", item);
+//    @property (weak, nonatomic) IBOutlet UIImageView *artImageView;
+    self.artistNameLabel.text = [item valueForProperty:MPMediaItemPropertyArtist];
+    self.albumNameLabel.text = [item valueForProperty:MPMediaItemPropertyAlbumTitle];
+    self.trackNameLabel.text = [item valueForProperty:MPMediaItemPropertyTitle];
+    NSNumber *year = [item valueForProperty:@"year"];
+    if (year == nil || [year intValue]==0) {
+        self.releasedDateLabel.text = nil;
+    } else {
+        self.releasedDateLabel.text = [NSString stringWithFormat:@"Released %i", [year integerValue]];
+    }
+    [self startTimer];
+    [self updateScrubber];
+}
+
+- (void)updateTimeLabels
+{
+    MPMediaItem *item = self.player.nowPlayingItem;
+    if (item) {
+        self.currentTimeLabel.text = [NSString stringWithFormat:@"%i:%02i",
+                                      ((int)self.player.currentPlaybackTime)/60,
+                                      ((int)self.player.currentPlaybackTime)%60];
+        
+        NSTimeInterval duration = (int)[[item valueForProperty:MPMediaItemPropertyPlaybackDuration] doubleValue];
+        int timeLeft = duration - self.player.currentPlaybackTime;
+        
+        self.timeLeftLabel.text = [NSString stringWithFormat:@"-%i:%02i",
+                                   timeLeft/60,
+                                   timeLeft%60];
+    } else {
+        self.currentTimeLabel.text = @"0:00";
+        self.timeLeftLabel.text = @"0:00";
+    }
+
+}
+
+- (void)updateScrubber
+{
+    [self updateTimeLabels];
+    MPMediaItem *item = self.player.nowPlayingItem;
+    if (item) {
+        NSTimeInterval duration = (int)[[item valueForProperty:MPMediaItemPropertyPlaybackDuration] doubleValue];
+        [self.scrubber setValue:self.player.currentPlaybackTime/duration animated:YES];
+    } else {
+        [self.scrubber setValue:0 animated:YES];
+    }
+}
+
+- (void)startTimer
+{
+    if (self.timer == nil) {
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                                                      target:self
+                                                    selector:@selector(timerFired:)
+                                                    userInfo:nil
+                                                     repeats:YES];
+        self.scrubberUpdateDisabled = NO;
+    }
+}
+
+- (void)stopTimer
+{
+    if (self.timer) {
+        [self.timer invalidate];
+        self.timer = nil;
+    }
+}
+
+- (void)timerFired:(NSTimer *)timer
+{
+    NSLog(@"timer fired");
+    if (self.scrubberUpdateDisabled) {
+        [self updateTimeLabels];
+    } else {
+        [self updateScrubber];
+    }
+}
+
+- (void)playbackStateChanged:(id)notification
+{
+    switch (self.player.playbackState) {
+        case MPMusicPlaybackStateStopped:
+            NSLog(@"Notification: playback stopped");
+            [self.playButton setImage:[UIImage imageNamed:@"queue-play"] forState:UIControlStateNormal];
+            // Ensure the music player will play the queue from the start.
+            [self.player stop];
+            [self stopTimer];
+            break;
+        case MPMusicPlaybackStatePlaying:
+            NSLog(@"Notification: playback playing");
+            [self.playButton setImage:[UIImage imageNamed:@"queue-pause"] forState:UIControlStateNormal];
+            [self startTimer];
+            break;
+        case MPMusicPlaybackStatePaused:
+            NSLog(@"Notification: playback paused");
+            [self.playButton setImage:[UIImage imageNamed:@"queue-play"] forState:UIControlStateNormal];
+            [self stopTimer];
+            break;
+        case MPMusicPlaybackStateInterrupted:
+            NSLog(@"Notification: playback interrupted");
+            [self stopTimer];
+            break;
+        case MPMusicPlaybackStateSeekingForward:
+            NSLog(@"Notification: playback seek forward");
+            [self updateScrubber];
+            break;
+        case MPMusicPlaybackStateSeekingBackward:
+            NSLog(@"Notification: playback seek backward");
+            [self updateScrubber];
+            break;
+    }
+}
+
+- (void)volumeChanged:(id)notification
+{
+    // XXX: media player volume vs system volume?
+    NSLog(@"volume changed");
+}
+
+- (void)libraryChanged:(id)notification
+{
+    NSLog(@"Library changed.");
 }
 
 @end

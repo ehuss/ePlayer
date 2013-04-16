@@ -64,6 +64,14 @@
         NSLog(@"not in album: %@", [e valueForProperty:MPMediaItemPropertyTitle]);
     }*/
     //[[NSFileManager defaultManager] removeItemAtURL:[self dbURL] error:nil];
+    
+    self.tabController = (UITabBarController *)self.window.rootViewController;
+    self.playlistNavController = self.tabController.viewControllers[0];
+    self.playlistTableController = (EPPlaylistTableController *)self.playlistNavController.topViewController;
+    self.playlistTableController.managedObjectContext = self.managedObjectContext;
+    self.playlistTableController.managedObjectModel = self.managedObjectModel;
+    
+    
 #if 0
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
@@ -107,17 +115,15 @@
     //self.tabController.view.frame = CGRectMake(0,0,430,480);
     //frame = [UIScreen mainScreen].bounds;
 
+#endif
     if ([self loadData]) {
         // Database is ready.  Populate the view.
-        self.playlistTableController.enabled = YES;
         // XXX restore state
         [self.playlistTableController loadRootFolder];
     } else {
         // Database import happens in background.
         // Don't display anything until it is done.
-        self.playlistTableController.enabled = NO;
     }
-#endif
     return YES;
 }
 
@@ -151,20 +157,12 @@
 /*****************************************************************************/
 /* Misc                                                                      */
 /*****************************************************************************/
-- (EPPlayerController *)playerController
-{
-    if (_playerController != nil) {
-        return _playerController;
-    }
-    _playerController = [[EPPlayerController alloc] init];
-    return _playerController;
-}
 
 - (void)queueTapped:(id)sender
 {
     // Assuming all tabs use navigation controllers.
     UINavigationController *controller = (UINavigationController *)self.tabController.selectedViewController;
-    [controller pushViewController:self.playerController animated:YES];
+    [controller pushViewController:[EPPlayerController sharedPlayer] animated:YES];
 }
 
 /*****************************************************************************/
@@ -333,7 +331,7 @@ NSDate *dateFromYear(int year)
     Folder *rootFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
                                                                 inManagedObjectContext:managedObjectContext];
     rootFolder.name = @"Playlists";
-    rootFolder.sortOrder = [NSNumber numberWithInt:EPSortOrderAlpha];
+    rootFolder.sortOrder = @(EPSortOrderAlpha);//[NSNumber numberWithInt:EPSortOrderAlpha];
     rootFolder.addDate = [NSDate date];
     rootFolder.releaseDate = [NSDate distantPast];
     rootFolder.playDate = [NSDate distantPast];
@@ -341,7 +339,7 @@ NSDate *dateFromYear(int year)
     // Iterate over genre's for the top-level folder.
     MPMediaQuery *genreQuery = [[MPMediaQuery alloc] init];
     genreQuery.groupingType = MPMediaGroupingGenre;
-    MPMediaPropertyPredicate *pred = [MPMediaPropertyPredicate predicateWithValue:[NSNumber numberWithInt:MPMediaTypeMusic] forProperty:MPMediaItemPropertyMediaType];
+    MPMediaPropertyPredicate *pred = [MPMediaPropertyPredicate predicateWithValue:@(MPMediaTypeMusic) forProperty:MPMediaItemPropertyMediaType];
     [genreQuery addFilterPredicate:pred];
     // Keep track of genre folders for later.
     NSMutableDictionary *genres = [[NSMutableDictionary alloc] init];
@@ -352,7 +350,7 @@ NSDate *dateFromYear(int year)
         Folder *genreFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
                                                                       inManagedObjectContext:managedObjectContext];
         genreFolder.name = [representativeItem valueForProperty:MPMediaItemPropertyGenre];
-        genreFolder.sortOrder = [NSNumber numberWithInt:EPSortOrderAddDate];
+        genreFolder.sortOrder = @(EPSortOrderAddDate);//[NSNumber numberWithInt:];
         // These dates will be updated once songs are seen.
         genreFolder.addDate = [NSDate distantPast];
         genreFolder.releaseDate = [NSDate distantPast];
@@ -385,7 +383,7 @@ NSDate *dateFromYear(int year)
             Folder *artistFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
                                                                            inManagedObjectContext:managedObjectContext];
             artistFolder.name = artistName;
-            artistFolder.sortOrder = [NSNumber numberWithInt:EPSortOrderAddDate];
+            artistFolder.sortOrder = @(EPSortOrderAddDate);//[NSNumber numberWithInt:];
             // These dates will be updated once songs are seen.
             artistFolder.addDate = [NSDate distantPast];
             artistFolder.releaseDate = [NSDate distantPast];
@@ -405,7 +403,7 @@ NSDate *dateFromYear(int year)
             Folder *albumFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
                                                                           inManagedObjectContext:managedObjectContext];
             albumFolder.name = [representativeItem2 valueForProperty:MPMediaItemPropertyAlbumTitle];
-            albumFolder.sortOrder = [NSNumber numberWithInt:EPSortOrderAddDate];
+            albumFolder.sortOrder = @(EPSortOrderAddDate);//[NSNumber numberWithInt:EPSortOrderAddDate];
             // These dates will be updated once songs are seen.
             albumFolder.addDate = [NSDate distantPast];
             albumFolder.releaseDate = [NSDate distantPast];
@@ -447,7 +445,7 @@ NSDate *dateFromYear(int year)
                 songsImported += 1;
             }
             [self performSelectorOnMainThread:@selector(importUpdateProgress:)
-                                   withObject:[NSNumber numberWithFloat:((float)songsImported/(float)libSize)]
+                                   withObject:@((float)songsImported/(float)libSize)
                                 waitUntilDone:NO];
             albumCount += 1;
 #ifdef EP_MEMORY_DEBUG
@@ -472,7 +470,6 @@ NSDate *dateFromYear(int year)
 - (void)importDone
 {
     [self.importAlertView dismissWithClickedButtonIndex:0 animated:YES];
-    self.playlistTableController.enabled = YES;
     [self.playlistTableController loadRootFolder];
 }
 

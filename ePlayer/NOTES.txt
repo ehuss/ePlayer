@@ -1,4 +1,30 @@
 - CoreData debugging:
   Product -> Edit Scheme -> Run APP -> Arguments -> -com.apple.CoreData.SQLDebug 1
+- scrubber is a little sloppy.
+  - Letting go, it jumps around sometimes.
 
-resizableImageWithCapInsets
+
+TODO:
+- queue:
+    - change color of status bar to black
+    - change color of nav bar to black
+    - remove side scroller of table view?
+    - After rearrange, update cell queue # label
+- Play All entry at the top of each list?
+- Play icon into table list -- should have transparent background (highlight looks weird).
+- handle MPMediaLibraryDidChangeNotification?
+
+
+- timer fired when opening queue, even if nothing playing.
+- timer keeps firing when leaving queue
+
+- "playback stopped" or "now playing set to nil" should stop timer.
+- Fix sorting.
+- Show "play" icon next to currently playing item.
+- When first bringing up the queue, initialize display from ipod player queue.
+- When paused, change scrubber thumb to red.
+- Handle clicking an item in the queue.
+
+- Playlist editing/saving.
+  - Fix background cell color alternating while rearranging.
+- Bring back loadData.

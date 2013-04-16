@@ -9,6 +9,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "EPArtistTableController.h"
 #import "EPAlbumTableController.h"
+#import "EPMediaItemWrapper.h"
 
 @interface EPArtistTableController ()
 
@@ -16,21 +17,35 @@
 
 @implementation EPArtistTableController
 
-- (id)initWithStyle:(UITableViewStyle)style
+- (void)loadArtists
 {
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-        MPMediaQuery *artists = [[MPMediaQuery alloc] init];
-        [artists setGroupingType:MPMediaGroupingAlbumArtist];
-        self.artists = artists.collections;
+    MPMediaQuery *artists = [[MPMediaQuery alloc] init];
+    [artists setGroupingType:MPMediaGroupingAlbumArtist];
+    self.artists = artists.collections;
+    self.collation = [UILocalizedIndexedCollation currentCollation];
+    // An array of sections.
+    NSInteger sectionTitlesCount = self.collation.sectionTitles.count;
+    self.sections = [[NSMutableArray alloc] initWithCapacity:sectionTitlesCount];
+    // Populate sections with empty arrays we will fill.
+    for (int i=0; i<sectionTitlesCount; i++) {
+        NSMutableArray *array = [[NSMutableArray alloc] init];
+        [self.sections addObject:array];
     }
-    return self;
+    // Go through the artists and add them to the appropriate sections.
+    for (MPMediaItemCollection *artist in self.artists) {
+        EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:[artist representativeItem]];
+        NSInteger sectionNumber = [self.collation sectionForObject:wrapper
+                                           collationStringSelector:@selector(albumArtist)];
+        NSMutableArray *array = [self.sections objectAtIndex:sectionNumber];
+        [array addObject:wrapper];
+    }
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self loadArtists];
+    //self.tableView.sectionIndexMinimumDisplayRowCount = 40;
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -45,35 +60,56 @@
     // Dispose of any resources that can be recreated.
 }
 
+/*****************************************************************************/
+/* Table Data Source                                                         */
+/*****************************************************************************/
 #pragma mark - Table view data source
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 1;
+    return [[self.collation sectionTitles] count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return self.artists.count;
+    return [[self.sections objectAtIndex:section] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"ArtistCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell==nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                      reuseIdentifier:CellIdentifier];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    }
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EntryCell"];
     // Configure the cell...
-    MPMediaItemCollection *artist = [self.artists objectAtIndex:indexPath.row];
-    MPMediaItem *song = [artist representativeItem];
-    cell.textLabel.text = [song valueForProperty:MPMediaItemPropertyAlbumArtist];
+    NSArray *artists = [self.sections objectAtIndex:indexPath.section];
+    EPMediaItemWrapper *artist = [artists objectAtIndex:indexPath.row];
+    cell.textLabel.text = artist.albumArtist;
     
     return cell;
+}
+
+/*****************************************************************************/
+/* Section Methods                                                           */
+/*****************************************************************************/
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return [[self.collation sectionTitles] objectAtIndex:section];
+}
+
+
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
+{
+    return [self.collation sectionIndexTitles];
+}
+
+
+- (NSInteger)tableView:(UITableView *)tableView
+sectionForSectionIndexTitle:(NSString *)title
+               atIndex:(NSInteger)index
+{
+    return [self.collation sectionForSectionIndexTitleAtIndex:index];
 }
 
 /*
@@ -115,19 +151,23 @@
 }
 */
 
+/*****************************************************************************/
+/* Table Delegate Methods                                                    */
+/*****************************************************************************/
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    MPMediaItemCollection *artist = [self.artists objectAtIndex:indexPath.row];
-    MPMediaItem *song = [artist representativeItem];
+    //[tableView deselectRowAtIndexPath:indexPath animated:YES];
+    NSArray *artists = [self.sections objectAtIndex:indexPath.section];
+    EPMediaItemWrapper *artist = [artists objectAtIndex:indexPath.row];
     
     EPAlbumTableController *albumController = [[EPAlbumTableController alloc]
                                                      initWithStyle:UITableViewStylePlain];
     MPMediaQuery *albumsQuery = [[MPMediaQuery alloc] init];
     [albumsQuery setGroupingType:MPMediaGroupingAlbum];
     MPMediaPropertyPredicate *pred = [MPMediaPropertyPredicate
-                                      predicateWithValue:[song valueForProperty:MPMediaItemPropertyAlbumArtist]
+                                      predicateWithValue:artist.albumArtist
                                       forProperty:MPMediaItemPropertyAlbumArtist];
     [albumsQuery addFilterPredicate:pred];
     albumController.albums = albumsQuery.collections;

@@ -22,7 +22,7 @@
 - (void)propagatePlayCount:(NSNumber *)count
 {
     int newCount = [count intValue]+[self.playCount intValue];
-    self.playCount = [NSNumber numberWithInt:newCount];
+    self.playCount = @(newCount);//[NSNumber numberWithInt:newCount];
     for (Entry *folder in self.parents) {
         [folder propagatePlayCount:count];
     }

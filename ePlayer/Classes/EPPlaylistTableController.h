@@ -8,15 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "Models/EPModels.h"
+#import "EPBrowseTableController.h"
 
-@interface EPPlaylistTableController : UITableViewController
+@interface EPPlaylistTableController : EPBrowseTableController
 
 - (void)loadRootFolder;
 - (EPPlaylistTableController *)copyMusicController;
 
-@property (nonatomic) BOOL enabled;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSManagedObjectModel *managedObjectModel;
 @property (nonatomic, strong) Folder *folder;
-@property (nonatomic, strong) NSArray *sortedEntries;
+@property (nonatomic, strong) NSArray *sections;
+@property (nonatomic, strong) NSMutableArray *sectionTitles;
+
 @end

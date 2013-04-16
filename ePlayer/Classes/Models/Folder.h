@@ -14,8 +14,11 @@
 
 @interface Folder : Entry
 
+- (NSString *)sectionTitleForEntry:(Entry *)entry;
+
 @property (nonatomic, retain) NSNumber * sortOrder;
 @property (nonatomic, retain) NSSet *entries;
+@property (nonatomic, strong) NSArray *sortedEntries;
 @end
 
 @interface Folder (CoreDataGeneratedAccessors)

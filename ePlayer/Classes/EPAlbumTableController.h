@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EPBrowseTableController.h"
 
-@interface EPAlbumTableController : UITableViewController
-
-- (void)loadAllAlbums;
+@interface EPAlbumTableController : EPBrowseTableController
 
 @property (nonatomic, strong) NSArray *albums;
+@property (nonatomic, strong) UILocalizedIndexedCollation *collation;
+@property (nonatomic, strong) NSMutableArray *sections;
 @end
