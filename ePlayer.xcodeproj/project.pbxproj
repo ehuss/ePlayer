@@ -33,7 +33,6 @@
 		076779D817168FC200D1784D /* EPAlbumTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 076779D717168FC200D1784D /* EPAlbumTableController.m */; };
 		076779DB171697A700D1784D /* EPTrackTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 076779DA171697A700D1784D /* EPTrackTableController.m */; };
 		076779E31718E11300D1784D /* EPPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 076779E21718E11300D1784D /* EPPlayerController.m */; };
-		07677A3E1719160F00D1784D /* EntryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07677A3D1719160F00D1784D /* EntryCell.xib */; };
 		07677A4E171924F200D1784D /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A40171924F200D1784D /* pause.png */; };
 		07677A4F171924F200D1784D /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A41171924F200D1784D /* play.png */; };
 		07677A50171924F200D1784D /* queue-buttons@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A42171924F200D1784D /* queue-buttons@2x.png */; };
@@ -64,6 +63,8 @@
 		079B4144171E139E0036F0D4 /* NSArray+EPMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4143171E139C0036F0D4 /* NSArray+EPMap.m */; };
 		079B4147171E309B0036F0D4 /* EPCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4146171E309B0036F0D4 /* EPCommon.m */; };
 		079B4150171E9F980036F0D4 /* EPBrowserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B414F171E9F960036F0D4 /* EPBrowserCell.m */; };
+		079B4153171F55F00036F0D4 /* EPTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4152171F55ED0036F0D4 /* EPTableHeaderView.m */; };
+		079B415B171F5A070036F0D4 /* EntryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 079B415D171F5A070036F0D4 /* EntryCell.xib */; };
 		07A75E56171684A9007D6236 /* EPArtistTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A75E55171684A9007D6236 /* EPArtistTableController.m */; };
 /* End PBXBuildFile section */
 
@@ -118,7 +119,6 @@
 		076779DA171697A700D1784D /* EPTrackTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPTrackTableController.m; sourceTree = "<group>"; };
 		076779E11718E11300D1784D /* EPPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayerController.h; sourceTree = "<group>"; };
 		076779E21718E11300D1784D /* EPPlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayerController.m; sourceTree = "<group>"; };
-		07677A3D1719160F00D1784D /* EntryCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = EntryCell.xib; path = en.lproj/EntryCell.xib; sourceTree = "<group>"; };
 		07677A40171924F200D1784D /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
 		07677A41171924F200D1784D /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
 		07677A42171924F200D1784D /* queue-buttons@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-buttons@2x.png"; sourceTree = "<group>"; };
@@ -158,6 +158,9 @@
 		079B4146171E309B0036F0D4 /* EPCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPCommon.m; sourceTree = "<group>"; };
 		079B414E171E9F940036F0D4 /* EPBrowserCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPBrowserCell.h; sourceTree = "<group>"; };
 		079B414F171E9F960036F0D4 /* EPBrowserCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPBrowserCell.m; sourceTree = "<group>"; };
+		079B4151171F55EB0036F0D4 /* EPTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPTableHeaderView.h; sourceTree = "<group>"; };
+		079B4152171F55ED0036F0D4 /* EPTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPTableHeaderView.m; sourceTree = "<group>"; };
+		079B415C171F5A070036F0D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/EntryCell.xib; sourceTree = "<group>"; };
 		07A75E54171684A9007D6236 /* EPArtistTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPArtistTableController.h; sourceTree = "<group>"; };
 		07A75E55171684A9007D6236 /* EPArtistTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPArtistTableController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -286,6 +289,8 @@
 				0755C3711716215400AAF81F /* Models */,
 				0755C3611714F12200AAF81F /* AppDelegate.h */,
 				0755C3621714F12200AAF81F /* AppDelegate.m */,
+				079B4151171F55EB0036F0D4 /* EPTableHeaderView.h */,
+				079B4152171F55ED0036F0D4 /* EPTableHeaderView.m */,
 				079B411F171B4F400036F0D4 /* EPBrowseTableController.h */,
 				079B4120171B4F400036F0D4 /* EPBrowseTableController.m */,
 				0755C36C1715335800AAF81F /* EPMemoryDebug.h */,
@@ -351,10 +356,11 @@
 		079B4139171CF2550036F0D4 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				07677A3D1719160F00D1784D /* EntryCell.xib */,
 				0755C3091714BE0400AAF81F /* MainStoryboard_iPhone.storyboard */,
+				079B415D171F5A070036F0D4 /* EntryCell.xib */,
 			);
 			name = UI;
+			path = en.lproj;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -433,7 +439,7 @@
 				0755C3061714BE0400AAF81F /* Default@2x.png in Resources */,
 				0755C3081714BE0400AAF81F /* Default-568h@2x.png in Resources */,
 				0755C30B1714BE0400AAF81F /* MainStoryboard_iPhone.storyboard in Resources */,
-				07677A3E1719160F00D1784D /* EntryCell.xib in Resources */,
+				079B415B171F5A070036F0D4 /* EntryCell.xib in Resources */,
 				07677A4E171924F200D1784D /* pause.png in Resources */,
 				07677A4F171924F200D1784D /* play.png in Resources */,
 				07677A50171924F200D1784D /* queue-buttons@2x.png in Resources */,
@@ -509,6 +515,7 @@
 				079B4144171E139E0036F0D4 /* NSArray+EPMap.m in Sources */,
 				079B4147171E309B0036F0D4 /* EPCommon.m in Sources */,
 				079B4150171E9F980036F0D4 /* EPBrowserCell.m in Sources */,
+				079B4153171F55F00036F0D4 /* EPTableHeaderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -545,6 +552,7 @@
 				0755C30A1714BE0400AAF81F /* en */,
 			);
 			name = MainStoryboard_iPhone.storyboard;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		0755C32C1714BE0400AAF81F /* InfoPlist.strings */ = {
@@ -553,6 +561,14 @@
 				0755C32D1714BE0400AAF81F /* en */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		079B415D171F5A070036F0D4 /* EntryCell.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				079B415C171F5A070036F0D4 /* en */,
+			);
+			name = EntryCell.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

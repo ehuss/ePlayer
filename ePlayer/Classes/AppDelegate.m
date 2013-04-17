@@ -374,7 +374,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
             Folder *albumFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
                                                                           inManagedObjectContext:managedObjectContext];
             albumFolder.name = [representativeItem2 valueForProperty:MPMediaItemPropertyAlbumTitle];
-            albumFolder.sortOrder = @(EPSortOrderAddDate);//[NSNumber numberWithInt:EPSortOrderAddDate];
+            albumFolder.sortOrder = @(EPSortOrderManual);
             // These dates will be updated once songs are seen.
             albumFolder.addDate = [NSDate distantPast];
             albumFolder.releaseDate = [NSDate distantPast];

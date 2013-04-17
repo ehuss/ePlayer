@@ -59,10 +59,6 @@
 {
     static NSString *CellIdentifier = @"TrackCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell==nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                      reuseIdentifier:CellIdentifier];
-    }
     // Configure the cell...
     MPMediaItem *song = self.tracks[indexPath.row];
     cell.textLabel.text = [song valueForProperty:MPMediaItemPropertyTitle];

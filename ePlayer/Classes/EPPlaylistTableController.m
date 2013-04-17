@@ -100,6 +100,14 @@
     } else {
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
+    if ((self.sortOrder==EPSortOrderAddDate ||
+         self.sortOrder==EPSortOrderPlayDate ||
+         self.sortOrder==EPSortOrderReleaseDate) && self.sections.count==1) {
+        cell.dateLabel.text = [self.folder sectionTitleForEntry:entry];
+    } else {
+        cell.dateLabel.text = nil;
+    }
+    
     return cell;
 }
 

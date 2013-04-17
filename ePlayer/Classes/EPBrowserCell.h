@@ -11,5 +11,6 @@
 @interface EPBrowserCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *labelView;
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
+@property (weak, nonatomic) IBOutlet UILabel *dateLabel;
 
 @end
