@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Models/EPModels.h"
+#import "EPCommon.h"
 #import "EPBrowseTableController.h"
 
 @interface EPPlaylistTableController : EPBrowseTableController
@@ -18,7 +18,5 @@
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSManagedObjectModel *managedObjectModel;
 @property (nonatomic, strong) Folder *folder;
-@property (nonatomic, strong) NSArray *sections;
-@property (nonatomic, strong) NSMutableArray *sectionTitles;
 
 @end

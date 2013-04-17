@@ -22,30 +22,66 @@
     MPMediaQuery *artists = [[MPMediaQuery alloc] init];
     [artists setGroupingType:MPMediaGroupingAlbumArtist];
     self.artists = artists.collections;
-    self.collation = [UILocalizedIndexedCollation currentCollation];
-    // An array of sections.
-    NSInteger sectionTitlesCount = self.collation.sectionTitles.count;
-    self.sections = [[NSMutableArray alloc] initWithCapacity:sectionTitlesCount];
-    // Populate sections with empty arrays we will fill.
-    for (int i=0; i<sectionTitlesCount; i++) {
-        NSMutableArray *array = [[NSMutableArray alloc] init];
-        [self.sections addObject:array];
-    }
-    // Go through the artists and add them to the appropriate sections.
-    for (MPMediaItemCollection *artist in self.artists) {
-        EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:[artist representativeItem]];
-        NSInteger sectionNumber = [self.collation sectionForObject:wrapper
-                                           collationStringSelector:@selector(albumArtist)];
-        NSMutableArray *array = [self.sections objectAtIndex:sectionNumber];
-        [array addObject:wrapper];
-    }
+    [self updateSections];
 }
+
+- (void)updateSections
+{
+    // Sort the artists.
+    NSArray *wrappedArtists = [self.artists mapWithBlock:^id(id item) {
+        return [EPMediaItemWrapper wrapperFromItem:[(MPMediaItemCollection *)item representativeItem]];
+    }];
+    NSArray *sortedArtists = [EPMediaItemWrapper sortedArrayOfWrappers:wrappedArtists
+                                                              inOrder:self.sortOrder
+                                                             alphaKey:@"albumArtist"];
+    
+    // Divy the ablums into sections.
+    if (sortedArtists.count > minEntriesForSections) {
+        NSMutableArray *sections = [[NSMutableArray alloc] init];
+        self.sections = sections;
+        self.sectionTitles = [[NSMutableArray alloc] init];
+        NSMutableArray *currentSection = nil;
+        NSString *currentSectionTitle = nil;
+        for (EPMediaItemWrapper *wrapper in sortedArtists) {
+            NSString *sectionTitle = [wrapper sectionTitleForSortOrder:self.sortOrder
+                                                              alphaKey:MPMediaItemPropertyAlbumArtist];
+            // Is this entry a new section?
+            if (currentSection == nil || [sectionTitle compare:currentSectionTitle]!=NSOrderedSame) {
+                currentSectionTitle = sectionTitle;
+                [self.sectionTitles addObject:sectionTitle];
+                currentSection = [[NSMutableArray alloc] init];
+                [sections addObject:currentSection];
+            }
+            [currentSection addObject:wrapper];
+        }
+    } else {
+        // With a small number of entries, sections are a pain.
+        self.sections = @[wrappedArtists];
+        self.sectionTitles = nil;
+    }
+    
+}
+
+- (void)setSortOrder:(EPSortOrder)sortOrder
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setInteger:sortOrder forKey:EPSettingArtistsSortOrder];
+    [self updateSections];
+    [self.tableView reloadData];
+}
+
+
+- (EPSortOrder)sortOrder
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [[defaults valueForKey:EPSettingArtistsSortOrder] intValue];
+}
+
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     [self loadArtists];
-    //self.tableView.sectionIndexMinimumDisplayRowCount = 40;
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -65,19 +101,6 @@
 /*****************************************************************************/
 #pragma mark - Table view data source
 
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    // Return the number of sections.
-    return [[self.collation sectionTitles] count];
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    // Return the number of rows in the section.
-    return [[self.sections objectAtIndex:section] count];
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EntryCell"];
@@ -87,29 +110,6 @@
     cell.textLabel.text = artist.albumArtist;
     
     return cell;
-}
-
-/*****************************************************************************/
-/* Section Methods                                                           */
-/*****************************************************************************/
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    return [[self.collation sectionTitles] objectAtIndex:section];
-}
-
-
-- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
-{
-    return [self.collation sectionIndexTitles];
-}
-
-
-- (NSInteger)tableView:(UITableView *)tableView
-sectionForSectionIndexTitle:(NSString *)title
-               atIndex:(NSInteger)index
-{
-    return [self.collation sectionForSectionIndexTitleAtIndex:index];
 }
 
 /*

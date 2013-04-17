@@ -7,8 +7,13 @@
 //
 
 #import "Folder.h"
-#import "EPModels.h"
+#import "EPCommon.h"
 
+@interface Folder ()
+{
+    EPSortOrder _sortedEntriesOrder;
+}
+@end
 
 @implementation Folder
 
@@ -20,7 +25,7 @@
 
 - (NSArray *)sortedEntries
 {
-    if (_sortedEntries == nil) {
+    if (_sortedEntries == nil || _sortedEntriesOrder != [self.sortOrder intValue]) {
         NSString *key;
         BOOL ascending = NO;
         switch ([self.sortOrder intValue]) {
@@ -42,16 +47,11 @@
         NSSortDescriptor *sortDesc = [NSSortDescriptor sortDescriptorWithKey:key
                                                                    ascending:ascending];
         _sortedEntries = [self.entries sortedArrayUsingDescriptors:@[sortDesc]];
+        _sortedEntriesOrder = [self.sortOrder intValue];
     }
     return _sortedEntries;
 }
 
-NSString *yearFromDate(NSDate *date)
-{
-    NSCalendar *cal = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *comp = [cal components:NSYearCalendarUnit fromDate:date];
-    return [NSString stringWithFormat:@"%i", comp.year];
-}
 
 - (NSString *)sectionTitleForEntry:(Entry *)entry;
 {

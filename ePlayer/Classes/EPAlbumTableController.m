@@ -10,6 +10,7 @@
 #import "EPAlbumTableController.h"
 #import "EPTrackTableController.h"
 #import "EPMediaItemWrapper.h"
+#import "EPCommon.h"
 
 @interface EPAlbumTableController ()
 
@@ -22,33 +23,78 @@
     if (self.albums == nil) {
         MPMediaQuery *albumQuery = [MPMediaQuery albumsQuery];
         self.albums = albumQuery.collections;
+        self.isGlobalAlbums = YES;
+    } else {
+        self.isGlobalAlbums = NO;
     }
-    self.collation = [UILocalizedIndexedCollation currentCollation];
-    // An array of sections.
-    NSInteger sectionTitlesCount = self.collation.sectionTitles.count;
-    self.sections = [[NSMutableArray alloc] initWithCapacity:sectionTitlesCount];
-    // Populate sections with empty arrays we will fill.
-    for (int i=0; i<sectionTitlesCount; i++) {
-        NSMutableArray *array = [[NSMutableArray alloc] init];
-        [self.sections addObject:array];
+    [self updateSections];
+}
+
+- (void)updateSections
+{
+    // Sort the albums.
+    NSArray *wrappedAlbums = [self.albums mapWithBlock:^id(id item) {
+        return [EPMediaItemWrapper wrapperFromItem:[(MPMediaItemCollection *)item representativeItem]];
+    }];
+    NSArray *sortedAlbums = [EPMediaItemWrapper sortedArrayOfWrappers:wrappedAlbums
+                                                              inOrder:self.sortOrder
+                                                             alphaKey:@"albumTitle"];
+
+    // Divy the ablums into sections.
+    if (sortedAlbums.count > minEntriesForSections) {
+        NSMutableArray *sections = [[NSMutableArray alloc] init];
+        self.sections = sections;
+        self.sectionTitles = [[NSMutableArray alloc] init];
+        NSMutableArray *currentSection = nil;
+        NSString *currentSectionTitle = nil;
+        for (EPMediaItemWrapper *wrapper in sortedAlbums) {
+            NSString *sectionTitle = [wrapper sectionTitleForSortOrder:self.sortOrder
+                                                              alphaKey:MPMediaItemPropertyAlbumTitle];
+            // Is this entry a new section?
+            if (currentSection == nil || [sectionTitle compare:currentSectionTitle]!=NSOrderedSame) {
+                currentSectionTitle = sectionTitle;
+                [self.sectionTitles addObject:sectionTitle];
+                currentSection = [[NSMutableArray alloc] init];
+                [sections addObject:currentSection];
+            }
+            [currentSection addObject:wrapper];
+        }
+    } else {
+        // With a small number of entries, sections are a pain.
+        self.sections = @[wrappedAlbums];
+        self.sectionTitles = nil;
     }
-    // Go through the albums and add them to the appropriate sections.
-    for (MPMediaItemCollection *album in self.albums) {
-        EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:[album representativeItem]];
-        NSInteger sectionNumber = [self.collation sectionForObject:wrapper
-                                           collationStringSelector:@selector(albumTitle)];
-        NSMutableArray *array = [self.sections objectAtIndex:sectionNumber];
-        [array addObject:wrapper];
+    
+}
+
+- (void)setSortOrder:(EPSortOrder)sortOrder
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (self.isGlobalAlbums) {
+        [defaults setInteger:sortOrder forKey:EPSettingAllAbumsSortOrder];
+    } else {
+        [defaults setInteger:sortOrder forKey:EPSettingArtistAlbumsSortOrder];
+    }
+    [self updateSections];
+    [self.tableView reloadData];
+}
+
+
+- (EPSortOrder)sortOrder
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (self.isGlobalAlbums) {
+        return [[defaults valueForKey:EPSettingAllAbumsSortOrder] intValue];
+    } else {
+        return [[defaults valueForKey:EPSettingArtistAlbumsSortOrder] intValue];
     }
 }
+
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     [self loadAlbums];
-    // This seems to be bugged in Interface Builder.
-    self.tableView.sectionIndexMinimumDisplayRowCount = 40;
-
 }
 
 - (void)didReceiveMemoryWarning
@@ -62,54 +108,16 @@
 /*****************************************************************************/
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    // Return the number of sections.
-    return [[self.collation sectionTitles] count];
-}
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    // Return the number of rows in the section.
-    return [[self.sections objectAtIndex:section] count];
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EntryCell"];
     // Configure the cell...
-    NSArray *albums = [self.sections objectAtIndex:indexPath.section];
+    NSArray *albums = self.sections[indexPath.section];
     EPMediaItemWrapper *album = [albums objectAtIndex:indexPath.row];
     cell.textLabel.text = album.albumTitle;    
     return cell;
 }
 
-/*****************************************************************************/
-/* Section Methods                                                           */
-/*****************************************************************************/
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    if ([self.sections[section] count]) {
-        return [[self.collation sectionTitles] objectAtIndex:section];
-    } else {
-        // Don't show empty sections.
-        return nil;
-    }
-}
-
-
-- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
-{
-    return [self.collation sectionIndexTitles];
-}
-
-
-- (NSInteger)tableView:(UITableView *)tableView
-sectionForSectionIndexTitle:(NSString *)title
-               atIndex:(NSInteger)index
-{
-    return [self.collation sectionForSectionIndexTitleAtIndex:index];
-}
 
 
 /*

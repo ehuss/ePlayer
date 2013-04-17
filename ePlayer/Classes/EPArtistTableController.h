@@ -13,6 +13,4 @@
 
 // Array of MPMediaItemCollection.
 @property (nonatomic, strong) NSArray *artists;
-@property (nonatomic, strong) UILocalizedIndexedCollation *collation;
-@property (nonatomic, strong) NSMutableArray *sections;
 @end

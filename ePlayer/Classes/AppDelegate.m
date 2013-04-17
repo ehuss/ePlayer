@@ -8,15 +8,21 @@
 
 #import <MediaPlayer/MediaPlayer.h>
 #import "AppDelegate.h"
-#import "Models/EPModels.h"
-#import "EPMemoryDebug.h"
+#import "EPCommon.h"
 #import "EPArtistTableController.h"
 #import "EPAlbumTableController.h"
+#import "EPSortOrderController.h"
+#import "EPMediaItemWrapper.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    createGregorianCalendar();
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults registerDefaults:@{EPSettingArtistsSortOrder: [NSNumber numberWithInt:EPSortOrderAlpha],
+                                 EPSettingAllAbumsSortOrder: [NSNumber numberWithInt:EPSortOrderReleaseDate],
+                                 EPSettingArtistAlbumsSortOrder: [NSNumber numberWithInt:EPSortOrderReleaseDate]}];
 //    MPMediaQuery *artists = [[MPMediaQuery alloc] init];
 //    [artists setGroupingType:MPMediaGroupingAlbumArtist];
 //    for (MPMediaItemCollection *artist in artists.collections) {
@@ -66,6 +72,7 @@
     //[[NSFileManager defaultManager] removeItemAtURL:[self dbURL] error:nil];
     
     self.tabController = (UITabBarController *)self.window.rootViewController;
+    self.tabController.delegate = self;
     self.playlistNavController = self.tabController.viewControllers[0];
     self.playlistTableController = (EPPlaylistTableController *)self.playlistNavController.topViewController;
     self.playlistTableController.managedObjectContext = self.managedObjectContext;
@@ -256,14 +263,6 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     return artistName;
 }
 
-NSDate *dateFromYear(int year)
-{
-    NSDateComponents *comps = [[NSDateComponents alloc] init];
-    [comps setYear:year];
-    NSCalendar *cal = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    return [cal dateFromComponents:comps];
-}
-
 - (BOOL)loadData
 {
     // First determine if there is anything in the database.
@@ -414,31 +413,24 @@ NSDate *dateFromYear(int year)
             // Insert all songs into album folder.
             NSLog(@"Iterating over songs in album %@.", albumFolder.name);
             for (MPMediaItem *songItem in album.items) {
+                EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:songItem];
                 Song *song = (Song *)[NSEntityDescription insertNewObjectForEntityForName:@"Song"
                                                                    inManagedObjectContext:managedObjectContext];
-                song.name = [songItem valueForProperty:MPMediaItemPropertyTitle];
-                song.persistentID = [songItem valueForProperty:MPMediaItemPropertyPersistentID];
+                song.name = wrapper.title;
+                song.persistentID = wrapper.persistentID;
                 [albumFolder addEntriesObject:song];
                 NSDate *date;
 
-                // Sigh, unfortunately MPMediaItemPropertyReleaseDate does
-                // not seem to work.  Using an undocumented property.
-                NSNumber *year = [songItem valueForProperty:@"year"];
-                if (year == nil || [year intValue]==0) {
-                    // Or "distantPast"?
-                    date = [NSDate date];
-                } else {
-                    date = dateFromYear([year intValue]);
-                }
+                date = wrapper.releaseDate;
                 [song propagateReleaseDate:date];
 
-                date = [songItem valueForProperty:MPMediaItemPropertyLastPlayedDate];
+                date = wrapper.lastPlayedDate;
                 if (date == nil) {
                     date = [NSDate distantPast];
                 }
                 [song propagatePlayDate:date];
                 [song propagateAddDate:song.releaseDate];
-                NSNumber *playCount = [songItem valueForProperty:MPMediaItemPropertyPlayCount];
+                NSNumber *playCount = wrapper.playCount;
                 if (playCount != nil) {
                     [song propagatePlayCount:playCount];
                 }
@@ -473,5 +465,24 @@ NSDate *dateFromYear(int year)
     [self.playlistTableController loadRootFolder];
 }
 
+/*****************************************************************************/
+/* Tab Bar Methods                                                           */
+/*****************************************************************************/
+- (BOOL)tabBarController:(UITabBarController *)tabBarController
+ shouldSelectViewController:(UIViewController *)viewController
+{
+    if (![tabBarController.selectedViewController.class isSubclassOfClass:[EPSortOrderController class]]) {
+        if ([viewController.class isSubclassOfClass:[EPSortOrderController class]]) {
+            // Selecting sort order.
+            // Tell the sort order controller what the current sort order is.
+            UINavigationController *navCont = (UINavigationController *)tabBarController.selectedViewController;
+            EPBrowseTableController *browse = (EPBrowseTableController *)navCont.topViewController;
+            EPSortOrderController *controller = (EPSortOrderController *)viewController;
+            controller.currentSortOrder = browse.sortOrder;
+            controller.previousControllerIndex = tabBarController.selectedIndex;
+        }
+    }
+    return YES;
+}
 
 @end

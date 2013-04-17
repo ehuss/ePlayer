@@ -7,7 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EPCommon.h"
+
+extern NSUInteger minEntriesForSections;
 
 @interface EPBrowseTableController : UITableViewController
+
+@property (assign, nonatomic)EPSortOrder sortOrder;
+@property (nonatomic, strong) NSArray *sections;
+@property (nonatomic, strong) NSMutableArray *sectionTitles;
 
 @end

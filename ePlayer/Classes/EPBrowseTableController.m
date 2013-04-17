@@ -9,6 +9,8 @@
 #import "EPBrowseTableController.h"
 #import "AppDelegate.h"
 
+NSUInteger minEntriesForSections = 10;
+
 @interface EPBrowseTableController ()
 
 @end
@@ -27,11 +29,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    // This seems to be bugged in Interface Builder.
+    self.tableView.sectionIndexMinimumDisplayRowCount = 10;
     UINib *entryNib = [UINib nibWithNibName:@"EntryCell" bundle:nil];
     [self.tableView registerNib:entryNib
          forCellReuseIdentifier:@"EntryCell"];
     
-    AppDelegate *appD = [UIApplication sharedApplication].delegate;
+    AppDelegate *appD = (AppDelegate *)[UIApplication sharedApplication].delegate;
 
     UIBarButtonItem *queueButton = [[UIBarButtonItem alloc]
                                     initWithTitle:@"Queue"
@@ -45,29 +49,42 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    // Update the sort order indicator.
+    UIViewController *vc = self.tabBarController.viewControllers[3];
+    vc.tabBarItem.title = nameForSortOrder(self.sortOrder);
+}
 //
 //- (void)didReceiveMemoryWarning
 //{
 //    [super didReceiveMemoryWarning];
 //    // Dispose of any resources that can be recreated.
 //}
-
+/*****************************************************************************/
+/* Table Data Source                                                         */
+/*****************************************************************************/
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 1;
+    if (self.sectionTitles != nil) {
+        return [self.sectionTitles count];
+    } else {
+        return 1;
+    }
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
-    return cell;
+    // Return the number of rows in the section.
+    if (self.sections != nil) {
+        return [[self.sections objectAtIndex:section] count];
+    } else {
+        return 0;
+    }
 }
 
 /*
@@ -109,17 +126,43 @@
 }
 */
 
-#pragma mark - Table view delegate
+/*****************************************************************************/
+/* Section Methods                                                           */
+/*****************************************************************************/
 
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    // Navigation logic may go here. Create and push another view controller.
-//    /*
-//     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-//     // ...
-//     // Pass the selected object to the new view controller.
-//     [self.navigationController pushViewController:detailViewController animated:YES];
-//     */
-//}
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return self.sectionTitles[section];
+}
+
+
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
+{
+    // Currently using same section titles for index titles.
+    return self.sectionTitles;
+}
+
+
+- (NSInteger)tableView:(UITableView *)tableView
+sectionForSectionIndexTitle:(NSString *)title
+               atIndex:(NSInteger)index
+{
+    // Section indicies are the same as index indicies.
+    return index;
+}
+
+/*****************************************************************************/
+/* Accessors                                                                 */
+/*****************************************************************************/
+
+- (void)setSortOrder:(EPSortOrder)sortOrder
+{
+    
+}
+
+- (EPSortOrder)sortOrder
+{
+    return EPSortOrderAlpha;
+}
 
 @end

@@ -8,9 +8,8 @@
 
 #import <MediaPlayer/MediaPlayer.h>
 #import "EPPlaylistTableController.h"
-#import "Models/EPModels.h"
+#import "EPCommon.h"
 #import "EPPlayerController.h"
-#import "EPTableHeaderView.h"
 
 @interface EPPlaylistTableController ()
 
@@ -18,7 +17,6 @@
 
 @implementation EPPlaylistTableController
 
-static NSUInteger minSections = 10;
 
 //- (void)awakeFromNib
 //{
@@ -34,10 +32,26 @@ static NSUInteger minSections = 10;
     return controller;
 }
 
+- (void)setSortOrder:(EPSortOrder)sortOrder
+{
+    self.folder.sortOrder = [NSNumber numberWithInt:sortOrder];
+    NSError *error;
+    if (![self.managedObjectContext save:&error]) {
+        NSLog(@"Failed to save: %@", error);
+    }
+    [self updateSections];
+    [self.tableView reloadData];
+}
+
+- (EPSortOrder)sortOrder
+{
+    return [self.folder.sortOrder intValue];
+}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.tableView.sectionIndexMinimumDisplayRowCount = 10;
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -56,26 +70,6 @@ static NSUInteger minSections = 10;
 /* Table Data Source                                                         */
 /*****************************************************************************/
 #pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    // Return the number of sections.
-    if (self.sectionTitles != nil) {
-        return [self.sectionTitles count];
-    } else {
-        return 1;
-    }
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    // Return the number of rows in the section.
-    if (self.folder != nil) {
-        return [[self.sections objectAtIndex:section] count];
-    } else {
-        return 0;
-    }
-}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -102,65 +96,12 @@ static NSUInteger minSections = 10;
     }
     Entry *entry = self.sections[indexPath.section][indexPath.row];
     cell.textLabel.text = entry.name;
-    return cell;
-}
-
-/*****************************************************************************/
-/* Section Methods                                                           */
-/*****************************************************************************/
-
-//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-//{
-//    return self.sectionTitles[section];
-//}
-
-
-- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
-{
-    // Currently using same section titles for index titles.
-    return self.sectionTitles;
-}
-
-
-- (NSInteger)tableView:(UITableView *)tableView
-sectionForSectionIndexTitle:(NSString *)title
-               atIndex:(NSInteger)index
-{
-    // Section indicies are the same as index indicies.
-    return index;
-}
-
-/*****************************************************************************/
-/* Section Headers                                                           */
-/*****************************************************************************/
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"TableHeaderView"
-                                                      owner:self
-                                                    options:nil];
-    EPTableHeaderView *view = nibViews[0];
-    view.sectionLabel.text = self.sectionTitles[section];
-    if (section == 0) {
-        NSString *text;
-        switch ([self.folder.sortOrder intValue]) {
-            case EPSortOrderAlpha:
-                text = nil;
-                break;
-            case EPSortOrderAddDate:
-                text = @"Added Date";
-                break;
-            case EPSortOrderPlayDate:
-                text = @"Play Date";
-                break;
-            case EPSortOrderReleaseDate:
-                text = @"Release Date";
-                break;
-        }
-        view.sortDescriptionLabel.text = text;
+    if ([entry.class isSubclassOfClass:[Folder class]]) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     } else {
-        view.sortDescriptionLabel.text = nil;
+        cell.accessoryType = UITableViewCellAccessoryNone;
     }
-    return view;
+    return cell;
 }
 
 /*****************************************************************************/
@@ -293,7 +234,12 @@ sectionForSectionIndexTitle:(NSString *)title
     _folder = folder;
     self.title = folder.name;
     // Set up sections.
-    if (self.folder.sortedEntries.count > 10) {
+    [self updateSections];
+}
+
+- (void)updateSections
+{
+    if (self.folder.sortedEntries.count > minEntriesForSections) {
         NSMutableArray *sections = [[NSMutableArray alloc] init];
         self.sections = sections;
         self.sectionTitles = [[NSMutableArray alloc] init];
@@ -314,7 +260,7 @@ sectionForSectionIndexTitle:(NSString *)title
         // With a small number of entries, sections are a pain.
         self.sections = @[self.folder.sortedEntries];
         self.sectionTitles = nil;
-    }
+    }    
 }
 
 @end

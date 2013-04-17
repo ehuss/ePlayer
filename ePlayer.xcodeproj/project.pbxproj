@@ -60,9 +60,9 @@
 		079B4126171B961C0036F0D4 /* current-queue-item-stopped@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079B4123171B961B0036F0D4 /* current-queue-item-stopped@2x.png */; };
 		079B4127171B961C0036F0D4 /* queue-pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079B4124171B961C0036F0D4 /* queue-pause@2x.png */; };
 		079B412F171CCA6F0036F0D4 /* EPMediaItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B412E171CCA6E0036F0D4 /* EPMediaItemWrapper.m */; };
-		079B4131171CEDA60036F0D4 /* header-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079B4130171CEDA50036F0D4 /* header-background@2x.png */; };
-		079B4136171CEFC40036F0D4 /* EPTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4135171CEFC30036F0D4 /* EPTableHeaderView.m */; };
-		079B413C171CF2850036F0D4 /* TableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 079B413A171CF2850036F0D4 /* TableHeaderView.xib */; };
+		079B413F171D11170036F0D4 /* EPSortOrderController.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B413E171D11160036F0D4 /* EPSortOrderController.m */; };
+		079B4144171E139E0036F0D4 /* NSArray+EPMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4143171E139C0036F0D4 /* NSArray+EPMap.m */; };
+		079B4147171E309B0036F0D4 /* EPCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4146171E309B0036F0D4 /* EPCommon.m */; };
 		07A75E56171684A9007D6236 /* EPArtistTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A75E55171684A9007D6236 /* EPArtistTableController.m */; };
 /* End PBXBuildFile section */
 
@@ -107,7 +107,6 @@
 		0755C36C1715335800AAF81F /* EPMemoryDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPMemoryDebug.h; sourceTree = "<group>"; };
 		0755C36D1715335800AAF81F /* EPMemoryDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPMemoryDebug.m; sourceTree = "<group>"; };
 		0755C36F1715463600AAF81F /* NOTES.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NOTES.txt; sourceTree = "<group>"; };
-		0755C372171623E900AAF81F /* EPModels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EPModels.h; sourceTree = "<group>"; };
 		0755C3821716442600AAF81F /* Folder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Folder.h; sourceTree = "<group>"; };
 		0755C3831716442600AAF81F /* Folder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Folder.m; sourceTree = "<group>"; };
 		0755C38517164DFE00AAF81F /* Entry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Entry.h; sourceTree = "<group>"; };
@@ -150,10 +149,12 @@
 		079B4124171B961C0036F0D4 /* queue-pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-pause@2x.png"; sourceTree = "<group>"; };
 		079B412D171CCA6D0036F0D4 /* EPMediaItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPMediaItemWrapper.h; sourceTree = "<group>"; };
 		079B412E171CCA6E0036F0D4 /* EPMediaItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPMediaItemWrapper.m; sourceTree = "<group>"; };
-		079B4130171CEDA50036F0D4 /* header-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "header-background@2x.png"; sourceTree = "<group>"; };
-		079B4134171CEFC20036F0D4 /* EPTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPTableHeaderView.h; sourceTree = "<group>"; };
-		079B4135171CEFC30036F0D4 /* EPTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPTableHeaderView.m; sourceTree = "<group>"; };
-		079B413B171CF2850036F0D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/TableHeaderView.xib; sourceTree = "<group>"; };
+		079B413D171D11140036F0D4 /* EPSortOrderController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPSortOrderController.h; sourceTree = "<group>"; };
+		079B413E171D11160036F0D4 /* EPSortOrderController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPSortOrderController.m; sourceTree = "<group>"; };
+		079B4142171E139A0036F0D4 /* NSArray+EPMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+EPMap.h"; sourceTree = "<group>"; };
+		079B4143171E139C0036F0D4 /* NSArray+EPMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+EPMap.m"; sourceTree = "<group>"; };
+		079B4145171E309B0036F0D4 /* EPCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPCommon.h; sourceTree = "<group>"; };
+		079B4146171E309B0036F0D4 /* EPCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPCommon.m; sourceTree = "<group>"; };
 		07A75E54171684A9007D6236 /* EPArtistTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPArtistTableController.h; sourceTree = "<group>"; };
 		07A75E55171684A9007D6236 /* EPArtistTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPArtistTableController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -267,8 +268,12 @@
 		0755C33A1714BFC900AAF81F /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				079B4134171CEFC20036F0D4 /* EPTableHeaderView.h */,
-				079B4135171CEFC30036F0D4 /* EPTableHeaderView.m */,
+				079B4142171E139A0036F0D4 /* NSArray+EPMap.h */,
+				079B4143171E139C0036F0D4 /* NSArray+EPMap.m */,
+				079B4145171E309B0036F0D4 /* EPCommon.h */,
+				079B4146171E309B0036F0D4 /* EPCommon.m */,
+				079B413D171D11140036F0D4 /* EPSortOrderController.h */,
+				079B413E171D11160036F0D4 /* EPSortOrderController.m */,
 				07677A5C1719264E00D1784D /* EPScrubberView.h */,
 				07677A5D1719264E00D1784D /* EPScrubberView.m */,
 				079B412D171CCA6D0036F0D4 /* EPMediaItemWrapper.h */,
@@ -307,7 +312,6 @@
 				0755C3831716442600AAF81F /* Folder.m */,
 				0755C3691715244A00AAF81F /* Song.h */,
 				0755C36A1715244A00AAF81F /* Song.m */,
-				0755C372171623E900AAF81F /* EPModels.h */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -315,7 +319,6 @@
 		07677A3F171924F200D1784D /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				079B4130171CEDA50036F0D4 /* header-background@2x.png */,
 				079B4122171B961B0036F0D4 /* current-queue-item-playing@2x.png */,
 				079B4123171B961B0036F0D4 /* current-queue-item-stopped@2x.png */,
 				079B4124171B961C0036F0D4 /* queue-pause@2x.png */,
@@ -343,7 +346,6 @@
 		079B4139171CF2550036F0D4 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				079B413A171CF2850036F0D4 /* TableHeaderView.xib */,
 				07677A3D1719160F00D1784D /* EntryCell.xib */,
 				0755C3091714BE0400AAF81F /* MainStoryboard_iPhone.storyboard */,
 			);
@@ -447,8 +449,6 @@
 				079B4125171B961C0036F0D4 /* current-queue-item-playing@2x.png in Resources */,
 				079B4126171B961C0036F0D4 /* current-queue-item-stopped@2x.png in Resources */,
 				079B4127171B961C0036F0D4 /* queue-pause@2x.png in Resources */,
-				079B4131171CEDA60036F0D4 /* header-background@2x.png in Resources */,
-				079B413C171CF2850036F0D4 /* TableHeaderView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -500,7 +500,9 @@
 				079B411C171A60340036F0D4 /* EPPlayerCellView.m in Sources */,
 				079B4121171B4F400036F0D4 /* EPBrowseTableController.m in Sources */,
 				079B412F171CCA6F0036F0D4 /* EPMediaItemWrapper.m in Sources */,
-				079B4136171CEFC40036F0D4 /* EPTableHeaderView.m in Sources */,
+				079B413F171D11170036F0D4 /* EPSortOrderController.m in Sources */,
+				079B4144171E139E0036F0D4 /* NSArray+EPMap.m in Sources */,
+				079B4147171E309B0036F0D4 /* EPCommon.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -545,14 +547,6 @@
 				0755C32D1714BE0400AAF81F /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		079B413A171CF2850036F0D4 /* TableHeaderView.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				079B413B171CF2850036F0D4 /* en */,
-			);
-			name = TableHeaderView.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

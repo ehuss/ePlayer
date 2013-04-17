@@ -11,7 +11,8 @@
 
 @interface EPAlbumTableController : EPBrowseTableController
 
-@property (nonatomic, strong) NSArray *albums;
-@property (nonatomic, strong) UILocalizedIndexedCollation *collation;
-@property (nonatomic, strong) NSMutableArray *sections;
+// Sections contain EPMediaItemWrappers.
+// Array of MPMediaItemCollections.
+@property (strong, nonatomic) NSArray *albums;
+@property (assign, nonatomic) BOOL isGlobalAlbums;
 @end
