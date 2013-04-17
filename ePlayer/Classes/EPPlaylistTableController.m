@@ -74,7 +74,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //static NSString *CellIdentifier = @"PlaylistCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EntryCell"];
+    EPBrowserCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EntryCell"];
     assert (cell != nil);
 //    if (cell==nil) {
 //        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
@@ -87,15 +87,14 @@
 //        [cell.imageView addGestureRecognizer:tapGesture];
 //        cell.imageView.userInteractionEnabled = YES;
 //    }
-    if (!cell.imageView.gestureRecognizers.count) {
+    if (!cell.playButton.gestureRecognizers.count) {
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
                                               initWithTarget:self
                                               action:@selector(playTapped:)];
-        [cell.imageView addGestureRecognizer:tapGesture];
-        cell.imageView.userInteractionEnabled = YES;
+        [cell.playButton addGestureRecognizer:tapGesture];
     }
     Entry *entry = self.sections[indexPath.section][indexPath.row];
-    cell.textLabel.text = entry.name;
+    cell.labelView.text = entry.name;
     if ([entry.class isSubclassOfClass:[Folder class]]) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     } else {

@@ -63,6 +63,7 @@
 		079B413F171D11170036F0D4 /* EPSortOrderController.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B413E171D11160036F0D4 /* EPSortOrderController.m */; };
 		079B4144171E139E0036F0D4 /* NSArray+EPMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4143171E139C0036F0D4 /* NSArray+EPMap.m */; };
 		079B4147171E309B0036F0D4 /* EPCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4146171E309B0036F0D4 /* EPCommon.m */; };
+		079B4150171E9F980036F0D4 /* EPBrowserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B414F171E9F960036F0D4 /* EPBrowserCell.m */; };
 		07A75E56171684A9007D6236 /* EPArtistTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A75E55171684A9007D6236 /* EPArtistTableController.m */; };
 /* End PBXBuildFile section */
 
@@ -155,6 +156,8 @@
 		079B4143171E139C0036F0D4 /* NSArray+EPMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+EPMap.m"; sourceTree = "<group>"; };
 		079B4145171E309B0036F0D4 /* EPCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPCommon.h; sourceTree = "<group>"; };
 		079B4146171E309B0036F0D4 /* EPCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPCommon.m; sourceTree = "<group>"; };
+		079B414E171E9F940036F0D4 /* EPBrowserCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPBrowserCell.h; sourceTree = "<group>"; };
+		079B414F171E9F960036F0D4 /* EPBrowserCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPBrowserCell.m; sourceTree = "<group>"; };
 		07A75E54171684A9007D6236 /* EPArtistTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPArtistTableController.h; sourceTree = "<group>"; };
 		07A75E55171684A9007D6236 /* EPArtistTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPArtistTableController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -268,6 +271,8 @@
 		0755C33A1714BFC900AAF81F /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				079B414E171E9F940036F0D4 /* EPBrowserCell.h */,
+				079B414F171E9F960036F0D4 /* EPBrowserCell.m */,
 				079B4142171E139A0036F0D4 /* NSArray+EPMap.h */,
 				079B4143171E139C0036F0D4 /* NSArray+EPMap.m */,
 				079B4145171E309B0036F0D4 /* EPCommon.h */,
@@ -503,6 +508,7 @@
 				079B413F171D11170036F0D4 /* EPSortOrderController.m in Sources */,
 				079B4144171E139E0036F0D4 /* NSArray+EPMap.m in Sources */,
 				079B4147171E309B0036F0D4 /* EPCommon.m in Sources */,
+				079B4150171E9F980036F0D4 /* EPBrowserCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

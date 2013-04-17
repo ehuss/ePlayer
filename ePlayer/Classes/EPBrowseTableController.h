@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "EPCommon.h"
+#import "EPBrowserCell.h"
 
 extern NSUInteger minEntriesForSections;
 
