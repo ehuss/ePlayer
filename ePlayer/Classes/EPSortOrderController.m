@@ -87,9 +87,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         UITableViewCell *newCell = [tableView cellForRowAtIndexPath:indexPath];
         newCell.accessoryType = UITableViewCellAccessoryCheckmark;
         self.currentSortOrder = indexPath.row;
-        // Allow the selection to show.
-        [self performSelector:@selector(switchOut:) withObject:nil afterDelay:0.1];
     }
+    // Switch back to the previous tab.
+    // Delay to allow the selection to show.
+    [self performSelector:@selector(switchOut:) withObject:nil afterDelay:0.1];
 }
 
 - (void)switchOut:(id)unused
