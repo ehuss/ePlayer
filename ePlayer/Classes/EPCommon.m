@@ -25,6 +25,8 @@ NSString *nameForSortOrder(EPSortOrder order)
             return @"Play Date";
         case EPSortOrderReleaseDate:
             return @"Release Date";
+        case EPSortOrderManual:
+            return @"Manual";
         default:
             return @"Unknown";
     }

@@ -239,7 +239,9 @@
 
 - (void)updateSections
 {
-    if (self.folder.sortedEntries.count > minEntriesForSections) {
+    // With a small number of entries, sections are a pain.
+    if (self.folder.sortOrder.intValue!=EPSortOrderManual &&
+            self.folder.sortedEntries.count > minEntriesForSections) {
         NSMutableArray *sections = [[NSMutableArray alloc] init];
         self.sections = sections;
         self.sectionTitles = [[NSMutableArray alloc] init];
@@ -257,7 +259,6 @@
             [currentSection addObject:entry];
         }
     } else {
-        // With a small number of entries, sections are a pain.
         self.sections = @[self.folder.sortedEntries];
         self.sectionTitles = nil;
     }    

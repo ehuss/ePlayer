@@ -13,4 +13,9 @@
 
 @dynamic persistentID;
 
+- (NSNumber *)UPID
+{
+    return [NSNumber numberWithUnsignedLongLong:[self.persistentID unsignedLongLongValue]];
+}
+
 @end

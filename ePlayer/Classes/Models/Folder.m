@@ -19,6 +19,7 @@
 
 @dynamic sortOrder;
 @dynamic entries;
+
 // Note: NSManagedObject sets NS_REQUIRES_PROPERTY_DEFINTIONS, so automatic
 // property synthesis is not available.
 @synthesize sortedEntries = _sortedEntries;
@@ -26,27 +27,35 @@
 - (NSArray *)sortedEntries
 {
     if (_sortedEntries == nil || _sortedEntriesOrder != [self.sortOrder intValue]) {
-        NSString *key;
-        BOOL ascending = NO;
-        switch ([self.sortOrder intValue]) {
-            case EPSortOrderAlpha:
-                key = @"name";
-                ascending = YES;
-                break;
-            case EPSortOrderAddDate:
-                key = @"addDate";
-                break;
-            case EPSortOrderPlayDate:
-                key = @"playDate";
-                break;
-            case EPSortOrderReleaseDate:
-                key = @"releaseDate";
-                break;
+        if ([self.sortOrder intValue] == EPSortOrderManual) {
+            _sortedEntries = self.entries.array;
+        } else {
+            NSString *key;
+            BOOL ascending = NO;
+            switch ([self.sortOrder intValue]) {
+                case EPSortOrderAlpha:
+                    key = @"name";
+                    ascending = YES;
+                    break;
+                case EPSortOrderAddDate:
+                    key = @"addDate";
+                    break;
+                case EPSortOrderPlayDate:
+                    key = @"playDate";
+                    break;
+                case EPSortOrderReleaseDate:
+                    key = @"releaseDate";
+                    break;
+            }
+            
+            _sortedEntries = [self.entries sortedArrayUsingComparator:^(Entry *obj1, Entry *obj2) {
+                if (ascending) {
+                    return [[obj1 valueForKey:key] compare:[obj2 valueForKey:key]];
+                } else {
+                    return [[obj2 valueForKey:key] compare:[obj1 valueForKey:key]];
+                }
+            }];
         }
-        
-        NSSortDescriptor *sortDesc = [NSSortDescriptor sortDescriptorWithKey:key
-                                                                   ascending:ascending];
-        _sortedEntries = [self.entries sortedArrayUsingDescriptors:@[sortDesc]];
         _sortedEntriesOrder = [self.sortOrder intValue];
     }
     return _sortedEntries;
@@ -72,5 +81,16 @@
     [NSException raise:@"UnknownSortOrder" format:@"Unknown sort order %i.", [self.sortOrder intValue]];
     return nil; // Silence warning.
 }
+
+// Working around a bug in Core Data's auto-generated code.
+// This was raising an exception (set argument is not an NSSet).
+// See http://stackoverflow.com/questions/7385439/exception-thrown-in-nsorderedset-generated-accessors
+- (void)addEntriesObject:(Entry *)value
+{
+    NSMutableOrderedSet* tempSet = [NSMutableOrderedSet orderedSetWithOrderedSet:self.entries];
+    [tempSet addObject:value];
+    self.entries = tempSet;
+}
+
 
 @end

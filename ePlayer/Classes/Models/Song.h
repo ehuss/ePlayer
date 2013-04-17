@@ -14,5 +14,7 @@
 @interface Song : Entry
 
 @property (nonatomic, retain) NSNumber * persistentID;
+// Unsigned version, since core data doesn't support unsigned.
+@property (readonly, nonatomic) NSNumber *UPID;
 
 @end

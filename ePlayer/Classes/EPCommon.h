@@ -19,6 +19,7 @@ typedef enum {
     EPSortOrderAddDate,
     EPSortOrderPlayDate,
     EPSortOrderReleaseDate,
+    EPSortOrderManual,
     EPSortOrderMax
 } EPSortOrder;
 
@@ -33,3 +34,4 @@ void createGregorianCalendar(); // Called during app start.
 extern NSString *EPSettingArtistsSortOrder;  // NSNumber EPSortOrder
 extern NSString *EPSettingAllAbumsSortOrder;  // NSNumber EPSortOrder
 extern NSString *EPSettingArtistAlbumsSortOrder;  // NSNumber EPSortOrder
+

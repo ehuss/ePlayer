@@ -77,52 +77,7 @@
     self.playlistTableController = (EPPlaylistTableController *)self.playlistNavController.topViewController;
     self.playlistTableController.managedObjectContext = self.managedObjectContext;
     self.playlistTableController.managedObjectModel = self.managedObjectModel;
-    
-    
-#if 0
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.backgroundColor = [UIColor whiteColor];
-    [self.window makeKeyAndVisible];
-
-    self.playlistTableController = [[EPPlaylistTableController alloc] initWithStyle:UITableViewStylePlain];
-    self.playlistTableController.managedObjectContext = self.managedObjectContext;
-    self.playlistTableController.managedObjectModel = self.managedObjectModel;
-    self.playlistTableController.title = @"Playlists";
-    UIBarButtonItem *queueButton = [[UIBarButtonItem alloc]
-                                    initWithTitle:@"Queue"
-                                            style:UIBarButtonItemStylePlain
-                                           target:self
-                                           action:@selector(queueTapped:)];
-    self.playlistTableController.navigationItem.rightBarButtonItem = queueButton;
-    self.musicNavController = [[UINavigationController alloc] initWithRootViewController:self.playlistTableController];
-    self.musicNavController.title = @"Playlists";
-
-    EPArtistTableController *artistTableController = [[EPArtistTableController alloc]
-                                                      initWithStyle:UITableViewStylePlain];
-    artistTableController.title = @"Artists";
-    UINavigationController *artistNavController = [[UINavigationController alloc]
-                                                   initWithRootViewController:artistTableController];
-    artistNavController.title = @"Artists";
-    
-    EPAlbumTableController *albumTableController = [[EPAlbumTableController alloc]
-                                                    initWithStyle:UITableViewStylePlain];
-    [albumTableController loadAllAlbums];
-    albumTableController.title = @"Albums";
-    UINavigationController *albumNavController = [[UINavigationController alloc]
-                                                  initWithRootViewController:albumTableController];
-    
-    self.tabController = [[UITabBarController alloc] init];
-    self.tabController.viewControllers = @[self.musicNavController,
-                                           artistNavController,
-                                           albumNavController];
-    // XXX: TODO restore state
-    self.tabController.selectedIndex = 0;
-    self.window.rootViewController = self.tabController;
-    // Setting tab icons:     controller.tabBarItem.image = [UIImage imageNamed:@"foo.png"];
-    //self.tabController.view.frame = CGRectMake(0,0,430,480);
-    //frame = [UIScreen mainScreen].bounds;
-
-#endif
+        
     if ([self loadData]) {
         // Database is ready.  Populate the view.
         // XXX restore state
@@ -131,6 +86,12 @@
         // Database import happens in background.
         // Don't display anything until it is done.
     }
+
+    EPPlayerController *player = [EPPlayerController sharedPlayer];
+    player.managedObjectContext = self.managedObjectContext;
+    player.managedObjectModel = self.managedObjectModel;
+    [player loadCurrentQueue];
+
     return YES;
 }
 
@@ -169,7 +130,8 @@
 {
     // Assuming all tabs use navigation controllers.
     UINavigationController *controller = (UINavigationController *)self.tabController.selectedViewController;
-    [controller pushViewController:[EPPlayerController sharedPlayer] animated:YES];
+    EPPlayerController *player = [EPPlayerController sharedPlayer];
+    [controller pushViewController:player animated:YES];
 }
 
 /*****************************************************************************/
@@ -334,6 +296,16 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     rootFolder.addDate = [NSDate date];
     rootFolder.releaseDate = [NSDate distantPast];
     rootFolder.playDate = [NSDate distantPast];
+    
+    // Create a magic folder used by the queue.
+    Folder *queueFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
+                                                                 inManagedObjectContext:managedObjectContext];
+    queueFolder.name = @"Queue";
+    queueFolder.sortOrder = @(EPSortOrderManual);
+    // These dates are unused, but are required.
+    queueFolder.addDate = [NSDate date];
+    queueFolder.releaseDate = [NSDate distantPast];
+    queueFolder.playDate = [NSDate distantPast];
     
     // Iterate over genre's for the top-level folder.
     MPMediaQuery *genreQuery = [[MPMediaQuery alloc] init];

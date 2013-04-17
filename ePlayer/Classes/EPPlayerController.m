@@ -12,7 +12,9 @@
 static NSTimeInterval scrubberUpdateTime = 0.300;
 
 @interface EPPlayerController ()
-
+{
+    Folder *_queueFolder;
+}
 @end
 
 @implementation EPPlayerController
@@ -30,6 +32,72 @@ static NSTimeInterval scrubberUpdateTime = 0.300;
     return sharedSingleton;
 }
 
+- (Folder *)queueFolder
+{
+    if (_queueFolder == nil) {
+        NSFetchRequest *request = [self.managedObjectModel fetchRequestTemplateForName:@"QueueFolder"];
+        NSError *error;
+        NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
+        if (results==nil || results.count==0) {
+            NSLog(@"Failed to fetch queue folder: %@", error);
+            return nil;
+        }
+        _queueFolder = results[0];
+    }
+    return _queueFolder;
+}
+
+- (void)loadCurrentQueue
+{
+    BOOL loadQueue = YES;
+    if (self.player.nowPlayingItem == nil) {
+        // Load queue from disk.
+        NSLog(@"now playing is nil");
+    } else {
+        // Check if now playing is in db queue.
+        BOOL found = NO;
+        NSNumber *persistentID = [self.player.nowPlayingItem valueForProperty:MPMediaItemPropertyPersistentID];
+        NSLog(@"Check if %@ %@ is in queue.", persistentID, [self.player.nowPlayingItem valueForProperty:MPMediaItemPropertyTitle]);
+        for (Song *song in self.queueFolder.entries) {
+            NSLog(@"Check against %@ %@", song.UPID, song.name);
+            if ([song.UPID isEqualToNumber:persistentID]) {
+                found = YES;
+                break;
+            }
+        }
+        if (!found) {
+            NSLog(@"Now playing %@ is not in queue.", [self.player.nowPlayingItem valueForProperty:MPMediaItemPropertyTitle]);
+            loadQueue = NO;
+        }
+    }
+    if (loadQueue) {
+        // Assume the queue is the same.
+        if (self.queueFolder.sortedEntries.count) {
+            // Populate queueItems from the queue folder.
+            NSArray *items = [self.queueFolder.sortedEntries mapWithBlock:^id(Song * song) {
+                MPMediaQuery *query = [[MPMediaQuery alloc] init];
+                MPMediaPropertyPredicate *pred = [MPMediaPropertyPredicate
+                                                  predicateWithValue:song.persistentID
+                                                  forProperty:MPMediaItemPropertyPersistentID];
+                [query addFilterPredicate:pred];
+                NSArray *result = query.items;
+                if (result.count) {
+                    return result[0];
+                } else {
+                    NSLog(@"Failed to fetch MPMediaItem for persistent ID song %@.", song.persistentID);
+                    return nil;
+                }
+            }];
+            self.queueItems = [MPMediaItemCollection collectionWithItems:items];
+        }
+    }    
+}
+
+- (BOOL)isDisplayed
+{
+    return self.parentViewController != nil;
+}
+
 - (void)awakeFromNib
 {
     self.player = [MPMusicPlayerController iPodMusicPlayer];
@@ -40,6 +108,16 @@ static NSTimeInterval scrubberUpdateTime = 0.300;
 {
     [super viewDidLoad];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    NSLog(@"View will appear.");
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self stopTimer];
 }
 
 //- (void)viewWillAppear:(BOOL)animated
@@ -177,10 +255,9 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     if (self.player.playbackState == MPMusicPlaybackStatePlaying) {
         [self pause];
     } else {
+        // Not currently playing.
         if (self.queueItems) {
-            if (self.player.playbackState != MPMusicPlaybackStatePlaying) {
-                [self play];
-            }
+            [self play];
         }
     }
 }
@@ -254,6 +331,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)clearQueue
 {
     NSLog(@"Clearing queue and stopping.");
+    [self.player stop];
     // Ugh, initWithItems raises an exception with an empty array.
     // Fake it out.
     MPMediaQuery *q = [[MPMediaQuery alloc] init];
@@ -263,8 +341,13 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     self.queueItems = nil;
     [self.player setQueueWithQuery:q];
     self.player.nowPlayingItem = nil;
-    [self.player stop];
     [self.tableView reloadData];
+    // Clear the db copy of the queue.
+    [self.queueFolder removeEntries:self.queueFolder.entries];
+    NSError *error;
+    if (![self.managedObjectContext save:&error]) {
+        NSLog(@"Failed to save: %@", error);
+    }
 }
 
 - (void)addQueueItems:(NSArray *)items
@@ -279,6 +362,29 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     self.queueItems = [[MPMediaItemCollection alloc] initWithItems:newItems];
     [self.player setQueueWithItemCollection:self.queueItems];
     [self.tableView reloadData];
+    // Save the db copy.
+    for (MPMediaItem *item in items) {
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Song"
+                                                  inManagedObjectContext:self.managedObjectContext];
+        request.entity = entity;
+        NSNumber *itemID = [item valueForProperty:MPMediaItemPropertyPersistentID];
+        request.predicate = [NSPredicate predicateWithFormat:@"persistentID==%@", itemID];
+        NSError *error;
+        NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
+        if (results == nil || results.count==0) {
+            NSLog(@"Failed to query for entries: %@", error);
+        } else {
+            Song *song = results[0];
+            NSLog(@"adding %@", song);
+            [self.queueFolder addEntriesObject:song];
+        }
+    }
+    NSError *error;
+    if (![self.managedObjectContext save:&error]) {
+        NSLog(@"Failed to save: %@", error);
+    }
+    
 }
 
 /****************************************************************************/
@@ -321,7 +427,10 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     } else {
         self.releasedDateLabel.text = [NSString stringWithFormat:@"Released %i", [year integerValue]];
     }
-    [self startTimer];
+    // scrubbing forward/backward?
+    if (self.player.playbackState == MPMusicPlaybackStatePlaying) {
+        [self startTimer];
+    }
     [self updateScrubber];
 }
 
@@ -380,11 +489,13 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)timerFired:(NSTimer *)timer
 {
-    NSLog(@"timer fired");
-    if (self.scrubberUpdateDisabled) {
-        [self updateTimeLabels];
-    } else {
-        [self updateScrubber];
+    NSLog(@"timer fired %@", self.isDisplayed ? @"YES" : @"NO");
+    if (self.isDisplayed) {
+        if (self.scrubberUpdateDisabled) {
+            [self updateTimeLabels];
+        } else {
+            [self updateScrubber];
+        }
     }
 }
 

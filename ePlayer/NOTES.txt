@@ -5,6 +5,8 @@
 
 
 TODO:
+- folder of songs only should be sorted manually only (by track #) in playlist
+- restore state of selected tab/etc
 - artist/album/track view: don't show sections if less than 10 (like playlist)
 - show album art next to entry of a playlist that is all from one album?
 - album view: show art next to name

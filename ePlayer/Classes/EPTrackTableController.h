@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EPBrowseTableController.h"
 
-@interface EPTrackTableController : UITableViewController
+@interface EPTrackTableController : EPBrowseTableController
 
 @property (nonatomic, strong) NSArray *tracks;
 

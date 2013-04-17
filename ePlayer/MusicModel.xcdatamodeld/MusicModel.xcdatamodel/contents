@@ -10,11 +10,12 @@
     </entity>
     <entity name="Folder" representedClassName="Folder" parentEntity="Entry" syncable="YES">
         <attribute name="sortOrder" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="entries" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Entry" inverseName="parents" inverseEntity="Entry" syncable="YES"/>
+        <relationship name="entries" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Entry" inverseName="parents" inverseEntity="Entry" syncable="YES"/>
     </entity>
     <entity name="Song" representedClassName="Song" parentEntity="Entry" syncable="YES">
         <attribute name="persistentID" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
     </entity>
+    <fetchRequest name="QueueFolder" entity="Folder" predicateString="name == &quot;Queue&quot;"/>
     <fetchRequest name="RootFolder" entity="Folder" predicateString="name == &quot;Playlists&quot;"/>
     <elements>
         <element name="Entry" positionX="0" positionY="0" width="128" height="135"/>
