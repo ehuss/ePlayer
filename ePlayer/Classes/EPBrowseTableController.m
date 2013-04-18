@@ -8,7 +8,6 @@
 
 #import "EPBrowseTableController.h"
 #import "EPTableSectionView.h"
-#import "EPTableHeaderView.h"
 #import "AppDelegate.h"
 
 NSUInteger minEntriesForSections = 10;
@@ -53,30 +52,22 @@ NSUInteger minEntriesForSections = 10;
                                     action:@selector(queueTapped:)];
     self.navigationItem.rightBarButtonItem = queueButton;
 
-    NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"TableHeaderView"
-                                                      owner:self
-                                                    options:nil];
-    EPTableHeaderView *headerView = nibViews[0];
-    
     if (self.wantsSearch) {
         // Add a search ability.
-//        UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+        UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
         // This will automatically set self.searchDisplayController.
         // However, due to some kind of bug with ARC, it doesn't get retained, so
         // I'm using a second property to hold ownership.
         self.searchController = [[UISearchDisplayController alloc]
-                                 initWithSearchBar:headerView.searchBar
+                                 initWithSearchBar:searchBar
                                  contentsController:self];
         self.searchController.delegate = self;
         self.searchController.searchResultsDataSource = self;
         self.searchController.searchResultsDelegate = self;
         [self.searchController.searchResultsTableView registerNib:entryNib
                                            forCellReuseIdentifier:@"EntryCell"];
-    } else {
-        [headerView.searchBar removeFromSuperview];
-        headerView.frame = CGRectMake(0, 0, 320, 44);
+        self.tableView.tableHeaderView = searchBar;
     }
-    self.tableView.tableHeaderView = headerView;
     
     
     // Uncomment the following line to preserve selection between presentations.
@@ -91,7 +82,6 @@ NSUInteger minEntriesForSections = 10;
     [super viewWillAppear:animated];
     // Scroll down to hide the header.
     CGFloat headerHeight = self.tableView.tableHeaderView.frame.size.height;
-    NSLog(@"HEADER HEIGHT %f", headerHeight);
     if (self.tableView.contentOffset.y < headerHeight) {
         self.tableView.contentOffset = CGPointMake(0, headerHeight);
     }
