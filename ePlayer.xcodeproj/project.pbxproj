@@ -53,6 +53,7 @@
 		07677A67171A006600D1784D /* EPGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07677A66171A006600D1784D /* EPGradientView.m */; };
 		07677A69171A28F300D1784D /* missing-art@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A68171A28F300D1784D /* missing-art@2x.png */; };
 		07677A6B171A2A1500D1784D /* missing-art.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A6A171A2A1500D1784D /* missing-art.png */; };
+		0794E9E5171FD5150061F3A2 /* TableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0794E9E3171FD5150061F3A2 /* TableHeaderView.xib */; };
 		079B411C171A60340036F0D4 /* EPPlayerCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B411B171A60340036F0D4 /* EPPlayerCellView.m */; };
 		079B4121171B4F400036F0D4 /* EPBrowseTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4120171B4F400036F0D4 /* EPBrowseTableController.m */; };
 		079B4125171B961C0036F0D4 /* current-queue-item-playing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079B4122171B961B0036F0D4 /* current-queue-item-playing@2x.png */; };
@@ -68,7 +69,6 @@
 		079B4163171F5B5D0036F0D4 /* TableSectionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 079B4161171F5B5D0036F0D4 /* TableSectionView.xib */; };
 		079B4165171F5BBF0036F0D4 /* header-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079B4164171F5BBF0036F0D4 /* header-background@2x.png */; };
 		079B4168171FC3D10036F0D4 /* EPTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4167171FC3CB0036F0D4 /* EPTableHeaderView.m */; };
-		079B416B171FC4210036F0D4 /* TableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 079B4169171FC4210036F0D4 /* TableHeaderView.xib */; };
 		07A75E56171684A9007D6236 /* EPArtistTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A75E55171684A9007D6236 /* EPArtistTableController.m */; };
 /* End PBXBuildFile section */
 
@@ -145,6 +145,7 @@
 		07677A66171A006600D1784D /* EPGradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPGradientView.m; sourceTree = "<group>"; };
 		07677A68171A28F300D1784D /* missing-art@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "missing-art@2x.png"; sourceTree = "<group>"; };
 		07677A6A171A2A1500D1784D /* missing-art.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "missing-art.png"; sourceTree = "<group>"; };
+		0794E9E4171FD5150061F3A2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = TableHeaderView.xib; sourceTree = "<group>"; };
 		079B411A171A60340036F0D4 /* EPPlayerCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayerCellView.h; sourceTree = "<group>"; };
 		079B411B171A60340036F0D4 /* EPPlayerCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayerCellView.m; sourceTree = "<group>"; };
 		079B411F171B4F400036F0D4 /* EPBrowseTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPBrowseTableController.h; sourceTree = "<group>"; };
@@ -164,12 +165,11 @@
 		079B414F171E9F960036F0D4 /* EPBrowserCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPBrowserCell.m; sourceTree = "<group>"; };
 		079B4151171F55EB0036F0D4 /* EPTableSectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPTableSectionView.h; sourceTree = "<group>"; };
 		079B4152171F55ED0036F0D4 /* EPTableSectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPTableSectionView.m; sourceTree = "<group>"; };
-		079B415C171F5A070036F0D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = file; name = en; path = en.lproj/EntryCell.xib; sourceTree = "<group>"; };
+		079B415C171F5A070036F0D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EntryCell.xib; sourceTree = "<group>"; };
 		079B4162171F5B5D0036F0D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = TableSectionView.xib; sourceTree = "<group>"; };
 		079B4164171F5BBF0036F0D4 /* header-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "header-background@2x.png"; sourceTree = "<group>"; };
 		079B4166171FC3C70036F0D4 /* EPTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPTableHeaderView.h; sourceTree = "<group>"; };
 		079B4167171FC3CB0036F0D4 /* EPTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPTableHeaderView.m; sourceTree = "<group>"; };
-		079B416A171FC4210036F0D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = TableHeaderView.xib; sourceTree = "<group>"; };
 		07A75E54171684A9007D6236 /* EPArtistTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPArtistTableController.h; sourceTree = "<group>"; };
 		07A75E55171684A9007D6236 /* EPArtistTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPArtistTableController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -368,10 +368,10 @@
 		079B4139171CF2550036F0D4 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				0794E9E3171FD5150061F3A2 /* TableHeaderView.xib */,
 				079B4161171F5B5D0036F0D4 /* TableSectionView.xib */,
 				0755C3091714BE0400AAF81F /* MainStoryboard_iPhone.storyboard */,
 				079B415D171F5A070036F0D4 /* EntryCell.xib */,
-				079B4169171FC4210036F0D4 /* TableHeaderView.xib */,
 			);
 			name = UI;
 			path = en.lproj;
@@ -476,7 +476,7 @@
 				079B4127171B961C0036F0D4 /* queue-pause@2x.png in Resources */,
 				079B4163171F5B5D0036F0D4 /* TableSectionView.xib in Resources */,
 				079B4165171F5BBF0036F0D4 /* header-background@2x.png in Resources */,
-				079B416B171FC4210036F0D4 /* TableHeaderView.xib in Resources */,
+				0794E9E5171FD5150061F3A2 /* TableHeaderView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -581,6 +581,14 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
+		0794E9E3171FD5150061F3A2 /* TableHeaderView.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0794E9E4171FD5150061F3A2 /* en */,
+			);
+			name = TableHeaderView.xib;
+			sourceTree = "<group>";
+		};
 		079B415D171F5A070036F0D4 /* EntryCell.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -595,14 +603,6 @@
 				079B4162171F5B5D0036F0D4 /* en */,
 			);
 			name = TableSectionView.xib;
-			sourceTree = "<group>";
-		};
-		079B4169171FC4210036F0D4 /* TableHeaderView.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				079B416A171FC4210036F0D4 /* en */,
-			);
-			name = TableHeaderView.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

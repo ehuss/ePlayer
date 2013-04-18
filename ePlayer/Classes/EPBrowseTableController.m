@@ -57,7 +57,7 @@ NSUInteger minEntriesForSections = 10;
                                                       owner:self
                                                     options:nil];
     EPTableHeaderView *headerView = nibViews[0];
-
+    
     if (self.wantsSearch) {
         // Add a search ability.
 //        UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
@@ -91,6 +91,7 @@ NSUInteger minEntriesForSections = 10;
     [super viewWillAppear:animated];
     // Scroll down to hide the header.
     CGFloat headerHeight = self.tableView.tableHeaderView.frame.size.height;
+    NSLog(@"HEADER HEIGHT %f", headerHeight);
     if (self.tableView.contentOffset.y < headerHeight) {
         self.tableView.contentOffset = CGPointMake(0, headerHeight);
     }
