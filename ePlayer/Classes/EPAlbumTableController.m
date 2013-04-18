@@ -18,6 +18,11 @@
 
 @implementation EPAlbumTableController
 
+- (NSString *)filterPropertyName
+{
+    return @"albumTitle";
+}
+
 - (void)loadAlbums
 {
     if (self.albums == nil) {
@@ -108,17 +113,15 @@
 /*****************************************************************************/
 #pragma mark - Table view data source
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)updateCell:(EPBrowserCell *)cell
+      forIndexPath:(NSIndexPath *)indexPath
+      withSections:(NSArray *)sections
+     withDateLabel:(BOOL)useDateLabel
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EntryCell"];
-    // Configure the cell...
-    NSArray *albums = self.sections[indexPath.section];
+    NSArray *albums = sections[indexPath.section];
     EPMediaItemWrapper *album = [albums objectAtIndex:indexPath.row];
-    cell.textLabel.text = album.albumTitle;    
-    return cell;
+    cell.labelView.text = album.albumTitle;
 }
-
-
 
 /*
 // Override to support conditional editing of the table view.
@@ -163,7 +166,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSArray *albums = [self.sections objectAtIndex:indexPath.section];
+    NSArray *data;
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        data = self.filteredSections;
+    } else {
+        data = self.sections;
+    }
+    NSArray *albums = [data objectAtIndex:indexPath.section];
     EPMediaItemWrapper *album = [albums objectAtIndex:indexPath.row];
     
     EPTrackTableController *trackController = [[EPTrackTableController alloc]

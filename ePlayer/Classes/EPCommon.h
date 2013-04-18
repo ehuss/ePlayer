@@ -19,8 +19,7 @@ typedef enum {
     EPSortOrderAddDate,
     EPSortOrderPlayDate,
     EPSortOrderReleaseDate,
-    EPSortOrderManual,
-    EPSortOrderMax
+    EPSortOrderManual
 } EPSortOrder;
 
 NSString *nameForSortOrder(EPSortOrder order);

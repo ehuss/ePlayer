@@ -15,6 +15,11 @@
 
 @implementation EPTrackTableController
 
+- (BOOL)wantsSearch
+{
+    return NO;
+}
+
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
@@ -55,15 +60,13 @@
     return self.tracks.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)updateCell:(EPBrowserCell *)cell
+      forIndexPath:(NSIndexPath *)indexPath
+      withSections:(NSArray *)sections
+     withDateLabel:(BOOL)useDateLabel
 {
-    static NSString *CellIdentifier = @"TrackCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    // Configure the cell...
     MPMediaItem *song = self.tracks[indexPath.row];
-    cell.textLabel.text = [song valueForProperty:MPMediaItemPropertyTitle];
-    
-    return cell;
+    cell.labelView.text = [song valueForProperty:MPMediaItemPropertyTitle];
 }
 
 /*

@@ -60,6 +60,11 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+- (NSString *)filterPropertyName
+{
+    return @"name";
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -71,45 +76,23 @@
 /*****************************************************************************/
 #pragma mark - Table view data source
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)updateCell:(EPBrowserCell *)cell
+      forIndexPath:(NSIndexPath *)indexPath
+      withSections:(NSArray *)sections
+     withDateLabel:(BOOL)useDateLabel
 {
-    //static NSString *CellIdentifier = @"PlaylistCell";
-    EPBrowserCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EntryCell"];
-    assert (cell != nil);
-//    if (cell==nil) {
-//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-//        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//        
-//        cell.imageView.image = [UIImage imageNamed:@"play"];
-//        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
-//                                              initWithTarget:self
-//                                              action:@selector(playTapped:)];
-//        [cell.imageView addGestureRecognizer:tapGesture];
-//        cell.imageView.userInteractionEnabled = YES;
-//    }
-    if (!cell.playButton.gestureRecognizers.count) {
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
-                                              initWithTarget:self
-                                              action:@selector(playTapped:)];
-        [cell.playButton addGestureRecognizer:tapGesture];
-    }
-    Entry *entry = self.sections[indexPath.section][indexPath.row];
+    Entry *entry = sections[indexPath.section][indexPath.row];
     cell.labelView.text = entry.name;
     if ([entry.class isSubclassOfClass:[Folder class]]) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     } else {
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
-    if ((self.sortOrder==EPSortOrderAddDate ||
-         self.sortOrder==EPSortOrderPlayDate ||
-         self.sortOrder==EPSortOrderReleaseDate) && self.sections.count==1) {
+    if (useDateLabel) {
         cell.dateLabel.text = [self.folder sectionTitleForEntry:entry];
-    } else {
-        cell.dateLabel.text = nil;
-    }
-    
-    return cell;
+    }    
 }
+
 
 /*****************************************************************************/
 /* Action Methods                                                            */
@@ -212,7 +195,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    Entry *entry = self.sections[indexPath.section][indexPath.row];
+    NSArray *data;
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        data = self.filteredSections;
+    } else {
+        data = self.sections;
+    }
+    Entry *entry = data[indexPath.section][indexPath.row];
     if ([entry isKindOfClass:[Folder class]]) {
         EPPlaylistTableController *controller = [self copyMusicController];
         controller.folder = (Folder *)entry;

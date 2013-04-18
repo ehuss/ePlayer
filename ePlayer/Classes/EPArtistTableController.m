@@ -17,6 +17,11 @@
 
 @implementation EPArtistTableController
 
+- (NSString *)filterPropertyName
+{
+    return @"albumArtist";
+}
+
 - (void)loadArtists
 {
     MPMediaQuery *artists = [[MPMediaQuery alloc] init];
@@ -101,17 +106,20 @@
 /*****************************************************************************/
 #pragma mark - Table view data source
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)updateCell:(EPBrowserCell *)cell
+      forIndexPath:(NSIndexPath *)indexPath
+      withSections:(NSArray *)sections
+     withDateLabel:(BOOL)useDateLabel
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EntryCell"];
-    // Configure the cell...
-    NSArray *artists = [self.sections objectAtIndex:indexPath.section];
+    NSArray *artists = [sections objectAtIndex:indexPath.section];
     EPMediaItemWrapper *artist = [artists objectAtIndex:indexPath.row];
-    cell.textLabel.text = artist.albumArtist;
-    
-    return cell;
-}
+    cell.labelView.text = artist.albumArtist;
 
+    if (useDateLabel) {
+        cell.dateLabel.text = [artist sectionTitleForSortOrder:self.sortOrder
+                                                      alphaKey:MPMediaItemPropertyAlbumArtist];
+    }
+}
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -158,8 +166,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //[tableView deselectRowAtIndexPath:indexPath animated:YES];
-    NSArray *artists = [self.sections objectAtIndex:indexPath.section];
+    NSArray *data;
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        data = self.filteredSections;
+    } else {
+        data = self.sections;
+    }
+    NSArray *artists = [data objectAtIndex:indexPath.section];
     EPMediaItemWrapper *artist = [artists objectAtIndex:indexPath.row];
     
     EPAlbumTableController *albumController = [[EPAlbumTableController alloc]

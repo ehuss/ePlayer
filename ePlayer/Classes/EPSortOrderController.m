@@ -39,7 +39,7 @@
 {
     if (self.tableView.visibleCells.count) {
         // Being redisplayed.  Set the checkmark correctly.
-        for (int i=0; i<EPSortOrderMax; i++) {
+        for (int i=0; i<5; i++) {
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
             UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
             if (i == self.currentSortOrder) {
