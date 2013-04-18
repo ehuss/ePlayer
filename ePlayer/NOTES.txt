@@ -5,9 +5,10 @@
 
 
 TODO:
+- bringing up queue, should make sure play/pause button is in correct state.
+- press and hold play to append.
 - folder of songs only should be sorted manually only (by track #) in playlist
 - restore state of selected tab/etc
-- artist/album/track view: don't show sections if less than 10 (like playlist)
 - show album art next to entry of a playlist that is all from one album?
 - album view: show art next to name
 - MANUAL sort order for a folder.  Default on import is track order.
@@ -45,3 +46,8 @@ TODO:
   - Fix background cell color alternating while rearranging.
 - Bring back loadData.
 - Fix alpha sorting so that !Uno! sorts correctly
+
+
+FUTURE
+======
+- scrubber should pop up audio visualization.

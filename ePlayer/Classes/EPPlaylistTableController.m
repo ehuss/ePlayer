@@ -114,6 +114,7 @@
     // Guard against playing an empty folder (which would cause an exception
     // when creating the MPMediaItemCollection).
     if (newItems.count) {
+        [playerController clearQueue];
         [playerController addQueueItems:newItems];
         [playerController play];
     }

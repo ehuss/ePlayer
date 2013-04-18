@@ -82,6 +82,7 @@ NSUInteger minEntriesForSections = 10;
     [super viewWillAppear:animated];
     // Scroll down to hide the header.
     CGFloat headerHeight = self.tableView.tableHeaderView.frame.size.height;
+    NSLog(@"contentoffset=%f", self.tableView.contentOffset.y);
     if (self.tableView.contentOffset.y < headerHeight) {
         self.tableView.contentOffset = CGPointMake(0, headerHeight);
     }
@@ -89,6 +90,7 @@ NSUInteger minEntriesForSections = 10;
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    NSLog(@"view did contentoffset=%f", self.tableView.contentOffset.y);
     [super viewDidAppear:animated];
     
     // Update the sort order indicator.

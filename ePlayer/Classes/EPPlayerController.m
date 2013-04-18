@@ -90,7 +90,7 @@ static NSTimeInterval scrubberUpdateTime = 0.300;
             }];
             self.queueItems = [MPMediaItemCollection collectionWithItems:items];
         }
-    }    
+    }
 }
 
 - (BOOL)isDisplayed
@@ -113,6 +113,7 @@ static NSTimeInterval scrubberUpdateTime = 0.300;
 - (void)viewWillAppear:(BOOL)animated
 {
     NSLog(@"View will appear.");
+    [self updateNowPlayingView];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -287,12 +288,12 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             self.lastScrubberPlayTime = (int)newPlaybackTime;
             self.lastScrubberUpdate = now;
             self.player.currentPlaybackTime = duration*self.scrubber.value;
-            NSLog(@"updated to %f", self.player.currentPlaybackTime);
+//            NSLog(@"updated to %f", self.player.currentPlaybackTime);
             [self updateTimeLabels];
         }
     }
-    NSLog(@"scrubber update %f %f", self.scrubber.scrubbingSpeed,
-          self.scrubber.value);
+//    NSLog(@"scrubber update %f %f", self.scrubber.scrubbingSpeed,
+//          self.scrubber.value);
 }
 
 - (IBAction)scrubberTouchDown:(id)sender
@@ -331,7 +332,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)clearQueue
 {
     NSLog(@"Clearing queue and stopping.");
-    [self.player stop];
+    //[self.player stop];
     // Ugh, initWithItems raises an exception with an empty array.
     // Fake it out.
     MPMediaQuery *q = [[MPMediaQuery alloc] init];
@@ -417,7 +418,13 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 {
     MPMediaItem *item = self.player.nowPlayingItem;
     NSLog(@"now playing changed %@.", item);
-//    @property (weak, nonatomic) IBOutlet UIImageView *artImageView;
+    [self updateNowPlayingView];
+}
+
+- (void)updateNowPlayingView
+{
+    MPMediaItem *item = self.player.nowPlayingItem;
+    //    @property (weak, nonatomic) IBOutlet UIImageView *artImageView;
     self.artistNameLabel.text = [item valueForProperty:MPMediaItemPropertyArtist];
     self.albumNameLabel.text = [item valueForProperty:MPMediaItemPropertyAlbumTitle];
     self.trackNameLabel.text = [item valueForProperty:MPMediaItemPropertyTitle];
@@ -432,6 +439,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         [self startTimer];
     }
     [self updateScrubber];
+    
 }
 
 - (void)updateTimeLabels
@@ -469,7 +477,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)startTimer
 {
-    if (self.timer == nil) {
+    if (self.timer == nil && self.isDisplayed) {
         self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0
                                                       target:self
                                                     selector:@selector(timerFired:)
@@ -506,7 +514,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             NSLog(@"Notification: playback stopped");
             [self.playButton setImage:[UIImage imageNamed:@"queue-play"] forState:UIControlStateNormal];
             // Ensure the music player will play the queue from the start.
-            [self.player stop];
+//            [self.player stop];
             [self stopTimer];
             break;
         case MPMusicPlaybackStatePlaying:
