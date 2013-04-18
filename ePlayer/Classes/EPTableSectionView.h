@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface EPTableHeaderView : UIView
-@property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *segControl;
+@interface EPTableSectionView : UIView
+@property (weak, nonatomic) IBOutlet UILabel *sortDescriptionLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sectionLabel;
 
 @end

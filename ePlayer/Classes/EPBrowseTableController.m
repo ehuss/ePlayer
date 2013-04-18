@@ -7,6 +7,7 @@
 //
 
 #import "EPBrowseTableController.h"
+#import "EPTableSectionView.h"
 #import "EPTableHeaderView.h"
 #import "AppDelegate.h"
 
@@ -51,22 +52,31 @@ NSUInteger minEntriesForSections = 10;
                                     target:appD
                                     action:@selector(queueTapped:)];
     self.navigationItem.rightBarButtonItem = queueButton;
+
+    NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"TableHeaderView"
+                                                      owner:self
+                                                    options:nil];
+    EPTableHeaderView *headerView = nibViews[0];
+
     if (self.wantsSearch) {
         // Add a search ability.
-        UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+//        UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
         // This will automatically set self.searchDisplayController.
         // However, due to some kind of bug with ARC, it doesn't get retained, so
         // I'm using a second property to hold ownership.
         self.searchController = [[UISearchDisplayController alloc]
-                                 initWithSearchBar:searchBar
+                                 initWithSearchBar:headerView.searchBar
                                  contentsController:self];
         self.searchController.delegate = self;
         self.searchController.searchResultsDataSource = self;
         self.searchController.searchResultsDelegate = self;
         [self.searchController.searchResultsTableView registerNib:entryNib
                                            forCellReuseIdentifier:@"EntryCell"];
-        self.tableView.tableHeaderView = searchBar;
+    } else {
+        [headerView.searchBar removeFromSuperview];
+        headerView.frame = CGRectMake(0, 0, 320, 44);
     }
+    self.tableView.tableHeaderView = headerView;
     
     
     // Uncomment the following line to preserve selection between presentations.
@@ -79,12 +89,10 @@ NSUInteger minEntriesForSections = 10;
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (self.wantsSearch) {
-        // Hide the search bar.
-        CGFloat searchBarHeight = self.searchDisplayController.searchBar.frame.size.height;
-        if (self.tableView.contentOffset.y < searchBarHeight) {
-            self.tableView.contentOffset = CGPointMake(0, searchBarHeight);
-        }
+    // Scroll down to hide the header.
+    CGFloat headerHeight = self.tableView.tableHeaderView.frame.size.height;
+    if (self.tableView.contentOffset.y < headerHeight) {
+        self.tableView.contentOffset = CGPointMake(0, headerHeight);
     }
 }
 
@@ -258,10 +266,10 @@ sectionForSectionIndexTitle:(NSString *)title
     } else {
         data = self.sectionTitles;
     }
-    NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"TableHeaderView"
+    NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"TableSectionView"
                                                       owner:self
                                                     options:nil];
-    EPTableHeaderView *view = nibViews[0];
+    EPTableSectionView *view = nibViews[0];
     view.sectionLabel.text = data[section];
     if (section == 0) {
         NSString *text;
