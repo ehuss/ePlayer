@@ -10,20 +10,32 @@
 
 @implementation EPBrowserCell
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+//- (void)setSelected:(BOOL)selected animated:(BOOL)animated
+//{
+//    [super setSelected:selected animated:animated];
+//
+//    // Configure the view for the selected state
+//}
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        // Initialization code
+    [super setEditing:editing animated:animated];
+    NSTimeInterval duration = animated ? 0.2 : 0;
+    if (editing) {
+        [UIView animateWithDuration:duration animations:^{
+            self.playButton.hidden = YES;
+            self.labelView.center = CGPointMake(self.labelView.center.x-self.playButton.frame.size.width,
+                                                self.labelView.center.y);
+        }];
+    } else {
+        if (self.playButton.hidden) {
+            [UIView animateWithDuration:duration animations:^{
+                self.playButton.hidden = NO;
+                self.labelView.center = CGPointMake(self.labelView.center.x+self.playButton.frame.size.width,
+                                                    self.labelView.center.y);
+            }];
+        }
     }
-    return self;
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
 }
 
 @end

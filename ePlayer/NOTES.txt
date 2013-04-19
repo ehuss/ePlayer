@@ -5,7 +5,8 @@
 
 
 TODO:
-- bringing up queue, should make sure play/pause button is in correct state.
+- switch to black status bar
+- resize entrycell title width to attach to accessory view (disclosure obscures if section indexes).
 - press and hold play to append.
 - folder of songs only should be sorted manually only (by track #) in playlist
 - restore state of selected tab/etc

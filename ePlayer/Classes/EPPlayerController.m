@@ -9,7 +9,7 @@
 #import "EPPlayerController.h"
 #import "EPPlayerCellView.h"
 
-static NSTimeInterval scrubberUpdateTime = 0.300;
+//static NSTimeInterval scrubberUpdateTime = 0.300;
 
 @interface EPPlayerController ()
 {
@@ -18,19 +18,6 @@ static NSTimeInterval scrubberUpdateTime = 0.300;
 @end
 
 @implementation EPPlayerController
-
-+ (EPPlayerController *)sharedPlayer
-{
-    static EPPlayerController *sharedSingleton;
-    
-    if (!sharedSingleton) {
-        // A bit messy, but avoids creating another storyboard object.
-        UIStoryboard *storyboard = [UIApplication sharedApplication].delegate.window.rootViewController.storyboard;
-        sharedSingleton = [storyboard instantiateViewControllerWithIdentifier:@"PlayerScene"];
-    }
-    
-    return sharedSingleton;
-}
 
 - (Folder *)queueFolder
 {
@@ -112,6 +99,7 @@ static NSTimeInterval scrubberUpdateTime = 0.300;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     NSLog(@"View will appear.");
     [self updateNowPlayingView];
 }
@@ -278,7 +266,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     // XXX: Track change while holding scrubber?  Stop/pause/interrupt?
     NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
     // Don't update too frequently.
-    if ((now-self.lastScrubberUpdate) > scrubberUpdateTime) {
+//    if ((now-self.lastScrubberUpdate) > scrubberUpdateTime) {
         MPMediaItem *item = self.player.nowPlayingItem;
         // Compute the playback time for this thumb position.
         NSTimeInterval duration = (int)[[item valueForProperty:MPMediaItemPropertyPlaybackDuration] doubleValue];
@@ -288,10 +276,10 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             self.lastScrubberPlayTime = (int)newPlaybackTime;
             self.lastScrubberUpdate = now;
             self.player.currentPlaybackTime = duration*self.scrubber.value;
-//            NSLog(@"updated to %f", self.player.currentPlaybackTime);
+            NSLog(@"updated to %f", self.player.currentPlaybackTime);
             [self updateTimeLabels];
         }
-    }
+  //  }
 //    NSLog(@"scrubber update %f %f", self.scrubber.scrubbingSpeed,
 //          self.scrubber.value);
 }
@@ -434,11 +422,12 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     } else {
         self.releasedDateLabel.text = [NSString stringWithFormat:@"Released %i", [year integerValue]];
     }
-    // scrubbing forward/backward?
+    // dow we need to scrubbing forward/backward?
     if (self.player.playbackState == MPMusicPlaybackStatePlaying) {
         [self startTimer];
     }
     [self updateScrubber];
+    [self updatePlaybackState];
     
 }
 
@@ -509,23 +498,33 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)playbackStateChanged:(id)notification
 {
+    [self updatePlaybackState];
+}
+
+- (void)updatePlaybackState
+{
     switch (self.player.playbackState) {
         case MPMusicPlaybackStateStopped:
             NSLog(@"Notification: playback stopped");
-            [self.playButton setImage:[UIImage imageNamed:@"queue-play"] forState:UIControlStateNormal];
-            // Ensure the music player will play the queue from the start.
-//            [self.player stop];
-            [self stopTimer];
+            // May get events before being displayed the first time.
+            if (self.playButton) {
+                [self.playButton setImage:[UIImage imageNamed:@"queue-play"] forState:UIControlStateNormal];
+                [self stopTimer];
+            }
             break;
         case MPMusicPlaybackStatePlaying:
             NSLog(@"Notification: playback playing");
-            [self.playButton setImage:[UIImage imageNamed:@"queue-pause"] forState:UIControlStateNormal];
-            [self startTimer];
+            if (self.playButton) {
+                [self.playButton setImage:[UIImage imageNamed:@"queue-pause"] forState:UIControlStateNormal];
+                [self startTimer];
+            }
             break;
         case MPMusicPlaybackStatePaused:
             NSLog(@"Notification: playback paused");
-            [self.playButton setImage:[UIImage imageNamed:@"queue-play"] forState:UIControlStateNormal];
-            [self stopTimer];
+            if (self.playButton) {
+                [self.playButton setImage:[UIImage imageNamed:@"queue-play"] forState:UIControlStateNormal];
+                [self stopTimer];
+            }
             break;
         case MPMusicPlaybackStateInterrupted:
             NSLog(@"Notification: playback interrupted");
@@ -539,7 +538,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             NSLog(@"Notification: playback seek backward");
             [self updateScrubber];
             break;
-    }
+    }    
 }
 
 - (void)volumeChanged:(id)notification

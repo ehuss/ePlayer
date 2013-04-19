@@ -9,6 +9,7 @@
 #import "EPBrowseTableController.h"
 #import "EPTableSectionView.h"
 #import "AppDelegate.h"
+#import "EPSegmentedControl.h"
 
 NSUInteger minEntriesForSections = 10;
 
@@ -37,21 +38,18 @@ NSUInteger minEntriesForSections = 10;
     [super viewDidLoad];
     // This seems to be bugged in Interface Builder.
     self.tableView.sectionIndexMinimumDisplayRowCount = 10;
+    // Need this for a complex issue.  When bringing up the queue, the bottom
+    // tab bar is hidden.  When returning to this table, it gets resized as
+    // the tab bar is brought back.  This causes the contentOffset to get reset
+    // if the table does not fill the entire screen.  That causes the search
+    // header to pop back (if it was hidden).  There might be some way
+    // to set this in Interface Builder, but I couldn't find it.
+    self.tableView.autoresizingMask = 0;
     // Register the class for creating cells.
     UINib *entryNib = [UINib nibWithNibName:@"EntryCell" bundle:nil];
     [self.tableView registerNib:entryNib
          forCellReuseIdentifier:@"EntryCell"];
     
-    // Create a queue button.
-    AppDelegate *appD = (AppDelegate *)[UIApplication sharedApplication].delegate;
-
-    UIBarButtonItem *queueButton = [[UIBarButtonItem alloc]
-                                    initWithTitle:@"Queue"
-                                    style:UIBarButtonItemStylePlain
-                                    target:appD
-                                    action:@selector(queueTapped:)];
-    self.navigationItem.rightBarButtonItem = queueButton;
-
     if (self.wantsSearch) {
         // Add a search ability.
         UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
@@ -67,8 +65,11 @@ NSUInteger minEntriesForSections = 10;
         [self.searchController.searchResultsTableView registerNib:entryNib
                                            forCellReuseIdentifier:@"EntryCell"];
         self.tableView.tableHeaderView = searchBar;
+
+        // Scroll down to hide the header.
+        CGFloat headerHeight = searchBar.frame.size.height;
+        self.tableView.contentOffset = CGPointMake(0, headerHeight);
     }
-    
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -80,22 +81,11 @@ NSUInteger minEntriesForSections = 10;
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    // Scroll down to hide the header.
-    CGFloat headerHeight = self.tableView.tableHeaderView.frame.size.height;
-    NSLog(@"contentoffset=%f", self.tableView.contentOffset.y);
-    if (self.tableView.contentOffset.y < headerHeight) {
-        self.tableView.contentOffset = CGPointMake(0, headerHeight);
-    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    NSLog(@"view did contentoffset=%f", self.tableView.contentOffset.y);
     [super viewDidAppear:animated];
-    
-    // Update the sort order indicator.
-    UIViewController *vc = self.tabBarController.viewControllers[3];
-    vc.tabBarItem.title = nameForSortOrder(self.sortOrder);
 }
 //
 //- (void)didReceiveMemoryWarning
@@ -110,6 +100,34 @@ NSUInteger minEntriesForSections = 10;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (self.editing) {
+        if (indexPath.section==0 && indexPath.row==0) {
+            // Sort order cell.
+//            NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"SortCell"
+//                                                              owner:self
+//                                                            options:nil];
+//            UITableViewCell *cell = nibViews[0];
+            UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                           reuseIdentifier:@"SortCell"];
+            NSArray *items = @[@"Alpha", @"Add\nDate", @"Play\nDate", @"Release\nDate", @"Manual"];
+            EPSegmentedControl *seg = [[EPSegmentedControl alloc] initWithItems:items
+                                                                          frame:cell.frame];
+            seg.selectedSegmentIndex = self.sortOrder;
+            [seg addTarget:self action:@selector(touchSortOrder:) forControlEvents:UIControlEventValueChanged];
+            [cell addSubview:seg];
+//            UISegmentedControl *seg = (UISegmentedControl *)[cell viewWithTag:1];
+//            NSDictionary *attrs = @{UITextAttributeFont: [UIFont systemFontOfSize:10]};
+//            [seg setTitleTextAttributes:attrs forState:UIControlStateNormal];
+            return cell;
+        } else if (indexPath.section==0 && indexPath.row==1) {
+            // Special "insert" cell.
+            NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"InsertCell"
+                                                              owner:self
+                                                            options:nil];
+            UITableViewCell *cell = nibViews[0];
+            return cell;
+        }
+    }
     EPBrowserCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EntryCell"];
     assert (cell != nil);
     if (!cell.playButton.gestureRecognizers.count) {
@@ -130,9 +148,29 @@ NSUInteger minEntriesForSections = 10;
     } else {
         data = self.sections;
     }
+    if (self.editing) {
+        // Adjust for the 2 editing cells.
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row-2 inSection:indexPath.section];
+    }
     [self updateCell:cell forIndexPath:indexPath withSections:data withDateLabel:useDateLabel];
     return cell;
 }
+
+- (void)touchSortOrder:(EPSegmentedControl *)sender
+{
+    [self setEditing:NO animated:YES];
+    self.sortOrder = sender.selectedSegmentIndex;
+}
+
+//- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    if (self.hasInsertCell && indexPath.section==0 && indexPath.row==0) {
+//        return 30;
+//    } else {
+//        return 44;
+//    }
+//    
+//}
 
 - (void)updateCell:(EPBrowserCell *)cell
       forIndexPath:(NSIndexPath *)indexPath
@@ -168,51 +206,19 @@ NSUInteger minEntriesForSections = 10;
     } else {
         data = self.sections;
     }
-    if (data != nil) {
-        return [[data objectAtIndex:section] count];
+    NSInteger count;
+    if (data != nil && data.count) {
+        count = [[data objectAtIndex:section] count];
     } else {
-        return 0;
+        count = 0;
     }
+    if (self.hasInsertCell && section==0) {
+        return count+2;
+    } else {
+        return count;
+    }
+    
 }
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 /*****************************************************************************/
 /* Section Methods                                                           */
@@ -307,6 +313,11 @@ sectionForSectionIndexTitle:(NSString *)title
 - (EPSortOrder)sortOrder
 {
     return EPSortOrderAlpha;
+}
+
+- (EPPlayerController *)playerController
+{
+    return self.tabBarController.viewControllers[3];
 }
 
 /*****************************************************************************/

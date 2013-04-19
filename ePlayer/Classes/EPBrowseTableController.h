@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "EPCommon.h"
 #import "EPBrowserCell.h"
+#import "EPPlayerController.h"
 
 extern NSUInteger minEntriesForSections;
 
@@ -24,6 +25,8 @@ extern NSUInteger minEntriesForSections;
 @property (nonatomic, strong) NSArray *sections;
 // sectionTitles is nil if there are no sections.
 @property (nonatomic, strong) NSMutableArray *sectionTitles;
+@property (nonatomic, readonly) EPPlayerController *playerController;
+@property (nonatomic, assign) BOOL hasInsertCell;
 
 // Searching.
 @property (nonatomic, strong) UISearchDisplayController *searchController;

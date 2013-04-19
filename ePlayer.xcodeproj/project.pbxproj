@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0718E62E1720CCA100301D0E /* InsertCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0718E62C1720CCA100301D0E /* InsertCell.xib */; };
+		0718E6341720E11C00301D0E /* EPSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 0718E6331720E11C00301D0E /* EPSegmentedControl.m */; };
+		0718E63D1721068A00301D0E /* segmented-divider-normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E6351721068A00301D0E /* segmented-divider-normal@2x.png */; };
+		0718E63E1721068A00301D0E /* segmented-divider-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E6361721068A00301D0E /* segmented-divider-selected@2x.png */; };
+		0718E63F1721068A00301D0E /* segmented-left-normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E6371721068A00301D0E /* segmented-left-normal@2x.png */; };
+		0718E6401721068A00301D0E /* segmented-left-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E6381721068A00301D0E /* segmented-left-selected@2x.png */; };
+		0718E6411721068A00301D0E /* segmented-middle-normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E6391721068A00301D0E /* segmented-middle-normal@2x.png */; };
+		0718E6421721068A00301D0E /* segmented-middle-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E63A1721068A00301D0E /* segmented-middle-selected@2x.png */; };
+		0718E6431721068A00301D0E /* segmented-right-normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E63B1721068A00301D0E /* segmented-right-normal@2x.png */; };
+		0718E6441721068A00301D0E /* segmented-right-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E63C1721068A00301D0E /* segmented-right-selected@2x.png */; };
 		0755C2F21714BE0300AAF81F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F11714BE0300AAF81F /* UIKit.framework */; };
 		0755C2F41714BE0300AAF81F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F31714BE0300AAF81F /* Foundation.framework */; };
 		0755C2F61714BE0300AAF81F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F51714BE0300AAF81F /* CoreGraphics.framework */; };
@@ -81,6 +91,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0718E62D1720CCA100301D0E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = InsertCell.xib; sourceTree = "<group>"; };
+		0718E6321720E11C00301D0E /* EPSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPSegmentedControl.h; sourceTree = "<group>"; };
+		0718E6331720E11C00301D0E /* EPSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPSegmentedControl.m; sourceTree = "<group>"; };
+		0718E6351721068A00301D0E /* segmented-divider-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-divider-normal@2x.png"; sourceTree = "<group>"; };
+		0718E6361721068A00301D0E /* segmented-divider-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-divider-selected@2x.png"; sourceTree = "<group>"; };
+		0718E6371721068A00301D0E /* segmented-left-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-left-normal@2x.png"; sourceTree = "<group>"; };
+		0718E6381721068A00301D0E /* segmented-left-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-left-selected@2x.png"; sourceTree = "<group>"; };
+		0718E6391721068A00301D0E /* segmented-middle-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-middle-normal@2x.png"; sourceTree = "<group>"; };
+		0718E63A1721068A00301D0E /* segmented-middle-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-middle-selected@2x.png"; sourceTree = "<group>"; };
+		0718E63B1721068A00301D0E /* segmented-right-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-right-normal@2x.png"; sourceTree = "<group>"; };
+		0718E63C1721068A00301D0E /* segmented-right-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-right-selected@2x.png"; sourceTree = "<group>"; };
 		0755C2EE1714BE0300AAF81F /* ePlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ePlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0755C2F11714BE0300AAF81F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0755C2F31714BE0300AAF81F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -313,6 +334,8 @@
 				079B411B171A60340036F0D4 /* EPPlayerCellView.m */,
 				07677A65171A006500D1784D /* EPGradientView.h */,
 				07677A66171A006600D1784D /* EPGradientView.m */,
+				0718E6321720E11C00301D0E /* EPSegmentedControl.h */,
+				0718E6331720E11C00301D0E /* EPSegmentedControl.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -333,6 +356,14 @@
 		07677A3F171924F200D1784D /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				0718E6351721068A00301D0E /* segmented-divider-normal@2x.png */,
+				0718E6361721068A00301D0E /* segmented-divider-selected@2x.png */,
+				0718E6371721068A00301D0E /* segmented-left-normal@2x.png */,
+				0718E6381721068A00301D0E /* segmented-left-selected@2x.png */,
+				0718E6391721068A00301D0E /* segmented-middle-normal@2x.png */,
+				0718E63A1721068A00301D0E /* segmented-middle-selected@2x.png */,
+				0718E63B1721068A00301D0E /* segmented-right-normal@2x.png */,
+				0718E63C1721068A00301D0E /* segmented-right-selected@2x.png */,
 				079B4164171F5BBF0036F0D4 /* header-background@2x.png */,
 				079B4122171B961B0036F0D4 /* current-queue-item-playing@2x.png */,
 				079B4123171B961B0036F0D4 /* current-queue-item-stopped@2x.png */,
@@ -364,6 +395,7 @@
 				079B4161171F5B5D0036F0D4 /* TableSectionView.xib */,
 				0755C3091714BE0400AAF81F /* MainStoryboard_iPhone.storyboard */,
 				079B415D171F5A070036F0D4 /* EntryCell.xib */,
+				0718E62C1720CCA100301D0E /* InsertCell.xib */,
 			);
 			name = UI;
 			path = en.lproj;
@@ -468,6 +500,15 @@
 				079B4127171B961C0036F0D4 /* queue-pause@2x.png in Resources */,
 				079B4163171F5B5D0036F0D4 /* TableSectionView.xib in Resources */,
 				079B4165171F5BBF0036F0D4 /* header-background@2x.png in Resources */,
+				0718E62E1720CCA100301D0E /* InsertCell.xib in Resources */,
+				0718E63D1721068A00301D0E /* segmented-divider-normal@2x.png in Resources */,
+				0718E63E1721068A00301D0E /* segmented-divider-selected@2x.png in Resources */,
+				0718E63F1721068A00301D0E /* segmented-left-normal@2x.png in Resources */,
+				0718E6401721068A00301D0E /* segmented-left-selected@2x.png in Resources */,
+				0718E6411721068A00301D0E /* segmented-middle-normal@2x.png in Resources */,
+				0718E6421721068A00301D0E /* segmented-middle-selected@2x.png in Resources */,
+				0718E6431721068A00301D0E /* segmented-right-normal@2x.png in Resources */,
+				0718E6441721068A00301D0E /* segmented-right-selected@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -524,6 +565,7 @@
 				079B4147171E309B0036F0D4 /* EPCommon.m in Sources */,
 				079B4150171E9F980036F0D4 /* EPBrowserCell.m in Sources */,
 				079B4153171F55F00036F0D4 /* EPTableSectionView.m in Sources */,
+				0718E6341720E11C00301D0E /* EPSegmentedControl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -546,6 +588,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		0718E62C1720CCA100301D0E /* InsertCell.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0718E62D1720CCA100301D0E /* en */,
+			);
+			name = InsertCell.xib;
+			sourceTree = "<group>";
+		};
 		0755C2FA1714BE0400AAF81F /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (

@@ -52,6 +52,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -76,6 +78,7 @@
 /*****************************************************************************/
 #pragma mark - Table view data source
 
+// Populates the labels for a cell with the values for an entry.
 - (void)updateCell:(EPBrowserCell *)cell
       forIndexPath:(NSIndexPath *)indexPath
       withSections:(NSArray *)sections
@@ -105,7 +108,6 @@
     NSIndexPath *tappedIndexPath = [self.tableView indexPathForCell:cell];
     Entry *entry = self.folder.sortedEntries[tappedIndexPath.row];
     // Stop whatever is playing.
-    EPPlayerController *playerController = [EPPlayerController sharedPlayer];
     //[playerController clearQueue];
     // Add all of these items to the queue.
     NSMutableArray *newItems = [NSMutableArray arrayWithCapacity:100];
@@ -114,11 +116,11 @@
     // Guard against playing an empty folder (which would cause an exception
     // when creating the MPMediaItemCollection).
     if (newItems.count) {
-        [playerController clearQueue];
-        [playerController addQueueItems:newItems];
-        [playerController play];
+        [self.playerController clearQueue];
+        [self.playerController addQueueItems:newItems];
+        [self.playerController play];
     }
-    [self.navigationController pushViewController:playerController animated:YES];
+    [self.navigationController pushViewController:self.playerController animated:YES];
 }
 
 - (void)addEntry:(Entry *)entry toArray:(NSMutableArray *)array
@@ -148,45 +150,6 @@
         NSLog(@"Failed to fetch MPMediaItem for persistent ID song %@.", song.persistentID);
     }
 }
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 /*****************************************************************************/
 /* Table Delegate                                                            */
@@ -259,6 +222,117 @@
         self.sections = @[self.folder.sortedEntries];
         self.sectionTitles = nil;
     }    
+}
+
+/*****************************************************************************/
+/* Editting Support                                                          */
+/*****************************************************************************/
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    [super setEditing:editing animated:animated];
+    // Add a row at the top to add a new folder.
+    NSArray *indexPaths = @[[NSIndexPath indexPathForRow:0 inSection:0],
+                            [NSIndexPath indexPathForRow:1 inSection:0]
+                            ];
+
+    if (editing) {
+        self.hasInsertCell = YES;
+        [self.tableView insertRowsAtIndexPaths:indexPaths
+                              withRowAnimation:UITableViewRowAnimationAutomatic];
+    } else {
+        self.hasInsertCell = NO;
+        [self.tableView deleteRowsAtIndexPaths:indexPaths
+                              withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+- (void)deleteRow:(NSIndexPath *)indexPath
+{
+    
+}
+- (void)addRow:(NSIndexPath *)indexPath text:(NSString *)text
+{
+    
+}
+- (void)tableView:(UITableView *)tableView
+    commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+    forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    switch(editingStyle) {
+        case UITableViewCellEditingStyleDelete: {
+            // XXX
+            break;
+        }
+            
+        case UITableViewCellEditingStyleInsert: {
+            // User clicked the green plus sign on the "add row".
+            // Force the keyboard to show.
+            UITableViewCell *sourceCell = [tableView cellForRowAtIndexPath:indexPath];
+            UIView *textField = [sourceCell viewWithTag:1];
+            [textField becomeFirstResponder];
+        }
+            
+            break;
+        case UITableViewCellEditingStyleNone:
+            break;
+    }
+//    if (editingStyle == UITableViewCellEditingStyleDelete) {
+//        // Delete the row from the data source
+//        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//    }
+//    else if (editingStyle == UITableViewCellEditingStyleInsert) {
+//        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+//    }
+    
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.sortOrder == EPSortOrderManual) {
+        if (indexPath.section == 0 && (indexPath.row == 0 ||
+                                       indexPath.row == 1)) {
+            return NO;
+        } else {
+            return YES;
+        }
+    } else {
+        return NO;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+{
+    
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
+           editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.hasInsertCell && indexPath.section==0 && indexPath.row==0) {
+        // Sort order cell.
+        return UITableViewCellEditingStyleNone;
+    } else if (self.hasInsertCell && indexPath.section==0 && indexPath.row==1) {
+        // Insert new folder cell.
+        return UITableViewCellEditingStyleInsert;
+    } else {
+        // Existing cell.
+        return UITableViewCellEditingStyleDelete;
+    }
+}
+- (NSIndexPath *)tableView:(UITableView *)tableView
+    targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
+           toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
+{
+    if (proposedDestinationIndexPath.section==0 && (proposedDestinationIndexPath.row==0 ||
+                                                    proposedDestinationIndexPath.row==1)) {
+        return [NSIndexPath indexPathForRow:2 inSection:0];
+    } else {
+        return proposedDestinationIndexPath;
+    }
 }
 
 @end

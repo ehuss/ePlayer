@@ -13,7 +13,6 @@
 
 @interface EPPlayerController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
-+ (EPPlayerController *)sharedPlayer;
 - (void)loadCurrentQueue;
 
 - (void)play;

@@ -87,10 +87,10 @@
         // Don't display anything until it is done.
     }
 
-    EPPlayerController *player = [EPPlayerController sharedPlayer];
-    player.managedObjectContext = self.managedObjectContext;
-    player.managedObjectModel = self.managedObjectModel;
-    [player loadCurrentQueue];
+    self.playerController = self.tabController.viewControllers[3];
+    self.playerController.managedObjectContext = self.managedObjectContext;
+    self.playerController.managedObjectModel = self.managedObjectModel;
+    [self.playerController loadCurrentQueue];
 
     return YES;
 }
@@ -126,13 +126,6 @@
 /* Misc                                                                      */
 /*****************************************************************************/
 
-- (void)queueTapped:(id)sender
-{
-    // Assuming all tabs use navigation controllers.
-    UINavigationController *controller = (UINavigationController *)self.tabController.selectedViewController;
-    EPPlayerController *player = [EPPlayerController sharedPlayer];
-    [controller pushViewController:player animated:YES];
-}
 
 /*****************************************************************************/
 /* Core Data Stack                                                           */
