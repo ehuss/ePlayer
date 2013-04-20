@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EPBrowseTableController.h"
+#import "EPLibTableController.h"
 
-@interface EPAlbumTableController : EPBrowseTableController
+@interface EPAlbumTableController : EPLibTableController
 
 // Sections contain EPMediaItemWrappers.
 // Array of MPMediaItemCollections.

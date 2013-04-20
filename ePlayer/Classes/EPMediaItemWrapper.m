@@ -135,7 +135,11 @@ NSDate *dateFromYear(int year)
             break;
             
         case EPSortOrderPlayDate:
-            return yearFromDate(self.lastPlayedDate);
+            if (self.lastPlayedDate == nil) {
+                return @"Never";
+            } else {
+                return yearFromDate(self.lastPlayedDate);
+            }
 
         case EPSortOrderReleaseDate:
             return [NSString stringWithFormat:@"%i", self.releaseYear];

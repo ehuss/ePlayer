@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EPBrowseTableController.h"
+#import "EPLibTableController.h"
 
-@interface EPArtistTableController : EPBrowseTableController
+@interface EPArtistTableController : EPLibTableController
 
 // Array of MPMediaItemCollection.
 @property (nonatomic, strong) NSArray *artists;

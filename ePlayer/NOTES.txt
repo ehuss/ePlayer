@@ -3,6 +3,23 @@
 - scrubber is a little sloppy.
   - Letting go, it jumps around sometimes.
 
+============
+Left Off
+============
+Adding sort order for other controllers.
+    Finish checking hasSortCell, returning correct values.
+    On click "Sort Order":
+        hasSortCell=YES
+        "insert"
+        scroll to the sort order cell.
+        Change button text to "Done".
+            Clicking with switch it back to "Sort Order".
+            hasSortCell=NO
+            "remove" sort cell
+    touchSortOrder should also:
+        set hasSortCell=NO and
+         fix the "Sort Order" button.
+         remove sort cell
 
 TODO:
 - switch to black status bar

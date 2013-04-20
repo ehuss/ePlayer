@@ -48,6 +48,15 @@
     return [self.folder.sortOrder intValue];
 }
 
+- (NSArray *)supportedSortOrders
+{
+    return @[@(EPSortOrderAlpha),
+             @(EPSortOrderAddDate),
+             @(EPSortOrderPlayDate),
+             @(EPSortOrderReleaseDate),
+             @(EPSortOrderManual)];
+}
+
 
 - (void)viewDidLoad
 {
@@ -119,8 +128,8 @@
         [self.playerController clearQueue];
         [self.playerController addQueueItems:newItems];
         [self.playerController play];
+        [self.navigationController pushViewController:self.playerController animated:YES];
     }
-    [self.navigationController pushViewController:self.playerController animated:YES];
 }
 
 - (void)addEntry:(Entry *)entry toArray:(NSMutableArray *)array
@@ -230,19 +239,23 @@
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
     [super setEditing:editing animated:animated];
-    // Add a row at the top to add a new folder.
+    // Add rows at the top to add a new folder and set sort order.
     NSArray *indexPaths = @[[NSIndexPath indexPathForRow:0 inSection:0],
                             [NSIndexPath indexPathForRow:1 inSection:0]
                             ];
 
     if (editing) {
         self.hasInsertCell = YES;
+        self.hasSortCell = YES;
         [self.tableView insertRowsAtIndexPaths:indexPaths
                               withRowAnimation:UITableViewRowAnimationAutomatic];
     } else {
-        self.hasInsertCell = NO;
-        [self.tableView deleteRowsAtIndexPaths:indexPaths
-                              withRowAnimation:UITableViewRowAnimationAutomatic];
+        if (self.hasInsertCell) {
+            self.hasInsertCell = NO;
+            self.hasSortCell = NO;
+            [self.tableView deleteRowsAtIndexPaths:indexPaths
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
     }
 }
 - (void)deleteRow:(NSIndexPath *)indexPath

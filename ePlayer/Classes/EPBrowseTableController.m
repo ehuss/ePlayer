@@ -9,7 +9,6 @@
 #import "EPBrowseTableController.h"
 #import "EPTableSectionView.h"
 #import "AppDelegate.h"
-#import "EPSegmentedControl.h"
 
 NSUInteger minEntriesForSections = 10;
 
@@ -18,15 +17,6 @@ NSUInteger minEntriesForSections = 10;
 @end
 
 @implementation EPBrowseTableController
-
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 - (BOOL)wantsSearch
 {
@@ -100,26 +90,53 @@ NSUInteger minEntriesForSections = 10;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.editing) {
-        if (indexPath.section==0 && indexPath.row==0) {
-            // Sort order cell.
-//            NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"SortCell"
-//                                                              owner:self
-//                                                            options:nil];
-//            UITableViewCell *cell = nibViews[0];
-            UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                           reuseIdentifier:@"SortCell"];
-            NSArray *items = @[@"Alpha", @"Add\nDate", @"Play\nDate", @"Release\nDate", @"Manual"];
-            EPSegmentedControl *seg = [[EPSegmentedControl alloc] initWithItems:items
-                                                                          frame:cell.frame];
-            seg.selectedSegmentIndex = self.sortOrder;
-            [seg addTarget:self action:@selector(touchSortOrder:) forControlEvents:UIControlEventValueChanged];
-            [cell addSubview:seg];
-//            UISegmentedControl *seg = (UISegmentedControl *)[cell viewWithTag:1];
-//            NSDictionary *attrs = @{UITextAttributeFont: [UIFont systemFontOfSize:10]};
-//            [seg setTitleTextAttributes:attrs forState:UIControlStateNormal];
-            return cell;
-        } else if (indexPath.section==0 && indexPath.row==1) {
+    if (self.hasSortCell && indexPath.section==0 && indexPath.row==0) {
+        // Sort order cell.
+        //            NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"SortCell"
+        //                                                              owner:self
+        //                                                            options:nil];
+        //            UITableViewCell *cell = nibViews[0];
+        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                       reuseIdentifier:@"SortCell"];
+        NSMutableArray *items = [NSMutableArray arrayWithCapacity:5];
+        int selectedIndex = 0;
+        NSArray *supportedSortOrders = [self supportedSortOrders];
+        for (int i=0; i<supportedSortOrders.count; i++) {
+            EPSortOrder so = [[supportedSortOrders objectAtIndex:i] intValue];
+            switch (so) {
+                case EPSortOrderAlpha:
+                    [items addObject:@"Alpha"];
+                    break;
+                case EPSortOrderAddDate:
+                    [items addObject:@"Add\nDate"];
+                    break;
+                case EPSortOrderPlayDate:
+                    [items addObject:@"Play\nDate"];
+                    break;
+                case EPSortOrderReleaseDate:
+                    [items addObject:@"Release\nDate"];
+                    break;
+                case EPSortOrderManual:
+                    [items addObject:@"Manual"];
+                    break;
+            }
+            if (so == self.sortOrder) {
+                selectedIndex = i;
+            }
+        }
+        EPSegmentedControl *seg = [[EPSegmentedControl alloc] initWithItems:items
+                                                                      frame:cell.frame];
+        seg.selectedSegmentIndex = selectedIndex;
+        [seg addTarget:self action:@selector(touchSortOrder:) forControlEvents:UIControlEventValueChanged];
+        [cell addSubview:seg];
+        //            UISegmentedControl *seg = (UISegmentedControl *)[cell viewWithTag:1];
+        //            NSDictionary *attrs = @{UITextAttributeFont: [UIFont systemFontOfSize:10]};
+        //            [seg setTitleTextAttributes:attrs forState:UIControlStateNormal];
+        return cell;
+    }
+    if (self.hasInsertCell) {
+        if ((self.hasSortCell && indexPath.section==0 && indexPath.row == 1) ||
+            (!self.hasSortCell && indexPath.section==0 && indexPath.row==0)) {
             // Special "insert" cell.
             NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"InsertCell"
                                                               owner:self
@@ -128,6 +145,7 @@ NSUInteger minEntriesForSections = 10;
             return cell;
         }
     }
+    
     EPBrowserCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EntryCell"];
     assert (cell != nil);
     if (!cell.playButton.gestureRecognizers.count) {
@@ -148,9 +166,14 @@ NSUInteger minEntriesForSections = 10;
     } else {
         data = self.sections;
     }
-    if (self.editing) {
-        // Adjust for the 2 editing cells.
-        indexPath = [NSIndexPath indexPathForRow:indexPath.row-2 inSection:indexPath.section];
+    if (indexPath.section == 0) {
+        // Adjust index path for the added cells.
+        if (self.hasSortCell) {
+            indexPath = [NSIndexPath indexPathForRow:indexPath.row-1 inSection:indexPath.section];
+        }
+        if (self.hasInsertCell) {
+            indexPath = [NSIndexPath indexPathForRow:indexPath.row-1 inSection:indexPath.section];
+        }
     }
     [self updateCell:cell forIndexPath:indexPath withSections:data withDateLabel:useDateLabel];
     return cell;
@@ -158,8 +181,11 @@ NSUInteger minEntriesForSections = 10;
 
 - (void)touchSortOrder:(EPSegmentedControl *)sender
 {
-    [self setEditing:NO animated:YES];
-    self.sortOrder = sender.selectedSegmentIndex;
+    self.hasSortCell = NO;
+    if (self.editing) {
+        [self setEditing:NO animated:YES];
+    }
+    self.sortOrder = [[[self supportedSortOrders] objectAtIndex:sender.selectedSegmentIndex] intValue];
 }
 
 //- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -212,12 +238,13 @@ NSUInteger minEntriesForSections = 10;
     } else {
         count = 0;
     }
-    if (self.hasInsertCell && section==0) {
-        return count+2;
-    } else {
-        return count;
+    if (self.hasInsertCell && section == 0) {
+        count += 1;
     }
-    
+    if (self.hasSortCell && section == 0) {
+        count += 1;
+    }
+    return count;
 }
 
 /*****************************************************************************/
@@ -265,6 +292,9 @@ sectionForSectionIndexTitle:(NSString *)title
     } else {
         data = self.sectionTitles;
     }
+    if (!data) {
+        return nil;
+    }
     NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"TableSectionView"
                                                       owner:self
                                                     options:nil];
@@ -296,10 +326,20 @@ sectionForSectionIndexTitle:(NSString *)title
     return view;
 }
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-//{
-//    return 23;
-//}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    NSArray *data;
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        data = self.filteredSectionTitles;
+    } else {
+        data = self.sectionTitles;
+    }
+    if (data) {
+        return 23;
+    } else {
+        return 0;
+    }
+}
 
 /*****************************************************************************/
 /* Accessors                                                                 */
@@ -356,6 +396,5 @@ sectionForSectionIndexTitle:(NSString *)title
     // Return YES to cause the search result table view to be reloaded.
     return YES;
 }
-
 
 @end

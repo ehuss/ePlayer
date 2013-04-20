@@ -10,6 +10,7 @@
 #import "EPCommon.h"
 #import "EPBrowserCell.h"
 #import "EPPlayerController.h"
+#import "EPSegmentedControl.h"
 
 extern NSUInteger minEntriesForSections;
 
@@ -21,12 +22,17 @@ extern NSUInteger minEntriesForSections;
       withSections:(NSArray *)sections
      withDateLabel:(BOOL)useDateLabel;
 
+- (void)touchSortOrder:(EPSegmentedControl *)sender;
+
+- (NSArray *)supportedSortOrders;
+
 @property (assign, nonatomic)EPSortOrder sortOrder;
 @property (nonatomic, strong) NSArray *sections;
 // sectionTitles is nil if there are no sections.
 @property (nonatomic, strong) NSMutableArray *sectionTitles;
 @property (nonatomic, readonly) EPPlayerController *playerController;
 @property (nonatomic, assign) BOOL hasInsertCell;
+@property (nonatomic, assign) BOOL hasSortCell;
 
 // Searching.
 @property (nonatomic, strong) UISearchDisplayController *searchController;
