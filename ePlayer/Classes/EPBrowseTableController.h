@@ -23,8 +23,8 @@ extern NSUInteger minEntriesForSections;
      withDateLabel:(BOOL)useDateLabel;
 
 - (void)touchSortOrder:(EPSegmentedControl *)sender;
-
 - (NSArray *)supportedSortOrders;
+- (UITableViewCell *)createSortOrderCell;
 
 @property (assign, nonatomic)EPSortOrder sortOrder;
 // Array of arrays.  The types of items depends on the subclass.
@@ -33,8 +33,10 @@ extern NSUInteger minEntriesForSections;
 // sectionTitles is nil if there are no sections.
 @property (nonatomic, strong) NSMutableArray *sectionTitles;
 @property (nonatomic, readonly) EPPlayerController *playerController;
-@property (nonatomic, assign) BOOL hasInsertCell;
-@property (nonatomic, assign) BOOL hasSortCell;
+// Control cells are the ones at the top used for setting sort order,
+// inserting rows, etc.
+@property (nonatomic, strong) NSArray *controlCells;
+@property (nonatomic, assign) BOOL showingControlCells;
 
 // Searching.
 @property (nonatomic, strong) UISearchDisplayController *searchController;

@@ -98,53 +98,8 @@ NSUInteger minEntriesForSections = 10;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.hasSortCell && indexPath.section==0 && indexPath.row==0) {
-        // Sort order cell.
-        //            NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"SortCell"
-        //                                                              owner:self
-        //                                                            options:nil];
-        //            UITableViewCell *cell = nibViews[0];
-        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                       reuseIdentifier:@"SortCell"];
-        NSMutableArray *items = [NSMutableArray arrayWithCapacity:5];
-        int selectedIndex = 0;
-        NSArray *supportedSortOrders = [self supportedSortOrders];
-        for (int i=0; i<supportedSortOrders.count; i++) {
-            EPSortOrder so = [[supportedSortOrders objectAtIndex:i] intValue];
-            switch (so) {
-                case EPSortOrderAlpha:
-                    [items addObject:@"Alpha"];
-                    break;
-                case EPSortOrderAddDate:
-                    [items addObject:@"Add\nDate"];
-                    break;
-                case EPSortOrderPlayDate:
-                    [items addObject:@"Play\nDate"];
-                    break;
-                case EPSortOrderReleaseDate:
-                    [items addObject:@"Release\nDate"];
-                    break;
-                case EPSortOrderManual:
-                    [items addObject:@"Manual"];
-                    break;
-            }
-            if (so == self.sortOrder) {
-                selectedIndex = i;
-            }
-        }
-        EPSegmentedControl *seg = [[EPSegmentedControl alloc] initWithItems:items
-                                                                      frame:cell.frame];
-        seg.selectedSegmentIndex = selectedIndex;
-        [seg addTarget:self action:@selector(touchSortOrder:) forControlEvents:UIControlEventValueChanged];
-        [cell addSubview:seg];
-        return cell;
-    }
-    if (self.hasInsertCell) {
-        if ((self.hasSortCell && indexPath.section==0 && indexPath.row == 1) ||
-            (!self.hasSortCell && indexPath.section==0 && indexPath.row==0)) {
-            // Special "insert" cell.
-            return [self createInsertCell];
-        }
+    if (self.showingControlCells && indexPath.section==0) {
+        return self.controlCells[indexPath.row];
     }
     
     EPBrowserCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EntryCell"];
@@ -167,23 +122,17 @@ NSUInteger minEntriesForSections = 10;
     } else {
         data = self.sections;
     }
-    if (indexPath.section == 0) {
-        // Adjust index path for the added cells.
-        if (self.hasSortCell) {
-            indexPath = [NSIndexPath indexPathForRow:indexPath.row-1 inSection:indexPath.section];
-        }
-        if (self.hasInsertCell) {
-            indexPath = [NSIndexPath indexPathForRow:indexPath.row-1 inSection:indexPath.section];
-        }
+    if (self.showingControlCells) {
+        // Adjust for added cells.
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
     }
     [self updateCell:cell forIndexPath:indexPath withSections:data withDateLabel:useDateLabel];
     return cell;
 }
 
-
 - (void)touchSortOrder:(EPSegmentedControl *)sender
 {
-    self.hasSortCell = NO;
+    self.showingControlCells = NO;
     if (self.editing) {
         [self setEditing:NO animated:YES];
     }
@@ -205,7 +154,7 @@ NSUInteger minEntriesForSections = 10;
       withSections:(NSArray *)sections
      withDateLabel:(BOOL)useDateLabel
 {
-    
+    // Subclasses must implement.
 }
 
 
@@ -219,7 +168,11 @@ NSUInteger minEntriesForSections = 10;
         data = self.sectionTitles;
     }
     if (data != nil) {
-        return [data count];
+        NSInteger count = [data count];
+        if (self.showingControlCells) {
+            count += 1;
+        }
+        return count;
     } else {
         return 1;
     }
@@ -228,38 +181,64 @@ NSUInteger minEntriesForSections = 10;
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
+    if (self.showingControlCells) {
+        if (section == 0) {
+            return self.controlCells.count;
+        } else {
+            section -= 1;
+        }
+    }
     NSArray *data;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         data = self.filteredSections;
     } else {
         data = self.sections;
     }
-    NSInteger count;
     if (data != nil && data.count) {
-        count = [[data objectAtIndex:section] count];
+        return [[data objectAtIndex:section] count];
     } else {
-        count = 0;
+        return 0;
     }
-    if (self.hasInsertCell && section == 0) {
-        count += 1;
-    }
-    if (self.hasSortCell && section == 0) {
-        count += 1;
-    }
-    return count;
 }
 
 /*****************************************************************************/
-/* Insert Cell                                                               */
+/* Control Cells                                                             */
 /*****************************************************************************/
-- (UITableViewCell *)createInsertCell
+- (UITableViewCell *)createSortOrderCell
 {
-    NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"InsertCell"
-                                                      owner:self
-                                                    options:nil];
-    UITableViewCell *cell = nibViews[0];
-    UITextField *text = (UITextField *)[cell viewWithTag:1];
-    text.delegate = self;
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                   reuseIdentifier:@"SortCell"];
+    NSMutableArray *items = [NSMutableArray arrayWithCapacity:5];
+    int selectedIndex = 0;
+    NSArray *supportedSortOrders = [self supportedSortOrders];
+    for (int i=0; i<supportedSortOrders.count; i++) {
+        EPSortOrder so = [[supportedSortOrders objectAtIndex:i] intValue];
+        switch (so) {
+            case EPSortOrderAlpha:
+                [items addObject:@"Alpha"];
+                break;
+            case EPSortOrderAddDate:
+                [items addObject:@"Add\nDate"];
+                break;
+            case EPSortOrderPlayDate:
+                [items addObject:@"Play\nDate"];
+                break;
+            case EPSortOrderReleaseDate:
+                [items addObject:@"Release\nDate"];
+                break;
+            case EPSortOrderManual:
+                [items addObject:@"Manual"];
+                break;
+        }
+        if (so == self.sortOrder) {
+            selectedIndex = i;
+        }
+    }
+    EPSegmentedControl *seg = [[EPSegmentedControl alloc] initWithItems:items
+                                                                  frame:cell.frame];
+    seg.selectedSegmentIndex = selectedIndex;
+    [seg addTarget:self action:@selector(touchSortOrder:) forControlEvents:UIControlEventValueChanged];
+    [cell addSubview:seg];
     return cell;
 }
 
@@ -270,6 +249,13 @@ NSUInteger minEntriesForSections = 10;
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
+    if (self.showingControlCells) {
+        if (section == 0) {
+            return nil;
+        } else {
+            section -= 1;
+        }
+    }
     NSArray *data;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         data = self.filteredSectionTitles;
@@ -282,6 +268,7 @@ NSUInteger minEntriesForSections = 10;
 
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
+    // No need to worry about showingControlCells, indexes are disabled.
     if (self.indexesEnabled) {
         // Currently using same section titles for index titles.
         NSArray *data;
@@ -307,6 +294,13 @@ sectionForSectionIndexTitle:(NSString *)title
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
+    if (self.showingControlCells) {
+        if (section == 0) {
+            return nil;
+        } else {
+            section -= 1;
+        }
+    }
     NSArray *data;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         data = self.filteredSectionTitles;
@@ -349,6 +343,11 @@ sectionForSectionIndexTitle:(NSString *)title
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
+    if (self.showingControlCells) {
+        if (section == 0) {
+            return 0;
+        }
+    }
     NSArray *data;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         data = self.filteredSectionTitles;

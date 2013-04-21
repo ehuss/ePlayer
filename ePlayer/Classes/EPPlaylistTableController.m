@@ -56,7 +56,7 @@
 {
     [super viewDidLoad];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
-
+    self.controlCells = @[[self createSortOrderCell], [self createInsertCell]];
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -64,6 +64,18 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
+
+- (UITableViewCell *)createInsertCell
+{
+    NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"InsertCell"
+                                                      owner:self
+                                                    options:nil];
+    UITableViewCell *cell = nibViews[0];
+    UITextField *text = (UITextField *)[cell viewWithTag:1];
+    text.delegate = self;
+    return cell;
+}
+
 
 - (NSString *)filterPropertyName
 {
@@ -241,24 +253,26 @@
                             ];
 
     if (editing) {
-        self.hasInsertCell = YES;
-        self.hasSortCell = YES;
+        self.showingControlCells = YES;
         self.indexesEnabled = NO;
-        [self.tableView insertRowsAtIndexPaths:indexPaths
-                              withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0]
+                      withRowAnimation:UITableViewRowAnimationAutomatic];
+//        [self.tableView insertRowsAtIndexPaths:indexPaths
+//                              withRowAnimation:UITableViewRowAnimationAutomatic];
     } else {
-        if (self.hasInsertCell) {
+        if (self.showingControlCells) {
             // Save any changes made.
             NSError *error;
             if (![self.managedObjectContext save:&error]) {
                 NSLog(@"Failed to save: %@", error);
             }
             // Clean up.
-            self.hasInsertCell = NO;
-            self.hasSortCell = NO;
+            self.showingControlCells = NO;
             self.indexesEnabled = YES;
-            [self.tableView deleteRowsAtIndexPaths:indexPaths
-                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:0]
+                          withRowAnimation:UITableViewRowAnimationAutomatic];
+//            [self.tableView deleteRowsAtIndexPaths:indexPaths
+//                                  withRowAnimation:UITableViewRowAnimationAutomatic];
             // Re-sort in case anything was added.
             [self updateSections];
             [self.tableView reloadData];
@@ -300,10 +314,7 @@
 - (void)deleteRow:(NSIndexPath *)indexPath
 {
     // Adjust index for the 2 special rows if necessary.
-    NSIndexPath *realIndexPath = indexPath;
-    if (indexPath.section==0) {
-        realIndexPath = [NSIndexPath indexPathForRow:indexPath.row-2 inSection:indexPath.section];
-    }
+    NSIndexPath *realIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
     // Figure out the entry being removed.
     Entry *entry = self.sections[realIndexPath.section][realIndexPath.row];
     [self.folder removeEntriesObject:entry];
@@ -381,9 +392,8 @@
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.sortOrder == EPSortOrderManual) {
-        if (self.hasSortCell && indexPath.row==0 && indexPath.section==0) {
-            return NO;
-        } else if (self.hasInsertCell && indexPath.row==1 && indexPath.section==0) {
+        if (self.showingControlCells && indexPath.section == 0) {
+            // Control cells cannot be moved.
             return NO;
         } else {
             return YES;
@@ -396,10 +406,10 @@
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
     // Adjust index for the 2 special rows if necessary.  (Manual only has 1 section.)
-    assert(fromIndexPath.section==0);
-    assert(toIndexPath.section==0);
-    fromIndexPath = [NSIndexPath indexPathForRow:fromIndexPath.row-2 inSection:fromIndexPath.section];
-    toIndexPath = [NSIndexPath indexPathForRow:toIndexPath.row-2 inSection:toIndexPath.section];
+    assert(fromIndexPath.section!=0);
+    assert(toIndexPath.section!=0);
+    fromIndexPath = [NSIndexPath indexPathForRow:fromIndexPath.row inSection:fromIndexPath.section-1];
+    toIndexPath = [NSIndexPath indexPathForRow:toIndexPath.row inSection:toIndexPath.section-1];
     // Figure out the entry being moved.
     Entry *entry = self.sections[fromIndexPath.section][fromIndexPath.row];
     [self.folder removeEntriesObject:entry];
@@ -415,24 +425,30 @@
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
            editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.hasSortCell && indexPath.section==0 && indexPath.row==0) {
-        // Sort order cell.
-        return UITableViewCellEditingStyleNone;
-    } else if (self.hasInsertCell && indexPath.section==0 && indexPath.row==1) {
-        // Insert new folder cell.
-        return UITableViewCellEditingStyleInsert;
+    if (self.showingControlCells && indexPath.section == 0) {
+        if (indexPath.row == 0) {
+            // Sort order cell.
+            return UITableViewCellEditingStyleNone;
+            
+        } else if (indexPath.row == 1) {
+            // Insert new folder cell.
+            return UITableViewCellEditingStyleInsert;
+        } else {
+            [NSException raise:@"InvalidControlCell" format:@"Too many control cells."];
+            return UITableViewCellEditingStyleNone;
+        }
     } else {
         // Existing cell.
         return UITableViewCellEditingStyleDelete;
     }
 }
+
 - (NSIndexPath *)tableView:(UITableView *)tableView
     targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
            toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
 {
-    if (proposedDestinationIndexPath.section==0 && (proposedDestinationIndexPath.row==0 ||
-                                                    proposedDestinationIndexPath.row==1)) {
-        return [NSIndexPath indexPathForRow:2 inSection:0];
+    if (proposedDestinationIndexPath.section==0) {
+        return [NSIndexPath indexPathForRow:0 inSection:1];
     } else {
         return proposedDestinationIndexPath;
     }
@@ -448,6 +464,8 @@
     //NSIndexPath *currRow = [self cellIndexPathForField:textField];
     if ([textField.text length]) {
         [self addFolderWithText:textField.text];
+        // Reset the insert cell so you can add another.
+        textField.text = nil;
     }
 }
 
@@ -480,11 +498,8 @@
     [section insertObject:folder atIndex:0];
     
     [self.tableView beginUpdates];
-    // Reload the "insert" cell.
-    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]]
-                          withRowAnimation:UITableViewRowAnimationAutomatic];
     // Insert the newly created folder.
-    [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
+    [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:1]]
                           withRowAnimation:UITableViewRowAnimationAutomatic];
     [self.tableView endUpdates];
 }

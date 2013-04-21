@@ -21,6 +21,7 @@
 {
     [super viewDidLoad];
     [self setSOButtonToSortOrder];
+    self.controlCells = @[[self createSortOrderCell]];
 }
 
 /*****************************************************************************/
@@ -56,9 +57,9 @@
 - (void)touchedNavSortOrder:(UIBarButtonItem *)sender
 {
     // Add row at the top to set sort order.
-    self.hasSortCell = YES;
-    [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]
-                          withRowAnimation:UITableViewRowAnimationAutomatic];
+    self.showingControlCells = YES;
+    [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0]
+                  withRowAnimation:UITableViewRowAnimationAutomatic];
     // Scroll to this new cell.
     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                           atScrollPosition:UITableViewScrollPositionTop animated:YES];
@@ -68,9 +69,9 @@
 
 - (void)touchedSODone:(id)sender
 {
-    self.hasSortCell = NO;
-    [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]
-                          withRowAnimation:UITableViewRowAnimationAutomatic];
+    self.showingControlCells = NO;
+    [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:0]
+                  withRowAnimation:UITableViewRowAnimationAutomatic];
     [self setSOButtonToSortOrder];
 }
 
