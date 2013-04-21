@@ -40,6 +40,7 @@ extern NSUInteger minEntriesForSections;
 @property (nonatomic, strong) UISearchDisplayController *searchController;
 @property (nonatomic, strong) NSArray *filteredSections;
 @property (nonatomic, strong) NSArray *filteredSectionTitles;
+// When searching, the property in self.sections to look at.
 @property (nonatomic, readonly) NSString *filterPropertyName;
 @property (nonatomic, assign) BOOL wantsSearch;
 @property (nonatomic, assign) BOOL indexesEnabled;

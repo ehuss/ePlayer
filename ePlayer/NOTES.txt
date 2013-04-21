@@ -6,6 +6,10 @@
   section, and all sections get offset by +1?
 
 TODO:
+- in edit, tap folder name to rename.  (Also allow for track names?)
+- updating playDate
+- play tapped artist/album/track
+- in playlist view, hit "edit", should disable "go back" button.
 - resize entrycell title width to attach to accessory view (disclosure obscures if section indexes).
 - press and hold play to append.
 - folder of songs only should be sorted manually only (by track #) in playlist

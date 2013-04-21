@@ -288,6 +288,13 @@
         case UITableViewCellEditingStyleNone:
             break;
     }
+    // Tell any table controllers higher in the chain to reload, just in case
+    // anything changed (dates, etc.).
+    for (int i=0; i<self.navigationController.viewControllers.count-1; i++) {
+        EPPlaylistTableController *controller = self.navigationController.viewControllers[0];
+        [controller updateSections];
+        [controller.tableView reloadData];
+    }
 }
 
 - (void)deleteRow:(NSIndexPath *)indexPath
@@ -316,8 +323,11 @@
 {
     if ([entry.class isSubclassOfClass:[Folder class]]) {
         Folder *folder = (Folder *)entry;
-        NSArray *entries = [folder.entries array];
+        // Create a copy of the entries list so we can delete while iterating
+        // over it.
+        NSArray *entries = [NSArray arrayWithArray:[folder.entries array]];
         for (Entry *subentry in entries) {
+            // Remove first so that parents.count can be checked while recursing.
             [folder removeEntriesObject:subentry];
             [self checkOrphans:subentry];
         }
