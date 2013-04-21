@@ -107,7 +107,7 @@ NSDate *dateFromYear(int year)
             int year = self.releaseYear;
             if (year == 0) {
                 // Or "distantPast"?
-                _releaseDate = [NSDate date];
+                _releaseDate = nil;
             } else {
                 _releaseDate = dateFromYear(year);
             }

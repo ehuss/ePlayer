@@ -15,11 +15,6 @@
 
 @implementation EPTrackTableController
 
-- (BOOL)wantsSearch
-{
-    return NO;
-}
-
 - (void)setSOButtonToSortOrder
 {
     // Cheesy way to disable sort order button.

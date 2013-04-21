@@ -66,8 +66,8 @@
         }
     } else {
         // With a small number of entries, sections are a pain.
-        self.sections = @[wrappedAlbums];
-        self.sectionTitles = nil;
+        self.sections = [NSMutableArray arrayWithObject:wrappedAlbums];
+        self.sectionTitles = [NSMutableArray arrayWithObject:@""];
     }
     
 }
@@ -98,8 +98,8 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
     [self loadAlbums];
+    [super viewDidLoad];
 }
 
 - (void)didReceiveMemoryWarning

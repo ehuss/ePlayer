@@ -59,9 +59,10 @@
     }
     if (loadQueue) {
         // Assume the queue is the same.
-        if (self.queueFolder.sortedEntries.count) {
+        if (self.queueFolder.entries.count) {
             // Populate queueItems from the queue folder.
-            NSArray *items = [self.queueFolder.sortedEntries mapWithBlock:^id(Song * song) {
+            NSArray *entries = [self.queueFolder.entries array];
+            NSArray *items = [entries mapWithBlock:^id(Song * song) {
                 MPMediaQuery *query = [[MPMediaQuery alloc] init];
                 MPMediaPropertyPredicate *pred = [MPMediaPropertyPredicate
                                                   predicateWithValue:song.persistentID

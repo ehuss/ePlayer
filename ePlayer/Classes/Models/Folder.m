@@ -9,34 +9,28 @@
 #import "Folder.h"
 #import "EPCommon.h"
 
-@interface Folder ()
-{
-    EPSortOrder _sortedEntriesOrder;
-}
-@end
-
 @implementation Folder
 
 @dynamic sortOrder;
 @dynamic entries;
 
 // Note: NSManagedObject sets NS_REQUIRES_PROPERTY_DEFINTIONS, so automatic
-// property synthesis is not available.
-@synthesize sortedEntries = _sortedEntries;
+// property synthesis is not available.  You must @synthensize any new properties.
 
 - (NSArray *)sortedEntries
 {
-    if (_sortedEntries == nil || _sortedEntriesOrder != [self.sortOrder intValue]) {
-        if ([self.sortOrder intValue] == EPSortOrderManual) {
-            _sortedEntries = self.entries.array;
+    if ([self.sortOrder intValue] == EPSortOrderManual) {
+        // Already in correct sort order.
+        return self.entries.array;
+    } else {
+        if ([self.sortOrder intValue] == EPSortOrderAlpha) {
+            return [self.entries sortedArrayUsingComparator:^(Entry *obj1, Entry *obj2) {
+                return [obj1.name localizedCaseInsensitiveCompare:obj2.name];
+            }];
         } else {
+            // Date sorting.
             NSString *key;
-            BOOL ascending = NO;
             switch ([self.sortOrder intValue]) {
-                case EPSortOrderAlpha:
-                    key = @"name";
-                    ascending = YES;
-                    break;
                 case EPSortOrderAddDate:
                     key = @"addDate";
                     break;
@@ -48,17 +42,12 @@
                     break;
             }
             
-            _sortedEntries = [self.entries sortedArrayUsingComparator:^(Entry *obj1, Entry *obj2) {
-                if (ascending) {
-                    return [[obj1 valueForKey:key] compare:[obj2 valueForKey:key]];
-                } else {
-                    return [[obj2 valueForKey:key] compare:[obj1 valueForKey:key]];
-                }
+            return [self.entries sortedArrayUsingComparator:^(Entry *obj1, Entry *obj2) {
+                // Descending order.
+                return [[obj2 valueForKey:key] compare:[obj1 valueForKey:key]];
             }];
         }
-        _sortedEntriesOrder = [self.sortOrder intValue];
     }
-    return _sortedEntries;
 }
 
 
@@ -70,143 +59,28 @@
             return [entry.name substringToIndex:1];
 
         case EPSortOrderAddDate:
-            return yearFromDate(entry.addDate);
+            if ([entry.addDate compare:[NSDate distantPast]] == NSOrderedSame) {
+                return @"Unknown";
+            } else {
+                return yearFromDate(entry.addDate);
+            }
 
         case EPSortOrderPlayDate:
-            return yearFromDate(entry.playDate);
+            if ([entry.playDate compare:[NSDate distantPast]] == NSOrderedSame) {
+                return @"Never";
+            } else {
+                return yearFromDate(entry.playDate);
+            }
 
         case EPSortOrderReleaseDate:
-            return yearFromDate(entry.releaseDate);
+            if ([entry.releaseDate compare:[NSDate distantPast]] == NSOrderedSame) {
+                return @"Unknown";
+            } else {
+                return yearFromDate(entry.releaseDate);
+            }
     }
     [NSException raise:@"UnknownSortOrder" format:@"Unknown sort order %i.", [self.sortOrder intValue]];
     return nil; // Silence warning.
 }
-
-// Working around a bug in Core Data's auto-generated code.
-// This was raising an exception (set argument is not an NSSet).
-// See http://stackoverflow.com/questions/7385439/exception-thrown-in-nsorderedset-generated-accessors
-- (void)addEntriesObject:(Entry *)value
-{
-    NSMutableOrderedSet* tempSet = [NSMutableOrderedSet orderedSetWithOrderedSet:self.entries];
-    [tempSet addObject:value];
-    self.entries = tempSet;
-}
-
-static NSString *const kItemsKey = @"entries";
-
-- (void)removeEntries:(NSOrderedSet *)values
-{
-    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet
-                                          orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:kItemsKey]];
-    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
-    for (id value in values) {
-        NSUInteger idx = [tmpOrderedSet indexOfObject:value];
-        if (idx != NSNotFound) {
-            [indexes addIndex:idx];
-        }
-    }
-    if ([indexes count] > 0) {
-        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:kItemsKey];
-        [tmpOrderedSet removeObjectsAtIndexes:indexes];
-        [self setPrimitiveValue:tmpOrderedSet forKey:kItemsKey];
-        [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:kItemsKey];
-    }
-}
-
-
-//
-//static NSString *const kItemsKey = @"subitems";
-//
-//- (void)insertObject:(FRPlaylistItem *)value inSubitemsAtIndex:(NSUInteger)idx {
-//    NSIndexSet* indexes = [NSIndexSet indexSetWithIndex:idx];
-//    [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:kItemsKey];
-//    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:kItemsKey]];
-//    [tmpOrderedSet insertObject:value atIndex:idx];
-//    [self setPrimitiveValue:tmpOrderedSet forKey:kItemsKey];
-//    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:kItemsKey];
-//}
-//
-//- (void)removeObjectFromSubitemsAtIndex:(NSUInteger)idx {
-//    NSIndexSet* indexes = [NSIndexSet indexSetWithIndex:idx];
-//    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:kItemsKey];
-//    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:kItemsKey]];
-//    [tmpOrderedSet removeObjectAtIndex:idx];
-//    [self setPrimitiveValue:tmpOrderedSet forKey:kItemsKey];
-//    [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:kItemsKey];
-//}
-//
-//- (void)insertSubitems:(NSArray *)values atIndexes:(NSIndexSet *)indexes {
-//    [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:kItemsKey];
-//    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:kItemsKey]];
-//    [tmpOrderedSet insertObjects:values atIndexes:indexes];
-//    [self setPrimitiveValue:tmpOrderedSet forKey:kItemsKey];
-//    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:kItemsKey];
-//}
-//
-//- (void)removeSubitemsAtIndexes:(NSIndexSet *)indexes {
-//    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:kItemsKey];
-//    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:kItemsKey]];
-//    [tmpOrderedSet removeObjectsAtIndexes:indexes];
-//    [self setPrimitiveValue:tmpOrderedSet forKey:kItemsKey];
-//    [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:kItemsKey];
-//}
-//
-//- (void)replaceObjectInSubitemsAtIndex:(NSUInteger)idx withObject:(FRPlaylistItem *)value {
-//    NSIndexSet* indexes = [NSIndexSet indexSetWithIndex:idx];
-//    [self willChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:kItemsKey];
-//    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:kItemsKey]];
-//    [tmpOrderedSet replaceObjectAtIndex:idx withObject:value];
-//    [self setPrimitiveValue:tmpOrderedSet forKey:kItemsKey];
-//    [self didChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:kItemsKey];
-//}
-//
-//- (void)replaceSubitemsAtIndexes:(NSIndexSet *)indexes withSubitems:(NSArray *)values {
-//    [self willChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:kItemsKey];
-//    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:kItemsKey]];
-//    [tmpOrderedSet replaceObjectsAtIndexes:indexes withObjects:values];
-//    [self setPrimitiveValue:tmpOrderedSet forKey:kItemsKey];
-//    [self didChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:kItemsKey];
-//}
-//
-//- (void)addSubitemsObject:(FRPlaylistItem *)value {
-//    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:kItemsKey]];
-//    NSUInteger idx = [tmpOrderedSet count];
-//    NSIndexSet* indexes = [NSIndexSet indexSetWithIndex:idx];
-//    [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:kItemsKey];
-//    [tmpOrderedSet addObject:value];
-//    [self setPrimitiveValue:tmpOrderedSet forKey:kItemsKey];
-//    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:kItemsKey];
-//}
-//
-//- (void)removeSubitemsObject:(FRPlaylistItem *)value {
-//    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:kItemsKey]];
-//    NSUInteger idx = [tmpOrderedSet indexOfObject:value];
-//    if (idx != NSNotFound) {
-//        NSIndexSet* indexes = [NSIndexSet indexSetWithIndex:idx];
-//        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:kItemsKey];
-//        [tmpOrderedSet removeObject:value];
-//        [self setPrimitiveValue:tmpOrderedSet forKey:kItemsKey];
-//        [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:kItemsKey];
-//    }
-//}
-//
-//- (void)addSubitems:(NSOrderedSet *)values {
-//    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:kItemsKey]];
-//    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
-//    NSUInteger valuesCount = [values count];
-//    NSUInteger objectsCount = [tmpOrderedSet count];
-//    for (NSUInteger i = 0; i < valuesCount; ++i) {
-//        [indexes addIndex:(objectsCount + i)];
-//    }
-//    if (valuesCount > 0) {
-//        [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:kItemsKey];
-//        [tmpOrderedSet addObjectsFromArray:[values array]];
-//        [self setPrimitiveValue:tmpOrderedSet forKey:kItemsKey];
-//        [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:kItemsKey];
-//    }
-//}
-//
-
-
 
 @end

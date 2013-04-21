@@ -13,6 +13,7 @@
 #import "EPAlbumTableController.h"
 #import "EPSortOrderController.h"
 #import "EPMediaItemWrapper.h"
+#import "NSManagedObjectModel+KCOrderedAccessorFix.h"
 
 @implementation AppDelegate
 
@@ -69,7 +70,7 @@
         MPMediaItem *e = [dict objectForKey:key];
         NSLog(@"not in album: %@", [e valueForProperty:MPMediaItemPropertyTitle]);
     }*/
-    //[[NSFileManager defaultManager] removeItemAtURL:[self dbURL] error:nil];
+//    [[NSFileManager defaultManager] removeItemAtURL:[self dbURL] error:nil];
     
     self.tabController = (UITabBarController *)self.window.rootViewController;
     self.tabController.delegate = self;
@@ -142,7 +143,9 @@
 
 - (NSManagedObjectModel *)createManagedObjectModel
 {
-    return [NSManagedObjectModel mergedModelFromBundles:nil];
+    NSManagedObjectModel *model = [NSManagedObjectModel mergedModelFromBundles:nil];
+    [model kc_generateOrderedSetAccessors];
+    return model;
 }
 
 

@@ -18,14 +18,22 @@ NSUInteger minEntriesForSections = 10;
 
 @implementation EPBrowseTableController
 
-- (BOOL)wantsSearch
+- (NSArray *)supportedSortOrders
 {
-    return YES;
+    return nil;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    // Don't display search header if only a few items.
+    int count = 0;
+    for (NSArray *section in self.sections) {
+        count += section.count;
+    }
+    self.wantsSearch = count > 10;
+    // Misc setup.
+    self.indexesEnabled = YES;
     // This seems to be bugged in Interface Builder.
     self.tableView.sectionIndexMinimumDisplayRowCount = 10;
     // Need this for a complex issue.  When bringing up the queue, the bottom
@@ -129,20 +137,13 @@ NSUInteger minEntriesForSections = 10;
         seg.selectedSegmentIndex = selectedIndex;
         [seg addTarget:self action:@selector(touchSortOrder:) forControlEvents:UIControlEventValueChanged];
         [cell addSubview:seg];
-        //            UISegmentedControl *seg = (UISegmentedControl *)[cell viewWithTag:1];
-        //            NSDictionary *attrs = @{UITextAttributeFont: [UIFont systemFontOfSize:10]};
-        //            [seg setTitleTextAttributes:attrs forState:UIControlStateNormal];
         return cell;
     }
     if (self.hasInsertCell) {
         if ((self.hasSortCell && indexPath.section==0 && indexPath.row == 1) ||
             (!self.hasSortCell && indexPath.section==0 && indexPath.row==0)) {
             // Special "insert" cell.
-            NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"InsertCell"
-                                                              owner:self
-                                                            options:nil];
-            UITableViewCell *cell = nibViews[0];
-            return cell;
+            return [self createInsertCell];
         }
     }
     
@@ -178,6 +179,7 @@ NSUInteger minEntriesForSections = 10;
     [self updateCell:cell forIndexPath:indexPath withSections:data withDateLabel:useDateLabel];
     return cell;
 }
+
 
 - (void)touchSortOrder:(EPSegmentedControl *)sender
 {
@@ -248,6 +250,21 @@ NSUInteger minEntriesForSections = 10;
 }
 
 /*****************************************************************************/
+/* Insert Cell                                                               */
+/*****************************************************************************/
+- (UITableViewCell *)createInsertCell
+{
+    NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"InsertCell"
+                                                      owner:self
+                                                    options:nil];
+    UITableViewCell *cell = nibViews[0];
+    UITextField *text = (UITextField *)[cell viewWithTag:1];
+    text.delegate = self;
+    return cell;
+}
+
+
+/*****************************************************************************/
 /* Section Methods                                                           */
 /*****************************************************************************/
 
@@ -265,14 +282,18 @@ NSUInteger minEntriesForSections = 10;
 
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
-    // Currently using same section titles for index titles.
-    NSArray *data;
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
-        data = self.filteredSectionTitles;
+    if (self.indexesEnabled) {
+        // Currently using same section titles for index titles.
+        NSArray *data;
+        if (tableView == self.searchDisplayController.searchResultsTableView) {
+            data = self.filteredSectionTitles;
+        } else {
+            data = self.sectionTitles;
+        }
+        return data;
     } else {
-        data = self.sectionTitles;
+        return nil;
     }
-    return data;
 }
 
 
@@ -358,6 +379,12 @@ sectionForSectionIndexTitle:(NSString *)title
 - (EPPlayerController *)playerController
 {
     return self.tabBarController.viewControllers[3];
+}
+
+- (void)setIndexesEnabled:(BOOL)indexesEnabled
+{
+    _indexesEnabled = indexesEnabled;
+    [self.tableView reloadSectionIndexTitles];
 }
 
 /*****************************************************************************/

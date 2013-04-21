@@ -26,7 +26,7 @@
             <objects>
                 <navigationController definesPresentationContext="YES" id="FRv-XO-hdh" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Playlists" id="WSV-u9-G2D"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="goH-kR-yuJ">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="blackOpaque" id="goH-kR-yuJ">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -57,7 +57,7 @@
             <objects>
                 <navigationController definesPresentationContext="YES" id="mwP-EI-0ie" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Artists" id="7Ri-60-fgn"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Yq4-Jh-Zxj">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="blackOpaque" id="Yq4-Jh-Zxj">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -299,7 +299,7 @@
             <objects>
                 <navigationController definesPresentationContext="YES" id="dru-XA-5gR" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Albums" id="WB9-5d-zUH"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="8XS-Fj-Rrx">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="blackOpaque" id="8XS-Fj-Rrx">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -339,6 +339,54 @@
         <image name="queue-prev.png" width="80" height="44"/>
         <image name="queue-save.png" width="80" height="44"/>
     </resources>
+    <classes>
+        <class className="EPAlbumTableController" superclassName="EPLibTableController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/EPAlbumTableController.h"/>
+        </class>
+        <class className="EPArtistTableController" superclassName="EPLibTableController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/EPArtistTableController.h"/>
+        </class>
+        <class className="EPBrowseTableController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/EPBrowseTableController.h"/>
+        </class>
+        <class className="EPGradientView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/EPGradientView.h"/>
+        </class>
+        <class className="EPLibTableController" superclassName="EPBrowseTableController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/EPLibTableController.h"/>
+        </class>
+        <class className="EPPlayerController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/EPPlayerController.h"/>
+            <relationships>
+                <relationship kind="action" name="scrubberDidUpdate:"/>
+                <relationship kind="action" name="scrubberTouchDown:"/>
+                <relationship kind="action" name="scrubberTouchUp:"/>
+                <relationship kind="action" name="tappedNext:"/>
+                <relationship kind="action" name="tappedPlay:"/>
+                <relationship kind="action" name="tappedPrev:"/>
+                <relationship kind="action" name="tappedSave:"/>
+                <relationship kind="outlet" name="albumNameLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="artImageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="artistNameLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="currentTimeLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="playButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="releasedDateLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="scrubber" candidateClass="EPScrubberView"/>
+                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
+                <relationship kind="outlet" name="timeLeftLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="trackNameLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="EPPlaylistTableController" superclassName="EPBrowseTableController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/EPPlaylistTableController.h"/>
+        </class>
+        <class className="EPScrubberView" superclassName="UISlider">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/EPScrubberView.h"/>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

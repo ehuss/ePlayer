@@ -61,8 +61,8 @@
         }
     } else {
         // With a small number of entries, sections are a pain.
-        self.sections = @[wrappedArtists];
-        self.sectionTitles = nil;
+        self.sections = [NSMutableArray arrayWithObject:wrappedArtists];
+        self.sectionTitles = [NSMutableArray arrayWithObject:@""];
     }
     
 }
@@ -85,8 +85,8 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
     [self loadArtists];
+    [super viewDidLoad];
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;

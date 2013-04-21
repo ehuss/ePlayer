@@ -18,5 +18,6 @@
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSManagedObjectModel *managedObjectModel;
 @property (nonatomic, strong) Folder *folder;
+@property (nonatomic, strong) NSArray *sortedEntries;
 
 @end

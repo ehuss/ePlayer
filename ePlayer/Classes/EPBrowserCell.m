@@ -22,11 +22,13 @@
     [super setEditing:editing animated:animated];
     NSTimeInterval duration = animated ? 0.2 : 0;
     if (editing) {
-        [UIView animateWithDuration:duration animations:^{
-            self.playButton.hidden = YES;
-            self.labelView.center = CGPointMake(self.labelView.center.x-self.playButton.frame.size.width,
-                                                self.labelView.center.y);
-        }];
+        if (!self.playButton.hidden) {
+            [UIView animateWithDuration:duration animations:^{
+                self.playButton.hidden = YES;
+                self.labelView.center = CGPointMake(self.labelView.center.x-self.playButton.frame.size.width,
+                                                    self.labelView.center.y);
+            }];
+        }
     } else {
         if (self.playButton.hidden) {
             [UIView animateWithDuration:duration animations:^{

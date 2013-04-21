@@ -2,27 +2,10 @@
   Product -> Edit Scheme -> Run APP -> Arguments -> -com.apple.CoreData.SQLDebug 1
 - scrubber is a little sloppy.
   - Letting go, it jumps around sometimes.
-
-============
-Left Off
-============
-Adding sort order for other controllers.
-    Finish checking hasSortCell, returning correct values.
-    On click "Sort Order":
-        hasSortCell=YES
-        "insert"
-        scroll to the sort order cell.
-        Change button text to "Done".
-            Clicking with switch it back to "Sort Order".
-            hasSortCell=NO
-            "remove" sort cell
-    touchSortOrder should also:
-        set hasSortCell=NO and
-         fix the "Sort Order" button.
-         remove sort cell
+- Clicking "Edit", should the 2 cells (sort/insert) go into a special "0" 
+  section, and all sections get offset by +1?
 
 TODO:
-- switch to black status bar
 - resize entrycell title width to attach to accessory view (disclosure obscures if section indexes).
 - press and hold play to append.
 - folder of songs only should be sorted manually only (by track #) in playlist
@@ -39,8 +22,6 @@ TODO:
 
 - never played entries have play year of "1"?
 - queue:
-    - change color of status bar to black
-    - change color of nav bar to black
     - remove side scroller of table view?
     - After rearrange, update cell queue # label
 - Play All entry at the top of each list?

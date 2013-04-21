@@ -34,6 +34,10 @@ NSString *nameForSortOrder(EPSortOrder order)
 
 NSString *yearFromDate(NSDate *date)
 {
+    if (date==nil) {
+        NSLog(@"nil date, please fix");
+        return @"UNKNOWN";
+    }
     NSCalendar *cal = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *comp = [cal components:NSYearCalendarUnit fromDate:date];
     return [NSString stringWithFormat:@"%i", comp.year];

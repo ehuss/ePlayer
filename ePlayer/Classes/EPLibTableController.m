@@ -39,6 +39,8 @@
     [[UIBarButtonItem alloc] initWithTitle:@"Sort Order"
                                      style:UIBarButtonItemStyleBordered
                                     target:self action:@selector(touchedNavSortOrder:)];
+    // Enable indexes.
+    self.indexesEnabled = YES;
 }
 
 - (void)setSOButtonToDone
@@ -47,6 +49,8 @@
     [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                   target:self
                                                   action:@selector(touchedSODone:)];
+    // Disable indexes.
+    self.indexesEnabled = NO;
 }
 
 - (void)touchedNavSortOrder:(UIBarButtonItem *)sender
@@ -55,6 +59,10 @@
     self.hasSortCell = YES;
     [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]
                           withRowAnimation:UITableViewRowAnimationAutomatic];
+    // Scroll to this new cell.
+    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                          atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    // Change button to "Done".
     [self setSOButtonToDone];
 }
 

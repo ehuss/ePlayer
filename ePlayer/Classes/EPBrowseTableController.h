@@ -15,7 +15,7 @@
 extern NSUInteger minEntriesForSections;
 
 @interface EPBrowseTableController : UITableViewController
-    <UISearchBarDelegate, UISearchDisplayDelegate>
+    <UISearchBarDelegate, UISearchDisplayDelegate, UITextFieldDelegate>
 
 - (void)updateCell:(EPBrowserCell *)cell
       forIndexPath:(NSIndexPath *)indexPath
@@ -27,7 +27,9 @@ extern NSUInteger minEntriesForSections;
 - (NSArray *)supportedSortOrders;
 
 @property (assign, nonatomic)EPSortOrder sortOrder;
-@property (nonatomic, strong) NSArray *sections;
+// Array of arrays.  The types of items depends on the subclass.
+// The sections are passed to  "updateCell..." in order to set the cell content.
+@property (nonatomic, strong) NSMutableArray *sections;
 // sectionTitles is nil if there are no sections.
 @property (nonatomic, strong) NSMutableArray *sectionTitles;
 @property (nonatomic, readonly) EPPlayerController *playerController;
@@ -39,5 +41,6 @@ extern NSUInteger minEntriesForSections;
 @property (nonatomic, strong) NSArray *filteredSections;
 @property (nonatomic, strong) NSArray *filteredSectionTitles;
 @property (nonatomic, readonly) NSString *filterPropertyName;
-@property (nonatomic, readonly) BOOL wantsSearch;
+@property (nonatomic, assign) BOOL wantsSearch;
+@property (nonatomic, assign) BOOL indexesEnabled;
 @end
