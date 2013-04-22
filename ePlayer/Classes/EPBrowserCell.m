@@ -7,6 +7,7 @@
 //
 
 #import "EPBrowserCell.h"
+#import "EPBrowseTableController.h"
 
 @implementation EPBrowserCell
 
@@ -17,6 +18,8 @@
 //    // Configure the view for the selected state
 //}
 
+static CGFloat textViewOffset = 4.0;
+
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
     [super setEditing:editing animated:animated];
@@ -26,19 +29,37 @@
         if (!self.playButton.hidden) {
             [UIView animateWithDuration:duration animations:^{
                 self.playButton.hidden = YES;
-                self.labelView.center = CGPointMake(self.labelView.center.x-self.playButton.frame.size.width,
-                                                    self.labelView.center.y);
+                self.textView.center = CGPointMake(self.textView.center.x-self.playButton.frame.size.width+textViewOffset,
+                                                    self.textView.center.y);
             }];
         }
     } else {
+        self.textView.enabled = NO;
         if (self.playButton.hidden) {
             [UIView animateWithDuration:duration animations:^{
                 self.playButton.hidden = NO;
-                self.labelView.center = CGPointMake(self.labelView.center.x+self.playButton.frame.size.width,
-                                                    self.labelView.center.y);
+                self.textView.center = CGPointMake(self.textView.center.x+self.playButton.frame.size.width-textViewOffset,
+                                                    self.textView.center.y);
             }];
         }
     }
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+	[textField resignFirstResponder];
+	return YES;
+}
+
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    return self.parentController.renaming;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    [self.parentController rename:self to:textField.text];
 }
 
 @end

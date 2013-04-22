@@ -113,7 +113,7 @@
 {
     NSArray *artists = [sections objectAtIndex:indexPath.section];
     EPMediaItemWrapper *artist = [artists objectAtIndex:indexPath.row];
-    cell.labelView.text = artist.albumArtist;
+    cell.textView.text = artist.albumArtist;
 
     if (useDateLabel) {
         cell.dateLabel.text = [artist sectionTitleForSortOrder:self.sortOrder

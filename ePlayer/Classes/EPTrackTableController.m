@@ -46,7 +46,7 @@
      withDateLabel:(BOOL)useDateLabel
 {
     MPMediaItem *song = self.tracks[indexPath.row];
-    cell.labelView.text = [song valueForProperty:MPMediaItemPropertyTitle];
+    cell.textView.text = [song valueForProperty:MPMediaItemPropertyTitle];
 }
 
 #pragma mark - Table view delegate

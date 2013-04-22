@@ -8,9 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface EPBrowserCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet UILabel *labelView;
+@class EPBrowseTableController;
+
+@interface EPBrowserCell : UITableViewCell <UITextFieldDelegate>
+@property (weak, nonatomic) IBOutlet UITextField *textView;
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
+@property (weak, nonatomic) EPBrowseTableController *parentController;
 
 @end

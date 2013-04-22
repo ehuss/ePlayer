@@ -120,7 +120,7 @@
 {
     NSArray *albums = sections[indexPath.section];
     EPMediaItemWrapper *album = [albums objectAtIndex:indexPath.row];
-    cell.labelView.text = album.albumTitle;
+    cell.textView.text = album.albumTitle;
 }
 
 /*

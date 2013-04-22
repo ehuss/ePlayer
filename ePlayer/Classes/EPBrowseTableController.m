@@ -127,6 +127,8 @@ NSUInteger minEntriesForSections = 10;
         indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
     }
     [self updateCell:cell forIndexPath:indexPath withSections:data withDateLabel:useDateLabel];
+    cell.parentController = self;
+    cell.textView.enabled = self.renaming;
     return cell;
 }
 
@@ -423,5 +425,22 @@ sectionForSectionIndexTitle:(NSString *)title
     // Return YES to cause the search result table view to be reloaded.
     return YES;
 }
+
+/*****************************************************************************/
+/* Cell text field                                                           */
+/*****************************************************************************/
+//- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+//{
+//    if (self.editing) {
+//        return YES;
+//    } else {
+//        return NO;
+//    }
+//}
+- (void)rename:(EPBrowserCell *)cell to:(NSString *)newText
+{
+    
+}
+
 
 @end

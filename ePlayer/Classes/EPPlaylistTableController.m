@@ -99,6 +99,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     UIButton *cutButton = (UIButton *)[cell viewWithTag:2];
     UIButton *copyButton = (UIButton *)[cell viewWithTag:3];
     UIButton *pasteButton = (UIButton *)[cell viewWithTag:4];
+    UIButton *renameButton = (UIButton *)[cell viewWithTag:5];
     [deleteButton addTarget:self action:@selector(delete:)
            forControlEvents:UIControlEventTouchUpInside];
     [cutButton addTarget:self action:@selector(cut:)
@@ -107,6 +108,8 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
          forControlEvents:UIControlEventTouchUpInside];
     [pasteButton addTarget:self action:@selector(paste:)
           forControlEvents:UIControlEventTouchUpInside];
+    [renameButton addTarget:self action:@selector(rename:)
+           forControlEvents:UIControlEventTouchUpInside];
     return cell;
 }
 
@@ -133,7 +136,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
      withDateLabel:(BOOL)useDateLabel
 {
     Entry *entry = sections[indexPath.section][indexPath.row];
-    cell.labelView.text = entry.name;
+    cell.textView.text = entry.name;
     if ([entry.class isSubclassOfClass:[Folder class]]) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     } else {
@@ -521,17 +524,24 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 
 
 /*****************************************************************************/
-/* Insert Cell                                                               */
+/* Insert Cell/Text Field                                                    */
 /*****************************************************************************/
+
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-    //NSIndexPath *currRow = [self cellIndexPathForField:textField];
+    // Insert.
     if ([textField.text length]) {
         [self addFolderWithText:textField.text];
         // Reset the insert cell so you can add another.
         textField.text = nil;
     }
+}
+
+- (NSIndexPath *)cellIndexPathForField:(UITextField *)textField
+{
+    UITableViewCell *parentCell = (UITableViewCell *)[[textField superview] superview];
+    return [self.tableView indexPathForCell:parentCell];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -568,6 +578,34 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:1]]
                           withRowAnimation:UITableViewRowAnimationAutomatic];
     [self.tableView endUpdates];
+}
+
+
+/*****************************************************************************/
+/* Rename                                                                    */
+/*****************************************************************************/
+- (void)rename:(id)sender
+{
+    BOOL renaming = !self.renaming;
+    self.renaming = renaming;
+    UIButton *b = sender;
+    b.selected = renaming;
+//    b.highlighted = YES;
+    // Enable the text fields.
+    for (UITableViewCell *cell in self.tableView.visibleCells) {
+        if ([cell.class isSubclassOfClass:EPBrowserCell.class]) {
+            EPBrowserCell *bcell = (EPBrowserCell *)cell;
+            bcell.textView.enabled = renaming;
+        }
+    }
+}
+
+- (void)rename:(EPBrowserCell *)cell to:(NSString *)newText
+{
+    NSIndexPath *path = [self.tableView indexPathForCell:cell];
+    Entry *entry = self.sections[path.section-1][path.row];
+    entry.name = newText;
+    // Will save when editing done.
 }
 
 /*****************************************************************************/
