@@ -9,6 +9,7 @@
 #import "EPCommon.h"
 
 NSCalendar *gregorianCalendar;
+UIPasteboard *playlistPasteboard;
 
 NSString *EPSettingArtistsSortOrder = @"artistsSortOrder";
 NSString *EPSettingAllAbumsSortOrder = @"allAlbumsSortOrder";

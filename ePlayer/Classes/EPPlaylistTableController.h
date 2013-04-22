@@ -10,14 +10,18 @@
 #import "EPCommon.h"
 #import "EPBrowseTableController.h"
 
-@interface EPPlaylistTableController : EPBrowseTableController
+@interface EPPlaylistTableController : EPBrowseTableController <UIActionSheetDelegate>
+{
+    Folder *_cutFolder;
+}
 
 - (void)loadRootFolder;
 - (EPPlaylistTableController *)copyMusicController;
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSManagedObjectModel *managedObjectModel;
+@property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (nonatomic, strong) Folder *folder;
-@property (nonatomic, strong) NSArray *sortedEntries;
+@property (nonatomic, readonly) Folder *cutFolder;
 
 @end

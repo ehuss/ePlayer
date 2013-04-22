@@ -24,6 +24,8 @@
     [defaults registerDefaults:@{EPSettingArtistsSortOrder: [NSNumber numberWithInt:EPSortOrderAlpha],
                                  EPSettingAllAbumsSortOrder: [NSNumber numberWithInt:EPSortOrderReleaseDate],
                                  EPSettingArtistAlbumsSortOrder: [NSNumber numberWithInt:EPSortOrderReleaseDate]}];
+    playlistPasteboard = [UIPasteboard pasteboardWithName:@"org.ehuss.ePlayer" create:YES];
+    playlistPasteboard.persistent = YES;
 //    MPMediaQuery *artists = [[MPMediaQuery alloc] init];
 //    [artists setGroupingType:MPMediaGroupingAlbumArtist];
 //    for (MPMediaItemCollection *artist in artists.collections) {
@@ -78,6 +80,7 @@
     self.playlistTableController = (EPPlaylistTableController *)self.playlistNavController.topViewController;
     self.playlistTableController.managedObjectContext = self.managedObjectContext;
     self.playlistTableController.managedObjectModel = self.managedObjectModel;
+    self.playlistTableController.persistentStoreCoordinator = self.persistentStoreCoordinator;
         
     if ([self loadData]) {
         // Database is ready.  Populate the view.
@@ -292,6 +295,17 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     rootFolder.addDate = [NSDate date];
     rootFolder.releaseDate = [NSDate distantPast];
     rootFolder.playDate = [NSDate distantPast];
+    
+    // Create a magic folder used for "cut".
+    Folder *cutFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
+                                                                  inManagedObjectContext:managedObjectContext];
+    cutFolder.name = @"Internal Cut Folder";
+    cutFolder.sortOrder = @(EPSortOrderManual);
+    // These dates are unused, but are required.
+    cutFolder.addDate = [NSDate date];
+    cutFolder.releaseDate = [NSDate distantPast];
+    cutFolder.playDate = [NSDate distantPast];
+
     
     // Create a magic folder used by the queue.
     Folder *queueFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"

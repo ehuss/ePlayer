@@ -20,6 +20,7 @@
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
     [super setEditing:editing animated:animated];
+    // Hide play button while editing.
     NSTimeInterval duration = animated ? 0.2 : 0;
     if (editing) {
         if (!self.playButton.hidden) {

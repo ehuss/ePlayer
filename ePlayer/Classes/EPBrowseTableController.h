@@ -16,6 +16,9 @@ extern NSUInteger minEntriesForSections;
 
 @interface EPBrowseTableController : UITableViewController
     <UISearchBarDelegate, UISearchDisplayDelegate, UITextFieldDelegate>
+{
+    NSArray *_controlCells;
+}
 
 - (void)updateCell:(EPBrowserCell *)cell
       forIndexPath:(NSIndexPath *)indexPath

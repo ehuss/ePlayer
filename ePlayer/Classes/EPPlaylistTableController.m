@@ -11,6 +11,9 @@
 #import "EPCommon.h"
 #import "EPPlayerController.h"
 
+static NSString *kEPOrphanFolderName = @"Orphaned Songs";
+//static NSString *kEPEntryUTI = @"org.ehuss.ePlayer.entry";
+
 @interface EPPlaylistTableController ()
 
 @end
@@ -23,6 +26,8 @@
     EPPlaylistTableController *controller = [[EPPlaylistTableController alloc] initWithStyle:UITableViewStylePlain];
     controller.managedObjectContext = self.managedObjectContext;
     controller.managedObjectModel = self.managedObjectModel;
+    controller.persistentStoreCoordinator = self.persistentStoreCoordinator;
+    controller.tableView.allowsMultipleSelectionDuringEditing = YES;
     return controller;
 }
 
@@ -51,12 +56,20 @@
              @(EPSortOrderManual)];
 }
 
+- (NSArray *)controlCells
+{
+    if (_controlCells == nil) {
+        _controlCells = @[[self createSortOrderCell],
+                          [self createInsertCell],
+                          [self createEditCell]];
+    }
+    return _controlCells;
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    self.controlCells = @[[self createSortOrderCell], [self createInsertCell]];
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -76,6 +89,26 @@
     return cell;
 }
 
+- (UITableViewCell *)createEditCell
+{
+    NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"EditCell"
+                                                      owner:self
+                                                    options:nil];
+    UITableViewCell *cell = nibViews[0];
+    UIButton *deleteButton = (UIButton *)[cell viewWithTag:1];
+    UIButton *cutButton = (UIButton *)[cell viewWithTag:2];
+    UIButton *copyButton = (UIButton *)[cell viewWithTag:3];
+    UIButton *pasteButton = (UIButton *)[cell viewWithTag:4];
+    [deleteButton addTarget:self action:@selector(delete:)
+           forControlEvents:UIControlEventTouchUpInside];
+    [cutButton addTarget:self action:@selector(cut:)
+        forControlEvents:UIControlEventTouchUpInside];
+    [copyButton addTarget:self action:@selector(copy:)
+         forControlEvents:UIControlEventTouchUpInside];
+    [pasteButton addTarget:self action:@selector(paste:)
+          forControlEvents:UIControlEventTouchUpInside];
+    return cell;
+}
 
 - (NSString *)filterPropertyName
 {
@@ -121,7 +154,7 @@
     // Determine which entry was tapped.
     UITableViewCell *cell = (UITableViewCell *)[[[gesture view] superview] superview];
     NSIndexPath *tappedIndexPath = [self.tableView indexPathForCell:cell];
-    Entry *entry = self.sortedEntries[tappedIndexPath.row];
+    Entry *entry = self.sections[tappedIndexPath.section][tappedIndexPath.row];
     // Stop whatever is playing.
     //[playerController clearQueue];
     // Add all of these items to the queue.
@@ -174,6 +207,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (self.editing) {
+        return;
+    }
     NSArray *data;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         data = self.filteredSections;
@@ -214,16 +250,16 @@
 
 - (void)updateSections
 {
-    self.sortedEntries = [self.folder sortedEntries];
+    NSArray *sortedEntries = [self.folder sortedEntries];
     // With a small number of entries, sections are a pain.
     if (self.sortOrder!=EPSortOrderManual &&
-            self.sortedEntries.count > minEntriesForSections) {
+            sortedEntries.count > minEntriesForSections) {
         NSMutableArray *sections = [[NSMutableArray alloc] init];
         self.sections = sections;
         self.sectionTitles = [[NSMutableArray alloc] init];
         NSMutableArray *currentSection = nil;
         NSString *currentSectionTitle = nil;
-        for (Entry *entry in self.sortedEntries) {
+        for (Entry *entry in sortedEntries) {
             NSString *sectionTitle = [self.folder sectionTitleForEntry:entry];
             // Is this entry a new section?
             if (currentSection == nil || [sectionTitle compare:currentSectionTitle]!=NSOrderedSame) {
@@ -236,7 +272,7 @@
         }
     } else {
         self.sections = [NSMutableArray arrayWithObject:
-                         [NSMutableArray arrayWithArray:self.sortedEntries]];
+                         [NSMutableArray arrayWithArray:sortedEntries]];
         self.sectionTitles = [NSMutableArray arrayWithObject:@""];
     }
 }
@@ -247,18 +283,11 @@
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
     [super setEditing:editing animated:animated];
-    // Add rows at the top to add a new folder and set sort order.
-    NSArray *indexPaths = @[[NSIndexPath indexPathForRow:0 inSection:0],
-                            [NSIndexPath indexPathForRow:1 inSection:0]
-                            ];
-
     if (editing) {
         self.showingControlCells = YES;
         self.indexesEnabled = NO;
         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0]
                       withRowAnimation:UITableViewRowAnimationAutomatic];
-//        [self.tableView insertRowsAtIndexPaths:indexPaths
-//                              withRowAnimation:UITableViewRowAnimationAutomatic];
     } else {
         if (self.showingControlCells) {
             // Save any changes made.
@@ -269,10 +298,11 @@
             // Clean up.
             self.showingControlCells = NO;
             self.indexesEnabled = YES;
+            // Would like to have this animated, but a bulk reload of the data
+            // prevents that.  Something like NSFetchedResultsController would
+            // probably work better.
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:0]
                           withRowAnimation:UITableViewRowAnimationAutomatic];
-//            [self.tableView deleteRowsAtIndexPaths:indexPaths
-//                                  withRowAnimation:UITableViewRowAnimationAutomatic];
             // Re-sort in case anything was added.
             [self updateSections];
             [self.tableView reloadData];
@@ -286,11 +316,12 @@
 {
     switch(editingStyle) {
         case UITableViewCellEditingStyleDelete: {
-            [self deleteRow:indexPath];            
+            // XXX: This is no longer supported.
             break;
         }
             
         case UITableViewCellEditingStyleInsert: {
+            // XXX: This is no longer supported.
             // User clicked the green plus sign on the "add row".
             // Force the keyboard to show.
             UITableViewCell *sourceCell = [tableView cellForRowAtIndexPath:indexPath];
@@ -302,6 +333,10 @@
         case UITableViewCellEditingStyleNone:
             break;
     }
+}
+
+- (void)reloadParents
+{
     // Tell any table controllers higher in the chain to reload, just in case
     // anything changed (dates, etc.).
     for (int i=0; i<self.navigationController.viewControllers.count-1; i++) {
@@ -311,23 +346,50 @@
     }
 }
 
-- (void)deleteRow:(NSIndexPath *)indexPath
+- (void)deleteRows:(NSArray *)indexPaths checkOrphans:(BOOL)doCheckOrphans
 {
-    // Adjust index for the 2 special rows if necessary.
-    NSIndexPath *realIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
-    // Figure out the entry being removed.
-    Entry *entry = self.sections[realIndexPath.section][realIndexPath.row];
-    [self.folder removeEntriesObject:entry];
+    // Determine the entries to delete.
+    NSMutableOrderedSet *entrySet = [NSMutableOrderedSet orderedSetWithCapacity:indexPaths.count];
+    // Remove from sections.  I'm not sure if indexPaths is guaranteed to be
+    // grouped by sections.  We need a set of indicies per section.
+    // Key is NSNumber section number, value is NSIndexSet.
+    NSMutableDictionary *toDelete = [NSMutableDictionary dictionaryWithCapacity:indexPaths.count];
+    for (NSIndexPath *path in indexPaths) {
+        // Adjust index for the 2 special rows if necessary.
+        NSIndexPath *realIndexPath = [NSIndexPath indexPathForRow:path.row inSection:path.section-1];
+        // Figure out the entry being removed.
+        Entry *entry = self.sections[realIndexPath.section][realIndexPath.row];
+        NSLog(@"Deleting %@", entry.name);
+        [entrySet addObject:entry];
+        // Add to the set of section data to clean up.
+        NSNumber *sectionNumber = [NSNumber numberWithInteger:realIndexPath.section];
+        NSMutableIndexSet *indexSet = [toDelete objectForKey:sectionNumber];
+        if (indexSet == nil) {
+            indexSet = [[NSMutableIndexSet alloc] init];
+            [toDelete setObject:indexSet forKey:sectionNumber];
+        }
+        [indexSet addIndex:realIndexPath.row];
+    }
+    [self.folder removeEntries:entrySet];
     // Will be committed when editing is done.
-    // Remove from sections.
-    NSMutableArray *section = self.sections[realIndexPath.section];
-    [section removeObjectAtIndex:realIndexPath.row];
-    // XXX What happens if this was last entry in section?
+
+    if (doCheckOrphans) {
+        for (Entry *entry in entrySet) {
+            // If any songs in this entry have no parents, put it into a special
+            // orphan folder.  Otherwise there would be no way to ever access them.
+            [self checkOrphans:entry];
+        }
+    }
+
+    [toDelete enumerateKeysAndObjectsUsingBlock:^(NSNumber *key, NSMutableIndexSet *obj, BOOL *stop) {
+        NSMutableArray *section = self.sections[key.integerValue];
+        [section removeObjectsAtIndexes:obj];
+        // XXX What happens if this was last entry in section?
+    }];
+    
     // Remove from table.
-    [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    // If any songs in this entry have no parents, put it into a special
-    // orphan folder.  Otherwise there would be no way to ever access them.
-    [self checkOrphans:entry];
+    [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self reloadParents];
 }
 
 - (void)checkOrphans:(Entry *)entry
@@ -337,18 +399,20 @@
         // Create a copy of the entries list so we can delete while iterating
         // over it.
         NSArray *entries = [NSArray arrayWithArray:[folder.entries array]];
+        NSLog(@"ORPHAN: Clearing folder %@", folder.name);
         for (Entry *subentry in entries) {
             // Remove first so that parents.count can be checked while recursing.
             [folder removeEntriesObject:subentry];
             [self checkOrphans:subentry];
         }
         if (folder.parents.count == 0) {
+            NSLog(@"ORPHAN: Permanently removing folder %@", folder.name);
             [self.managedObjectContext deleteObject:folder];
         }
     } else {
         Song *song = (Song *)entry;
         if (song.parents.count == 0) {
-            NSLog(@"Putting song into orphaned.");
+            NSLog(@"ORPHAN: Putting song %@ into orphaned.", song.name);
             // Put this song into the orphan folder.
             NSFetchRequest *request = [self.managedObjectModel fetchRequestTemplateForName:@"OrphanFolder"];
             NSError *error;
@@ -361,7 +425,7 @@
                 // Create the orphan folder.
                 orphanFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
                                                                        inManagedObjectContext:self.managedObjectContext];
-                orphanFolder.name = @"Orphaned Songs";
+                orphanFolder.name = kEPOrphanFolderName;
                 orphanFolder.sortOrder = @(EPSortOrderManual);
                 orphanFolder.addDate = [NSDate date];
                 orphanFolder.releaseDate = [NSDate distantPast];
@@ -386,7 +450,11 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return YES;
+    if (self.showingControlCells && indexPath.section==0) {
+        return NO;
+    } else {
+        return YES;
+    }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
@@ -425,22 +493,19 @@
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
            editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.showingControlCells && indexPath.section == 0) {
-        if (indexPath.row == 0) {
-            // Sort order cell.
-            return UITableViewCellEditingStyleNone;
-            
-        } else if (indexPath.row == 1) {
-            // Insert new folder cell.
-            return UITableViewCellEditingStyleInsert;
-        } else {
-            [NSException raise:@"InvalidControlCell" format:@"Too many control cells."];
-            return UITableViewCellEditingStyleNone;
-        }
-    } else {
-        // Existing cell.
-        return UITableViewCellEditingStyleDelete;
-    }
+    return UITableViewCellEditingStyleNone;
+    // Unfortunately looks like can't have StyleInsert with multiple selection.
+//    if (self.showingControlCells && indexPath.section == 0) {
+//        if (indexPath.row == 1) {
+//            // Insert new folder cell.
+//            return UITableViewCellEditingStyleInsert;
+//        } else {
+//            return UITableViewCellEditingStyleNone;
+//        }
+//    } else {
+//        // Existing cell.
+//        return UITableViewCellEditingStyleNone;
+//    }
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView
@@ -494,6 +559,7 @@
         section = self.sections[0];
     } else {
         section = [NSMutableArray arrayWithCapacity:10];
+        [self.sections addObject:section];
     }
     [section insertObject:folder atIndex:0];
     
@@ -504,5 +570,152 @@
     [self.tableView endUpdates];
 }
 
+/*****************************************************************************/
+/* Cut/Copy/Paste                                                            */
+/*****************************************************************************/
+
+- (BOOL)preventOrphanSelection:(NSString *)action emptyDeleteOK:(BOOL)emptyDeleteOK
+{
+    if (self.folder.parents.count == 0) {
+        Folder *orphanFolder = nil;
+        for (Entry *entry in self.folder.entries) {
+            if ([entry.name compare:kEPOrphanFolderName] == NSOrderedSame) {
+                orphanFolder = (Folder *)entry;
+                break;
+            }
+        }
+        if (orphanFolder) {
+            if (orphanFolder.entries.count == 0 && emptyDeleteOK) {
+                return NO;
+            }
+            for (NSIndexPath *path in [self.tableView indexPathsForSelectedRows]) {
+                Entry *entry = self.sections[path.section-1][path.row];
+                if (entry == orphanFolder) {
+                    NSString *message = [NSString stringWithFormat:@"Cannot %@ the orphaned songs folder.", action];
+                    UIAlertView *alert = [[UIAlertView alloc]
+                                          initWithTitle:@"Operation Not Permitted"
+                                          message:message
+                                          delegate:nil
+                                          cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alert show];
+                    return YES;
+                }
+            }
+        }
+    }
+    return NO;
+}
+
+- (void)delete:(id)sender
+{
+    if ([self preventOrphanSelection:@"delete" emptyDeleteOK:YES]) {
+        return;
+    }
+    // Display a confirmation.
+    NSString *title = [NSString stringWithFormat:@"Really delete %i items?",
+                       self.tableView.indexPathsForSelectedRows.count];
+    UIActionSheet *sheet = [[UIActionSheet alloc]
+                            initWithTitle:title
+                                 delegate:self
+                        cancelButtonTitle:@"Cancel"
+                   destructiveButtonTitle:@"Delete"
+                        otherButtonTitles:nil];
+    [sheet showFromTabBar:self.tabBarController.tabBar];
+
+}
+//UIActionSheetDelegate
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == actionSheet.cancelButtonIndex) {
+        return;
+    } else if (buttonIndex == actionSheet.destructiveButtonIndex) {
+        [self deleteRows:[self.tableView indexPathsForSelectedRows] checkOrphans:YES];
+    }
+}
+
+- (void)cut:(id)sender
+{
+    if([self preventOrphanSelection:@"cut" emptyDeleteOK:NO]) {
+        return;
+    }
+    NSArray *indexPaths = [self.tableView indexPathsForSelectedRows];
+    [self doCopyWithCut:YES];
+    // Remove these entries (shallow).
+    [self deleteRows:indexPaths checkOrphans:NO];
+}
+
+- (Folder *)cutFolder
+{
+    if (_cutFolder == nil) {
+        NSFetchRequest *request = [self.managedObjectModel fetchRequestTemplateForName:@"CutFolder"];
+        NSError *error;
+        NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
+        if (results==nil || results.count==0) {
+            NSLog(@"Failed to fetch cut folder: %@", error);
+            return nil;
+        }
+        _cutFolder = results[0];        
+    }
+    return _cutFolder;
+}
+
+- (void)clearCutFolder
+{
+    for (Entry *entry in self.cutFolder.entries) {
+        NSLog(@"Clearing Cut Folder: %@", entry.name);
+        [self checkOrphans:entry];
+    }
+    [self.cutFolder removeEntries:self.cutFolder.entries];
+}
+
+- (void)copy:(id)sender
+{
+    if([self preventOrphanSelection:@"copy" emptyDeleteOK:NO]) {
+        return;
+    }
+    [self doCopyWithCut:NO];
+}
+
+- (void)doCopyWithCut:(BOOL)doCut
+{
+    [self clearCutFolder];
+    NSMutableArray *copyItems = [NSMutableArray arrayWithCapacity:self.tableView.indexPathsForSelectedRows.count];
+    for (NSIndexPath *path in self.tableView.indexPathsForSelectedRows) {
+        // Figure out the entry being copied.
+        Entry *entry = self.sections[path.section-1][path.row];
+        //NSDictionary *item = @{kEPEntryUTI: [[entry objectID] URIRepresentation]};
+        [copyItems addObject:[[entry objectID] URIRepresentation]];
+        // Clear the current selection.
+        [self.tableView deselectRowAtIndexPath:path animated:YES];
+        if (doCut) {
+            // Move entry to the cut folder.
+            [self.cutFolder addEntriesObject:entry];
+        }
+    }
+    playlistPasteboard.URLs = copyItems;
+}
+
+- (void)paste:(id)sender
+{
+    // XXX Verify any pasted folders are not self or any parents.
+    for (NSURL *objURI in playlistPasteboard.URLs) {
+        if (objURI) {
+            NSManagedObjectID *objID = [self.persistentStoreCoordinator managedObjectIDForURIRepresentation:objURI];
+            if (objID) {
+                Entry *entry = (Entry *)[self.managedObjectContext objectWithID:objID];
+                if (entry) {
+                    [self.folder addEntriesObject:entry];
+                    // Remove (it may not be in there).
+                    [self.cutFolder removeEntriesObject:entry];
+                }
+            }
+        }
+    }
+    // Clear out the cut folder in case we aren't pasting from there.
+    [self clearCutFolder];
+    [self updateSections];
+    [self.tableView reloadData];
+    
+}
 
 @end

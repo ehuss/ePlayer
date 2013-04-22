@@ -15,6 +15,7 @@
     <entity name="Song" representedClassName="Song" parentEntity="Entry" syncable="YES">
         <attribute name="persistentID" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
     </entity>
+    <fetchRequest name="CutFolder" entity="Folder" predicateString="name == &quot;Internal Cut Folder&quot;"/>
     <fetchRequest name="OrphanFolder" entity="Folder" predicateString="name == &quot;Orphaned Songs&quot;"/>
     <fetchRequest name="QueueFolder" entity="Folder" predicateString="name == &quot;Queue&quot;"/>
     <fetchRequest name="RootFolder" entity="Folder" predicateString="name == &quot;Playlists&quot;"/>
