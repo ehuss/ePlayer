@@ -699,11 +699,13 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 
 - (void)clearCutFolder
 {
-    for (Entry *entry in self.cutFolder.entries) {
+    // Make a copy so we can iterate over them after removing them from the folder.
+    NSArray *entries = [NSArray arrayWithArray:[self.cutFolder.entries array]];
+    [self.cutFolder removeEntries:self.cutFolder.entries];
+    for (Entry *entry in entries) {
         NSLog(@"Clearing Cut Folder: %@", entry.name);
         [self checkOrphans:entry];
     }
-    [self.cutFolder removeEntries:self.cutFolder.entries];
 }
 
 - (void)copy:(id)sender
