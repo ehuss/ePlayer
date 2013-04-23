@@ -10,12 +10,6 @@ TODO
 
 High
 ====
-- "Collapse" action in edit.  Deletes a folder and moves its contents to its place.
-- Allow "add folder" "return" key to be enabled when empty -- then ignore and don't create.
-- Consider:
-    - Remove "add folder" cell.  Have another button to "add" that pops up something to enter it.
-    - Move rename button to another row.  "Rename", "Add", "Collapse"
-- player timer starts on launch if music playing
 - Paste needs to check for loops.
 - updating playDate
 - press and hold play to append.
