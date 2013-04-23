@@ -19,6 +19,9 @@
 - (void)pause;
 - (void)stop;
 - (void)clearQueue;
+// Array of MPMediaItems.
+- (void)changeQueueItems:(NSArray *)items;
+
 // Stop, clear queue, and play these items.
 - (void)playItems:(NSArray *)items;
 // Array of MPMediaItem objects.

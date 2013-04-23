@@ -178,6 +178,7 @@
     EPAlbumTableController *albumController = [[EPAlbumTableController alloc]
                                                      initWithStyle:UITableViewStylePlain];
     albumController.albums = [self artistAlbums:artist.albumArtist];
+    albumController.title = artist.artist;
     [self.navigationController pushViewController:albumController animated:YES];
 }
 

@@ -24,6 +24,7 @@
 		0719E3741726248100D325B5 /* queue-volume-off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E3731726248100D325B5 /* queue-volume-off@2x.png */; };
 		0719E3761726268E00D325B5 /* queue-volume-on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E3751726268E00D325B5 /* queue-volume-on@2x.png */; };
 		0719E37917262A7D00D325B5 /* UIImage+EPCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */; };
+		0719E37B1726356900D325B5 /* play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E37A1726356900D325B5 /* play@2x.png */; };
 		0755C2F21714BE0300AAF81F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F11714BE0300AAF81F /* UIKit.framework */; };
 		0755C2F41714BE0300AAF81F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F31714BE0300AAF81F /* Foundation.framework */; };
 		0755C2F61714BE0300AAF81F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F51714BE0300AAF81F /* CoreGraphics.framework */; };
@@ -52,7 +53,6 @@
 		076779E31718E11300D1784D /* EPPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 076779E21718E11300D1784D /* EPPlayerController.m */; };
 		07677A4E171924F200D1784D /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A40171924F200D1784D /* pause.png */; };
 		07677A4F171924F200D1784D /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A41171924F200D1784D /* play.png */; };
-		07677A50171924F200D1784D /* queue-buttons@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A42171924F200D1784D /* queue-buttons@2x.png */; };
 		07677A51171924F200D1784D /* queue-next.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A43171924F200D1784D /* queue-next.png */; };
 		07677A52171924F200D1784D /* queue-next@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A44171924F200D1784D /* queue-next@2x.png */; };
 		07677A53171924F200D1784D /* queue-pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A45171924F200D1784D /* queue-pause.png */; };
@@ -117,6 +117,7 @@
 		0719E3751726268E00D325B5 /* queue-volume-on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-volume-on@2x.png"; sourceTree = "<group>"; };
 		0719E37717262A7B00D325B5 /* UIImage+EPCrop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+EPCrop.h"; sourceTree = "<group>"; };
 		0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+EPCrop.m"; sourceTree = "<group>"; };
+		0719E37A1726356900D325B5 /* play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play@2x.png"; sourceTree = "<group>"; };
 		0755C2EE1714BE0300AAF81F /* ePlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ePlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0755C2F11714BE0300AAF81F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0755C2F31714BE0300AAF81F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -159,7 +160,6 @@
 		076779E21718E11300D1784D /* EPPlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayerController.m; sourceTree = "<group>"; };
 		07677A40171924F200D1784D /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
 		07677A41171924F200D1784D /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
-		07677A42171924F200D1784D /* queue-buttons@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-buttons@2x.png"; sourceTree = "<group>"; };
 		07677A43171924F200D1784D /* queue-next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-next.png"; sourceTree = "<group>"; };
 		07677A44171924F200D1784D /* queue-next@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-next@2x.png"; sourceTree = "<group>"; };
 		07677A45171924F200D1784D /* queue-pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-pause.png"; sourceTree = "<group>"; };
@@ -315,10 +315,10 @@
 				0718E6491723426400301D0E /* NSManagedObjectModel+KCOrderedAccessorFix.m */,
 				0719E37717262A7B00D325B5 /* UIImage+EPCrop.h */,
 				0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */,
-				079B414E171E9F940036F0D4 /* EPBrowserCell.h */,
-				079B414F171E9F960036F0D4 /* EPBrowserCell.m */,
 				079B4142171E139A0036F0D4 /* NSArray+EPMap.h */,
 				079B4143171E139C0036F0D4 /* NSArray+EPMap.m */,
+				079B414E171E9F940036F0D4 /* EPBrowserCell.h */,
+				079B414F171E9F960036F0D4 /* EPBrowserCell.m */,
 				079B4145171E309B0036F0D4 /* EPCommon.h */,
 				079B4146171E309B0036F0D4 /* EPCommon.m */,
 				07677A5C1719264E00D1784D /* EPScrubberView.h */,
@@ -385,17 +385,17 @@
 				079B4164171F5BBF0036F0D4 /* header-background@2x.png */,
 				079B4122171B961B0036F0D4 /* current-queue-item-playing@2x.png */,
 				079B4123171B961B0036F0D4 /* current-queue-item-stopped@2x.png */,
-				079B4124171B961C0036F0D4 /* queue-pause@2x.png */,
 				07677A6A171A2A1500D1784D /* missing-art.png */,
 				07677A68171A28F300D1784D /* missing-art@2x.png */,
 				07677A5F1719380900D1784D /* scrubber-track-max@2x.png */,
 				07677A601719380900D1784D /* scrubber-track-min@2x.png */,
 				07677A40171924F200D1784D /* pause.png */,
 				07677A41171924F200D1784D /* play.png */,
-				07677A42171924F200D1784D /* queue-buttons@2x.png */,
+				0719E37A1726356900D325B5 /* play@2x.png */,
 				07677A43171924F200D1784D /* queue-next.png */,
 				07677A44171924F200D1784D /* queue-next@2x.png */,
 				07677A45171924F200D1784D /* queue-pause.png */,
+				079B4124171B961C0036F0D4 /* queue-pause@2x.png */,
 				07677A46171924F200D1784D /* queue-play.png */,
 				07677A47171924F200D1784D /* queue-play@2x.png */,
 				07677A48171924F200D1784D /* queue-prev.png */,
@@ -498,7 +498,6 @@
 				0755C30B1714BE0400AAF81F /* MainStoryboard_iPhone.storyboard in Resources */,
 				07677A4E171924F200D1784D /* pause.png in Resources */,
 				07677A4F171924F200D1784D /* play.png in Resources */,
-				07677A50171924F200D1784D /* queue-buttons@2x.png in Resources */,
 				07677A51171924F200D1784D /* queue-next.png in Resources */,
 				07677A52171924F200D1784D /* queue-next@2x.png in Resources */,
 				07677A53171924F200D1784D /* queue-pause.png in Resources */,
@@ -531,6 +530,7 @@
 				0719E2ED1724C76400D325B5 /* EditCell.xib in Resources */,
 				0719E3741726248100D325B5 /* queue-volume-off@2x.png in Resources */,
 				0719E3761726268E00D325B5 /* queue-volume-on@2x.png in Resources */,
+				0719E37B1726356900D325B5 /* play@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

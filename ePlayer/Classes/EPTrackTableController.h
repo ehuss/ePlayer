@@ -11,6 +11,7 @@
 
 @interface EPTrackTableController : EPLibTableController
 
+// Array of MPMediaItems
 @property (nonatomic, strong) NSArray *tracks;
 
 @end

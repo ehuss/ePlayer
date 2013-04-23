@@ -178,6 +178,7 @@
     EPTrackTableController *trackController = [[EPTrackTableController alloc]
                                                initWithStyle:UITableViewStylePlain];
     trackController.tracks = [self albumTracks:album.albumPersistentID];
+    trackController.title = album.albumTitle;
     [self.navigationController pushViewController:trackController animated:YES];
 }
 

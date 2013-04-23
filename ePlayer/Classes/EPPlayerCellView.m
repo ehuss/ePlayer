@@ -49,6 +49,7 @@
     CGContextSetRGBStrokeColor(ctx, 0.3, 0.3, 0.3, 1.0);
     CGContextSetLineWidth(ctx, 1.0);
     
+    // Draw separators.
     CGContextMoveToPoint(ctx, 60, 0);
     CGContextAddLineToPoint(ctx, 60, self.bounds.size.height);
     CGContextMoveToPoint(ctx, 260, 0);
@@ -59,21 +60,26 @@
 
 - (void)setCurrent:(BOOL)playing
 {
-    NSString *imageName;
-    if (playing) {
-        imageName = @"current-queue-item-playing";
-    } else {
-        imageName = @"current-queue-item-stopped";
+    if (!self.currentItemView) {
+        NSString *imageName;
+        if (playing) {
+            imageName = @"current-queue-item-playing";
+        } else {
+            imageName = @"current-queue-item-stopped";
+        }
+        self.currentItemView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
+        [self.currentItemView sizeToFit];
+        self.currentItemView.center = CGPointMake(52, 22);
+        [self addSubview:self.currentItemView];
     }
-    self.currentItemView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
-    [self.currentItemView sizeToFit];
-    self.currentItemView.center = CGPointMake(55, 22);
-    [self addSubview:self.currentItemView];
 }
 
 - (void)unsetCurrent
 {
-    [self.currentItemView removeFromSuperview];
+    if (self.currentItemView) {
+        [self.currentItemView removeFromSuperview];
+        self.currentItemView = nil;
+    }
 }
 
 @end

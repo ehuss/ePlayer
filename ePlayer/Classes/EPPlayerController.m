@@ -160,6 +160,11 @@
     int duration = (int)[[item valueForProperty:MPMediaItemPropertyPlaybackDuration] doubleValue];
     cview.trackTimeLabel.text = [NSString stringWithFormat:@"%i:%02i",
                                  duration/60, duration%60];
+    if (item == self.player.nowPlayingItem) {
+        [cview setCurrent:self.player.playbackState==MPMusicPlaybackStatePlaying];
+    } else {
+        [cview unsetCurrent];
+    }
     return cell;
 }
 
@@ -223,14 +228,15 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"Selected cell.");
+    MPMediaItem *item = self.queueItems.items[indexPath.row];
+    self.player.nowPlayingItem = item;
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
     [super setEditing:editing animated:animated];
     [self.tableView setEditing:editing animated:animated];
-    
 }
 
 /****************************************************************************/
@@ -493,7 +499,26 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     }
     [self updateScrubber];
     [self updatePlaybackState];
-    
+    [self updateCurrentPlayingCell];
+}
+
+- (void)updateCurrentPlayingCell
+{
+    // First clear.
+    for (UITableViewCell *cell in self.tableView.visibleCells) {
+        EPPlayerCellView *cview = cell.contentView.subviews[0];
+        [cview unsetCurrent];
+    }
+    // Now determine which one.
+    NSUInteger index = [self.queueItems.items indexOfObject:self.player.nowPlayingItem];
+    if (index != NSNotFound) {
+        NSIndexPath *path = [NSIndexPath indexPathForRow:index inSection:0];
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:path];
+        if (cell) {
+            EPPlayerCellView *cview = cell.contentView.subviews[0];
+            [cview setCurrent:self.player.playbackState==MPMusicPlaybackStatePlaying];
+        }
+    }
 }
 
 - (void)updateTimeLabels
@@ -575,6 +600,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             if (self.playButton) {
                 [self.playButton setImage:[UIImage imageNamed:@"queue-play"] forState:UIControlStateNormal];
                 [self stopTimer];
+                [self updateCurrentPlayingCell];
             }
             break;
         case MPMusicPlaybackStatePlaying:
@@ -582,6 +608,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             if (self.playButton) {
                 [self.playButton setImage:[UIImage imageNamed:@"queue-pause"] forState:UIControlStateNormal];
                 [self startTimer];
+                [self updateCurrentPlayingCell];
             }
             break;
         case MPMusicPlaybackStatePaused:
@@ -589,6 +616,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             if (self.playButton) {
                 [self.playButton setImage:[UIImage imageNamed:@"queue-play"] forState:UIControlStateNormal];
                 [self stopTimer];
+                [self updateCurrentPlayingCell];
             }
             break;
         case MPMusicPlaybackStateInterrupted:
