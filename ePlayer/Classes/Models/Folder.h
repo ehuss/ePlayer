@@ -18,6 +18,8 @@
 
 - (NSArray *)sortedEntries;
 
+- (Folder *)clone;
+
 @property (nonatomic, retain) NSNumber * sortOrder;
 @property (nonatomic, retain) NSOrderedSet *entries;
 

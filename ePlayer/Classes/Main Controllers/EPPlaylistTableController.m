@@ -703,10 +703,15 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
             if (objID) {
                 Entry *entry = (Entry *)[self.managedObjectContext objectWithID:objID];
                 if (entry) {
+                    entry = [self checkPasteCycle:entry];
                     [self.folder addEntriesObject:entry];
                     // Remove (it may not be in there).
                     [self.cutFolder removeEntriesObject:entry];
+                } else {
+                    NSLog(@"Paste: Failed to load Entry with object ID %@", objID);
                 }
+            } else {
+                NSLog(@"Paste: Failed to determine object ID from URI: %@", objURI);
             }
         }
     }
@@ -714,7 +719,56 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     [self clearCutFolder];
     [self updateSections];
     [self.tableView reloadData];
-    
+}
+
+- (Entry *)checkPasteCycle:(Entry *)entry
+{
+    // This may not be perfect, but seems to work well enough.
+    if ([entry.class isSubclassOfClass:[Folder class]]) {
+        Folder *folder = (Folder *)entry;
+        // Verify that this is not self or any parents of self.
+        folder = [self fixCycles:folder];
+        return folder;
+    } else {
+        // XXX: Make a copy if it already exists in the current folder?
+        return entry;
+    }
+}
+
+- (Folder *)fixCycles:(Folder *)folder
+{
+    if ([self folder:folder inParents:self.folder]) {
+        NSLog(@"Cycle: Clone %@", folder.name);
+        folder = [folder clone];
+    }
+    // Verify no sub-folders in folder are a parent.
+    NSUInteger index = 0;
+    for (Entry *entry in folder.entries) {
+        if ([entry.class isSubclassOfClass:[Folder class]]) {
+            Folder *newEntry = [self fixCycles:(Folder *)entry];
+            if (newEntry != entry) {
+                [folder replaceObjectInEntriesAtIndex:index withObject:newEntry];
+            }
+        }
+        index += 1;
+    }
+    return folder;
+}
+
+- (BOOL)folder:(Folder *)folder inParents:(Folder *)inFolder
+{
+    if (folder == inFolder) {
+        return YES;
+    }
+    if ([inFolder.parents containsObject:folder]) {
+        return YES;
+    }
+    for (Folder *parent in inFolder.parents) {
+        if ([self folder:folder inParents:parent]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 /*****************************************************************************/

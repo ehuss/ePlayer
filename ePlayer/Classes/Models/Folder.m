@@ -17,6 +17,20 @@
 // Note: NSManagedObject sets NS_REQUIRES_PROPERTY_DEFINTIONS, so automatic
 // property synthesis is not available.  You must @synthensize any new properties.
 
+- (Folder *)clone
+{
+    Folder *folder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
+                                                             inManagedObjectContext:self.managedObjectContext];
+    folder.name = [NSString stringWithFormat:@"%@ Copy", self.name];
+    folder.sortOrder = self.sortOrder;
+    folder.addDate = [NSDate date];
+    folder.releaseDate = self.releaseDate;
+    folder.playDate = self.playDate;
+    folder.playCount = self.playCount;
+    folder.entries = self.entries;
+    return folder;
+}
+
 - (NSArray *)sortedEntries
 {
     if ([self.sortOrder intValue] == EPSortOrderManual) {
