@@ -54,6 +54,7 @@ static CGFloat textViewOffset = 4.0;
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
+    NSLog(@"Should begin editing: %hhd renaming=%hhd", self.editing, self.parentController.renaming);
     return self.parentController.renaming;
 }
 

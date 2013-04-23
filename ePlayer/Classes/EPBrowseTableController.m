@@ -135,7 +135,6 @@ NSUInteger minEntriesForSections = 10;
 - (void)touchSortOrder:(EPSegmentedControl *)sender
 {
     // Exit editing mode.
-    self.showingControlCells = NO;
     if (self.editing) {
         [self setEditing:NO animated:YES];
     }

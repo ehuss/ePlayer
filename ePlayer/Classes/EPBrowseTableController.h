@@ -18,6 +18,7 @@ extern NSUInteger minEntriesForSections;
     <UISearchBarDelegate, UISearchDisplayDelegate, UITextFieldDelegate>
 {
     NSArray *_controlCells;
+    BOOL _renaming;
 }
 
 - (void)updateCell:(EPBrowserCell *)cell

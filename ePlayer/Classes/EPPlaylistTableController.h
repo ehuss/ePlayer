@@ -23,5 +23,6 @@
 @property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (nonatomic, strong) Folder *folder;
 @property (nonatomic, readonly) Folder *cutFolder;
+@property (nonatomic, assign) BOOL focusAddFolder;
 
 @end

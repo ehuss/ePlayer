@@ -1,64 +1,59 @@
+*****
+NOTES
+*****
 - CoreData debugging:
   Product -> Edit Scheme -> Run APP -> Arguments -> -com.apple.CoreData.SQLDebug 1
-- scrubber is a little sloppy.
-  - Letting go, it jumps around sometimes.
-- Clicking "Edit", should the 2 cells (sort/insert) go into a special "0" 
-  section, and all sections get offset by +1?
 
-TODO:
+****
+TODO
+****
+
+High
+====
+- "Collapse" action in edit.  Deletes a folder and moves its contents to its place.
+- Allow "add folder" "return" key to be enabled when empty -- then ignore and don't create.
+- Consider:
+    - Remove "add folder" cell.  Have another button to "add" that pops up something to enter it.
+    - Move rename button to another row.  "Rename", "Add", "Collapse"
 - player timer starts on launch if music playing
+- Paste needs to check for loops.
+- updating playDate
+- press and hold play to append.
+- songs should display length in EntryCell (and folders show sum (or count)?)
+- show album art next to entry of a playlist that is all from one album?
+    - Individual songs should always show art if available.
+    - album view - show like ipod app (album art, summary at top, etc.)
+        - playlist should try to detect this and do the same.
+- Queue editing
+    - Remove
+    - Rearrange
+    - Save
+        - Update or new?
+    - Don't forget to update left-column numbers after edit.
+    - Fix background cell color alternating while rearranging.
+- Some way to view lyrics.
+- Icon
 
-- Editing buttons should have some images.  "rename" needs "selected" image.
+Medium
+======
 - Paste button should have a # indicating the number of items.
 - Delete should show how many items (recursively).
-- Paste needs to check for loops.
-- Can clicking on edit button hide the tab bar?
-- Should del/cut/copy/paste buttons somehow be static (don't scroll with table)?
-
-- updating playDate
-- play tapped artist/album/track
-- in playlist view, hit "edit", should disable "go back" button.
-- resize entrycell title width to attach to accessory view (disclosure obscures if section indexes).
-- press and hold play to append.
-- folder of songs only should be sorted manually only (by track #) in playlist
 - restore state of selected tab/etc
-- show album art next to entry of a playlist that is all from one album?
-- album view: show art next to name
-- MANUAL sort order for a folder.  Default on import is track order.
-    - Display index number in manual sort order next to track name.
-        - Display in columns like queue view?
-- Display track length next to songs in browser.
-- album view - show like ipod app (album art, summary at top, etc.)
-- bring back custom header, don't rename tab ("Sort Order").
-- if only 1 (or 2?) section, don't show section/indexes.
-
-- never played entries have play year of "1"?
-- queue:
-    - remove side scroller of table view?
-    - After rearrange, update cell queue # label
-- Play All entry at the top of each list?
-- Play icon into table list -- should have transparent background (highlight looks weird).
-    - make play button full height (44?) of table cell
 - handle MPMediaLibraryDidChangeNotification?
-
-
-- timer fired when opening queue, even if nothing playing.
-- timer keeps firing when leaving queue
-
-- "playback stopped" or "now playing set to nil" should stop timer.
-- Fix sorting. ****
-    - Finish artists/albums (and "tracks")
-- Show "play" icon next to currently playing item.
-- When first bringing up the queue, initialize display from ipod player queue.
+    - Resync at start?  Or manual?
 - When paused, change scrubber thumb to red.
-- Handle clicking an item in the queue.
+- Queue tab icon - change speaker icon to not have arcs when not playing.
 
-- Playlist editing/saving.
-  - Fix background cell color alternating while rearranging.
-- Bring back loadData.
+Low
+===
 - Fix alpha sorting so that !Uno! sorts correctly
+- Editing buttons should have some images.  "rename" needs "selected" image.
+- scrubber is a little sloppy.
+  - Letting go, it jumps around sometimes.
+- resize entrycell title width to attach to accessory view (disclosure obscures if section indexes).
 
-
-FUTURE
-======
+Ideas
+=====
+- Should del/cut/copy/paste buttons somehow be static (don't scroll with table)?
 - scrubber should pop up audio visualization.
+

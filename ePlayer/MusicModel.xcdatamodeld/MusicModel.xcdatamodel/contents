@@ -13,7 +13,7 @@
         <relationship name="entries" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Entry" inverseName="parents" inverseEntity="Entry" syncable="YES"/>
     </entity>
     <entity name="Song" representedClassName="Song" parentEntity="Entry" syncable="YES">
-        <attribute name="persistentID" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="persistentID" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
     </entity>
     <fetchRequest name="CutFolder" entity="Folder" predicateString="name == &quot;Internal Cut Folder&quot;"/>
     <fetchRequest name="OrphanFolder" entity="Folder" predicateString="name == &quot;Orphaned Songs&quot;"/>

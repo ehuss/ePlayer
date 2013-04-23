@@ -345,7 +345,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)clearQueueFolder
 {
-    [self.queueFolder removeEntries:self.queueFolder.entries];
+    //[self.queueFolder removeEntries:self.queueFolder.entries];
+    self.queueFolder.entries = [NSOrderedSet orderedSet];
     NSError *error;
     if (![self.managedObjectContext save:&error]) {
         NSLog(@"Failed to save: %@", error);
@@ -384,7 +385,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             NSLog(@"Failed to query for entries: %@", error);
         } else {
             Song *song = results[0];
-            NSLog(@"adding %@", song);
+            NSLog(@"adding %@", song.name);
             [self.queueFolder addEntriesObject:song];
         }
     }

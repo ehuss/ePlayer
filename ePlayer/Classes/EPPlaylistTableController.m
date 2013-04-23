@@ -60,8 +60,8 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 {
     if (_controlCells == nil) {
         _controlCells = @[[self createSortOrderCell],
-                          [self createInsertCell],
-                          [self createEditCell]];
+                          [self createEditCell],
+                          [self createEditCell2]];
     }
     return _controlCells;
 }
@@ -78,17 +78,6 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
-- (UITableViewCell *)createInsertCell
-{
-    NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"InsertCell"
-                                                      owner:self
-                                                    options:nil];
-    UITableViewCell *cell = nibViews[0];
-    UITextField *text = (UITextField *)[cell viewWithTag:1];
-    text.delegate = self;
-    return cell;
-}
-
 - (UITableViewCell *)createEditCell
 {
     NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"EditCell"
@@ -99,7 +88,6 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     UIButton *cutButton = (UIButton *)[cell viewWithTag:2];
     UIButton *copyButton = (UIButton *)[cell viewWithTag:3];
     UIButton *pasteButton = (UIButton *)[cell viewWithTag:4];
-    UIButton *renameButton = (UIButton *)[cell viewWithTag:5];
     [deleteButton addTarget:self action:@selector(delete:)
            forControlEvents:UIControlEventTouchUpInside];
     [cutButton addTarget:self action:@selector(cut:)
@@ -108,8 +96,27 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
          forControlEvents:UIControlEventTouchUpInside];
     [pasteButton addTarget:self action:@selector(paste:)
           forControlEvents:UIControlEventTouchUpInside];
+
+    return cell;
+}
+
+- (UITableViewCell *)createEditCell2
+{
+    NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"EditCell"
+                                                      owner:self
+                                                    options:nil];
+    UITableViewCell *cell = nibViews[1];
+    UIButton *renameButton = (UIButton *)[cell viewWithTag:1];
+    UIButton *addFolder = (UIButton *)[cell viewWithTag:2];
+    UIButton *collapse = (UIButton *)[cell viewWithTag:3];
+    
     [renameButton addTarget:self action:@selector(rename:)
            forControlEvents:UIControlEventTouchUpInside];
+    [addFolder addTarget:self action:@selector(addFolder:)
+        forControlEvents:UIControlEventTouchUpInside];
+    [collapse addTarget:self action:@selector(collapse:)
+       forControlEvents:UIControlEventTouchUpInside];
+    
     return cell;
 }
 
@@ -270,31 +277,6 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
             [self updateSections];
             [self.tableView reloadData];
         }
-    }
-}
-
-- (void)tableView:(UITableView *)tableView
-    commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
-    forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    switch(editingStyle) {
-        case UITableViewCellEditingStyleDelete: {
-            // XXX: This is no longer supported.
-            break;
-        }
-            
-        case UITableViewCellEditingStyleInsert: {
-            // XXX: This is no longer supported.
-            // User clicked the green plus sign on the "add row".
-            // Force the keyboard to show.
-            UITableViewCell *sourceCell = [tableView cellForRowAtIndexPath:indexPath];
-            UIView *textField = [sourceCell viewWithTag:1];
-            [textField becomeFirstResponder];
-        }
-            
-            break;
-        case UITableViewCellEditingStyleNone:
-            break;
     }
 }
 
@@ -488,28 +470,6 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 /*****************************************************************************/
 
 
-- (void)textFieldDidEndEditing:(UITextField *)textField
-{
-    // Insert.
-    if ([textField.text length]) {
-        [self addFolderWithText:textField.text];
-        // Reset the insert cell so you can add another.
-        textField.text = nil;
-    }
-}
-
-- (NSIndexPath *)cellIndexPathForField:(UITextField *)textField
-{
-    UITableViewCell *parentCell = (UITableViewCell *)[[textField superview] superview];
-    return [self.tableView indexPathForCell:parentCell];
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-	[textField resignFirstResponder];
-	return YES;
-}
-
 - (void)addFolderWithText:(NSString *)text
 {
     // New folder.
@@ -540,17 +500,44 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     [self.tableView endUpdates];
 }
 
+- (void)addFolder:(id)sender
+{
+    self.focusAddFolder = YES;
+    _renaming = YES;
+    [self addFolderWithText:@""];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
+    if (self.focusAddFolder && cell && indexPath.section==1 && indexPath.row==0) {
+        EPBrowserCell *bcell = (EPBrowserCell *)cell;
+        bcell.textView.enabled = YES;
+        // Unfortunately, becomreFirstResponder won't work until the view is actually up.
+        // UITableView does not provide a callback *after* a cell has been added/displayed.
+        [bcell.textView performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.2];
+    }
+    return cell;
+}
+
+
 
 /*****************************************************************************/
 /* Rename                                                                    */
 /*****************************************************************************/
 - (void)rename:(id)sender
 {
-    BOOL renaming = !self.renaming;
-    self.renaming = renaming;
-    UIButton *b = sender;
-    b.selected = renaming;
-//    b.highlighted = YES;
+    self.renaming = !self.renaming;
+}
+
+- (void)setRenaming:(BOOL)renaming
+{
+    _renaming = renaming;
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+    if (cell) {
+        UIButton *renameButton = (UIButton *)[cell viewWithTag:1];
+        renameButton.selected = renaming;
+    }
     // Enable the text fields.
     for (UITableViewCell *cell in self.tableView.visibleCells) {
         if ([cell.class isSubclassOfClass:EPBrowserCell.class]) {
@@ -558,6 +545,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
             bcell.textView.enabled = renaming;
         }
     }
+    
 }
 
 - (void)rename:(EPBrowserCell *)cell to:(NSString *)newText
@@ -566,6 +554,11 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     Entry *entry = self.sections[path.section-1][path.row];
     entry.name = newText;
     // Will save when editing done.
+    if (self.focusAddFolder) {
+        // Unfocus.
+        self.focusAddFolder = NO;
+        self.renaming = NO;        
+    }
 }
 
 /*****************************************************************************/
@@ -715,6 +708,15 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     [self clearCutFolder];
     [self updateSections];
     [self.tableView reloadData];
+    
+}
+
+/*****************************************************************************/
+/* Collapse                                                                  */
+/*****************************************************************************/
+
+- (void)collapse:(id)sender
+{
     
 }
 
