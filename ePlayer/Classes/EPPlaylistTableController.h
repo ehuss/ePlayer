@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "EPCommon.h"
 #import "EPBrowseTableController.h"
+#import "EPEditCell1.h"
+#import "EPEditCell2.h"
 
 @interface EPPlaylistTableController : EPBrowseTableController <UIActionSheetDelegate>
 {
@@ -24,5 +26,7 @@
 @property (nonatomic, strong) Folder *folder;
 @property (nonatomic, readonly) Folder *cutFolder;
 @property (nonatomic, assign) BOOL focusAddFolder;
+@property (nonatomic, strong) EPEditCell1 *editCell1;
+@property (nonatomic, strong) EPEditCell2 *editCell2;
 
 @end

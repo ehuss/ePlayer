@@ -210,6 +210,7 @@ NSUInteger minEntriesForSections = 10;
 {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                    reuseIdentifier:@"SortCell"];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     NSMutableArray *items = [NSMutableArray arrayWithCapacity:5];
     int selectedIndex = 0;
     NSArray *supportedSortOrders = [self supportedSortOrders];

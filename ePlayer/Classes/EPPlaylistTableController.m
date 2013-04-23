@@ -59,9 +59,30 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 - (NSArray *)controlCells
 {
     if (_controlCells == nil) {
+        NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"EditCell"
+                                                          owner:self
+                                                        options:nil];
+        self.editCell1 = nibViews[0];
+        self.editCell2 = nibViews[1];
+        [self.editCell1.deleteButton addTarget:self action:@selector(delete:)
+               forControlEvents:UIControlEventTouchUpInside];
+        [self.editCell1.cutButton addTarget:self action:@selector(cut:)
+            forControlEvents:UIControlEventTouchUpInside];
+        [self.editCell1.cpyButton addTarget:self action:@selector(copy:)
+             forControlEvents:UIControlEventTouchUpInside];
+        [self.editCell1.pasteButton addTarget:self action:@selector(paste:)
+              forControlEvents:UIControlEventTouchUpInside];
+
+        [self.editCell2.renameButton addTarget:self action:@selector(rename:)
+               forControlEvents:UIControlEventTouchUpInside];
+        [self.editCell2.addFolderButton addTarget:self action:@selector(addFolder:)
+            forControlEvents:UIControlEventTouchUpInside];
+        [self.editCell2.collapseButton addTarget:self action:@selector(collapse:)
+           forControlEvents:UIControlEventTouchUpInside];
+        
         _controlCells = @[[self createSortOrderCell],
-                          [self createEditCell],
-                          [self createEditCell2]];
+                          self.editCell1,
+                          self.editCell2];
     }
     return _controlCells;
 }
@@ -76,48 +97,6 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-}
-
-- (UITableViewCell *)createEditCell
-{
-    NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"EditCell"
-                                                      owner:self
-                                                    options:nil];
-    UITableViewCell *cell = nibViews[0];
-    UIButton *deleteButton = (UIButton *)[cell viewWithTag:1];
-    UIButton *cutButton = (UIButton *)[cell viewWithTag:2];
-    UIButton *copyButton = (UIButton *)[cell viewWithTag:3];
-    UIButton *pasteButton = (UIButton *)[cell viewWithTag:4];
-    [deleteButton addTarget:self action:@selector(delete:)
-           forControlEvents:UIControlEventTouchUpInside];
-    [cutButton addTarget:self action:@selector(cut:)
-        forControlEvents:UIControlEventTouchUpInside];
-    [copyButton addTarget:self action:@selector(copy:)
-         forControlEvents:UIControlEventTouchUpInside];
-    [pasteButton addTarget:self action:@selector(paste:)
-          forControlEvents:UIControlEventTouchUpInside];
-
-    return cell;
-}
-
-- (UITableViewCell *)createEditCell2
-{
-    NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"EditCell"
-                                                      owner:self
-                                                    options:nil];
-    UITableViewCell *cell = nibViews[1];
-    UIButton *renameButton = (UIButton *)[cell viewWithTag:1];
-    UIButton *addFolder = (UIButton *)[cell viewWithTag:2];
-    UIButton *collapse = (UIButton *)[cell viewWithTag:3];
-    
-    [renameButton addTarget:self action:@selector(rename:)
-           forControlEvents:UIControlEventTouchUpInside];
-    [addFolder addTarget:self action:@selector(addFolder:)
-        forControlEvents:UIControlEventTouchUpInside];
-    [collapse addTarget:self action:@selector(collapse:)
-       forControlEvents:UIControlEventTouchUpInside];
-    
-    return cell;
 }
 
 - (NSString *)filterPropertyName
@@ -178,6 +157,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.editing) {
+        [self updateEditCellStatus];
         return;
     }
     NSArray *data;
@@ -191,6 +171,13 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
         EPPlaylistTableController *controller = [self copyMusicController];
         controller.folder = (Folder *)entry;
         [self.navigationController pushViewController:controller animated:YES];
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.editing) {
+        [self updateEditCellStatus];
     }
 }
 
@@ -258,6 +245,8 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
         self.indexesEnabled = NO;
         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0]
                       withRowAnimation:UITableViewRowAnimationAutomatic];
+        // Make sure enabled status on buttons is correct.
+        [self updateEditCellStatus];        
     } else {
         if (self.showingControlCells) {
             // Save any changes made.
@@ -278,6 +267,17 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
             [self.tableView reloadData];
         }
     }
+}
+
+- (void)updateEditCellStatus
+{
+    BOOL haveSelections = self.tableView.indexPathsForSelectedRows.count != 0;
+    self.editCell1.deleteButton.enabled = haveSelections;
+    self.editCell1.cutButton.enabled = haveSelections;
+    self.editCell1.cpyButton.enabled = haveSelections;
+    self.editCell2.collapseButton.enabled = haveSelections;
+    BOOL havePasteItems = playlistPasteboard.URLs.count != 0;
+    self.editCell1.pasteButton.enabled = havePasteItems;
 }
 
 - (void)reloadParents
@@ -691,6 +691,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
         }
     }
     playlistPasteboard.URLs = copyItems;
+    [self updateEditCellStatus];
 }
 
 - (void)paste:(id)sender
