@@ -10,6 +10,7 @@
 #import "EPPlaylistTableController.h"
 #import "EPCommon.h"
 #import "EPPlayerController.h"
+#import <QuartzCore/QuartzCore.h>
 
 static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 //static NSString *kEPEntryUTI = @"org.ehuss.ePlayer.entry";
@@ -696,7 +697,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 
 - (void)paste:(id)sender
 {
-    // XXX Verify any pasted folders are not self or any parents.
+    NSUInteger count = 0;
     for (NSURL *objURI in playlistPasteboard.URLs) {
         if (objURI) {
             NSManagedObjectID *objID = [self.persistentStoreCoordinator managedObjectIDForURIRepresentation:objURI];
@@ -704,9 +705,12 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
                 Entry *entry = (Entry *)[self.managedObjectContext objectWithID:objID];
                 if (entry) {
                     entry = [self checkPasteCycle:entry];
-                    [self.folder addEntriesObject:entry];
-                    // Remove (it may not be in there).
-                    [self.cutFolder removeEntriesObject:entry];
+                    if (![self.folder.entries containsObject:entry]) {
+                        [self.folder addEntriesObject:entry];
+                        // Remove it (this is ignored if it is not there).
+                        [self.cutFolder removeEntriesObject:entry];
+                        count += 1;
+                    }
                 } else {
                     NSLog(@"Paste: Failed to load Entry with object ID %@", objID);
                 }
@@ -719,6 +723,20 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     [self clearCutFolder];
     [self updateSections];
     [self.tableView reloadData];
+    // Display a little popup that indicates how many entries pasted.
+    UILabel *pasteNote = [[UILabel alloc] init];
+    pasteNote.text = [NSString stringWithFormat:@"Pasted %u items.", count];
+    pasteNote.textColor = [UIColor whiteColor];
+    pasteNote.backgroundColor = [UIColor blackColor];
+    pasteNote.layer.cornerRadius = 4;
+    [pasteNote sizeToFit];
+    pasteNote.center = self.view.center;
+    [self.view addSubview:pasteNote];
+    [UIView animateWithDuration:2.0 delay:1.0 options:0 animations:^{
+        pasteNote.alpha = 0;
+    } completion:^(BOOL finished) {
+        [pasteNote removeFromSuperview];
+    }];
 }
 
 - (Entry *)checkPasteCycle:(Entry *)entry

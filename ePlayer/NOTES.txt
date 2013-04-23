@@ -10,7 +10,6 @@ TODO
 
 High
 ====
-- Paste: little pop-up that says "pasted X items"
 - updating playDate
 - press and hold play to append.
 - songs should display length in EntryCell (and folders show sum (or count)?)
