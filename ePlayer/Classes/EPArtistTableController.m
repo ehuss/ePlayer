@@ -177,14 +177,47 @@
     
     EPAlbumTableController *albumController = [[EPAlbumTableController alloc]
                                                      initWithStyle:UITableViewStylePlain];
+    albumController.albums = [self artistAlbums:artist.albumArtist];
+    [self.navigationController pushViewController:albumController animated:YES];
+}
+
+/*****************************************************************************/
+/* Action Methods                                                            */
+/*****************************************************************************/
+
+// Returns array of MPMediaItemCollection
+- (NSArray *)artistAlbums:(NSString *)albumArtist
+{
     MPMediaQuery *albumsQuery = [[MPMediaQuery alloc] init];
     [albumsQuery setGroupingType:MPMediaGroupingAlbum];
     MPMediaPropertyPredicate *pred = [MPMediaPropertyPredicate
-                                      predicateWithValue:artist.albumArtist
+                                      predicateWithValue:albumArtist
                                       forProperty:MPMediaItemPropertyAlbumArtist];
     [albumsQuery addFilterPredicate:pred];
-    albumController.albums = albumsQuery.collections;
-    [self.navigationController pushViewController:albumController animated:YES];
+    return albumsQuery.collections;
+}
+
+- (void)playTapped:(UITapGestureRecognizer *)gesture
+{
+    // Determine which entry was tapped.
+    UITableViewCell *cell = (UITableViewCell *)[[[gesture view] superview] superview];
+    NSIndexPath *tappedIndexPath = [self.tableView indexPathForCell:cell];
+    EPMediaItemWrapper *artist = self.sections[tappedIndexPath.section][tappedIndexPath.row];
+    // Make a list of MPMediaItems.
+    NSMutableArray *items = [[NSMutableArray alloc] init];
+    NSArray *albums = [self artistAlbums:artist.albumArtist];
+    // Sort release date oldest to newest.
+    NSArray *sortAlbums = [albums sortedArrayUsingComparator:^(MPMediaItemCollection *obj1, MPMediaItemCollection *obj2) {
+        NSDate *od1 = [[obj1 representativeItem] valueForProperty:MPMediaItemPropertyReleaseDate];
+        NSDate *od2 = [[obj2 representativeItem] valueForProperty:MPMediaItemPropertyReleaseDate];
+        return [od1 compare:od2];
+    }];
+    for (MPMediaItemCollection *album in sortAlbums) {
+        [items addObjectsFromArray:album.items];
+    }
+
+    [self.playerController playItems:items];
+    self.tabBarController.selectedIndex = 3;
 }
 
 @end

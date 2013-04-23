@@ -333,6 +333,11 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     self.player.nowPlayingItem = nil;
     [self.tableView reloadData];
     // Clear the db copy of the queue.
+    [self clearQueueFolder];
+}
+
+- (void)clearQueueFolder
+{
     [self.queueFolder removeEntries:self.queueFolder.entries];
     NSError *error;
     if (![self.managedObjectContext save:&error]) {
@@ -342,14 +347,20 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)addQueueItems:(NSArray *)items
 {
-    NSLog(@"Adding to queue: %@", items);
     NSArray *newItems;
     if (self.queueItems) {
         newItems = [self.queueItems.items arrayByAddingObjectsFromArray:items];
     } else {
         newItems = items;
     }
-    self.queueItems = [[MPMediaItemCollection alloc] initWithItems:newItems];
+    [self changeQueueItems:newItems];
+}
+
+- (void)changeQueueItems:(NSArray *)items
+{
+    NSLog(@"Setting queue: %@", items);
+    [self clearQueueFolder];
+    self.queueItems = [[MPMediaItemCollection alloc] initWithItems:items];
     [self.player setQueueWithItemCollection:self.queueItems];
     [self.tableView reloadData];
     // Save the db copy.
@@ -374,7 +385,59 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     if (![self.managedObjectContext save:&error]) {
         NSLog(@"Failed to save: %@", error);
     }
-    
+}
+
+- (void)playItems:(NSArray *)items
+{
+    [self changeQueueItems:items];
+    [self play];
+}
+
+/*****************************************************************************/
+/* Action Methods                                                            */
+/*****************************************************************************/
+
+- (void)playEntry:(Entry *)entry;
+{
+    // Stop whatever is playing.
+    //[playerController clearQueue];
+    // Add all of these items to the queue.
+    NSMutableArray *newItems = [NSMutableArray arrayWithCapacity:100];
+    [self addEntry:entry toArray:newItems];
+    // Add these items to the queue, start playback, and display the player.
+    // Guard against playing an empty folder (which would cause an exception
+    // when creating the MPMediaItemCollection).
+    if (newItems.count) {
+        [self playItems:newItems];
+    }
+}
+
+- (void)addEntry:(Entry *)entry toArray:(NSMutableArray *)array
+{
+    if ([entry isKindOfClass:[Folder class]]) {
+        Folder *folder = (Folder *)entry;
+        for (Entry *child in folder.sortedEntries) {
+            [self addEntry:child toArray:array];
+        }
+    } else {
+        // is Song type.
+        [self addSong:(Song *)entry toArray:array];
+    }
+}
+
+- (void)addSong:(Song *)song toArray:(NSMutableArray *)array
+{
+    MPMediaQuery *query = [[MPMediaQuery alloc] init];
+    MPMediaPropertyPredicate *pred = [MPMediaPropertyPredicate
+                                      predicateWithValue:song.persistentID
+                                      forProperty:MPMediaItemPropertyPersistentID];
+    [query addFilterPredicate:pred];
+    NSArray *result = query.items;
+    if (result.count) {
+        [array addObject:result[0]];
+    } else {
+        NSLog(@"Failed to fetch MPMediaItem for persistent ID song %@.", song.persistentID);
+    }
 }
 
 /****************************************************************************/

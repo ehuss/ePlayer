@@ -177,13 +177,34 @@
     
     EPTrackTableController *trackController = [[EPTrackTableController alloc]
                                                initWithStyle:UITableViewStylePlain];
+    trackController.tracks = [self albumTracks:album.albumPersistentID];
+    [self.navigationController pushViewController:trackController animated:YES];
+}
+
+/*****************************************************************************/
+/* Action Methods                                                            */
+/*****************************************************************************/
+
+// Returns array of MPMediaItems
+- (NSArray *)albumTracks:(NSNumber *)albumID
+{
     MPMediaQuery *trackQuery = [[MPMediaQuery alloc] init];
     MPMediaPropertyPredicate *pred = [MPMediaPropertyPredicate
-                                      predicateWithValue:album.albumPersistentID
+                                      predicateWithValue:albumID
                                       forProperty:MPMediaItemPropertyAlbumPersistentID];
     [trackQuery addFilterPredicate:pred];
-    trackController.tracks = trackQuery.items;
-    [self.navigationController pushViewController:trackController animated:YES];
+    return trackQuery.items;
+}
+
+- (void)playTapped:(UITapGestureRecognizer *)gesture
+{
+    // Determine which entry was tapped.
+    UITableViewCell *cell = (UITableViewCell *)[[[gesture view] superview] superview];
+    NSIndexPath *tappedIndexPath = [self.tableView indexPathForCell:cell];
+    EPMediaItemWrapper *album = self.sections[tappedIndexPath.section][tappedIndexPath.row];
+    // XXX Is this always sorted?
+    [self.playerController playItems:[self albumTracks:album.albumPersistentID]];
+    self.tabBarController.selectedIndex = 3;
 }
 
 

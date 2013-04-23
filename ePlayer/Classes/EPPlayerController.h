@@ -19,6 +19,8 @@
 - (void)pause;
 - (void)stop;
 - (void)clearQueue;
+// Stop, clear queue, and play these items.
+- (void)playItems:(NSArray *)items;
 // Array of MPMediaItem objects.
 - (void)addQueueItems:(NSArray *)items;
 - (IBAction)tappedPrev:(id)sender;
@@ -30,17 +32,8 @@
 - (IBAction)scrubberTouchDown:(id)sender;
 - (IBAction)scrubberTouchUp:(id)sender;
 
-//@property (weak, nonatomic) IBOutlet UIView *currentPlayingView;
-//@property (weak, nonatomic) IBOutlet UIImageView *albumCoverView;
-//@property (weak, nonatomic) IBOutlet UILabel *artistNameLabel;
-//@property (weak, nonatomic) IBOutlet UILabel *currentTimeLabel;
-//@property (weak, nonatomic) IBOutlet UILabel *timeLeftLabel;
-//@property (weak, nonatomic) IBOutlet EPScrubberView *scrubber;
-//@property (strong, nonatomic) UIButton *prevButton;
-//@property (strong, nonatomic) UIButton *nextButton;
-//@property (strong, nonatomic) UIButton *playButton;
-////@property (strong, nonatomic) UIButton *pauseButton;
-//@property (strong, nonatomic) UIButton *saveButton;
+- (void)playEntry:(Entry *)entry;
+
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property (weak, nonatomic) IBOutlet UIImageView *artImageView;

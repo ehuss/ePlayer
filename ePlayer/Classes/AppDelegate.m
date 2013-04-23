@@ -11,7 +11,6 @@
 #import "EPCommon.h"
 #import "EPArtistTableController.h"
 #import "EPAlbumTableController.h"
-#import "EPSortOrderController.h"
 #import "EPMediaItemWrapper.h"
 #import "NSManagedObjectModel+KCOrderedAccessorFix.h"
 
@@ -445,26 +444,6 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
 {
     [self.importAlertView dismissWithClickedButtonIndex:0 animated:YES];
     [self.playlistTableController loadRootFolder];
-}
-
-/*****************************************************************************/
-/* Tab Bar Methods                                                           */
-/*****************************************************************************/
-- (BOOL)tabBarController:(UITabBarController *)tabBarController
- shouldSelectViewController:(UIViewController *)viewController
-{
-    if (![tabBarController.selectedViewController.class isSubclassOfClass:[EPSortOrderController class]]) {
-        if ([viewController.class isSubclassOfClass:[EPSortOrderController class]]) {
-            // Selecting sort order.
-            // Tell the sort order controller what the current sort order is.
-            UINavigationController *navCont = (UINavigationController *)tabBarController.selectedViewController;
-            EPBrowseTableController *browse = (EPBrowseTableController *)navCont.topViewController;
-            EPSortOrderController *controller = (EPSortOrderController *)viewController;
-            controller.currentSortOrder = browse.sortOrder;
-            controller.previousControllerIndex = tabBarController.selectedIndex;
-        }
-    }
-    return YES;
 }
 
 @end

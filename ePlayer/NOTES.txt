@@ -6,6 +6,8 @@
   section, and all sections get offset by +1?
 
 TODO:
+- player timer starts on launch if music playing
+
 - Editing buttons should have some images.  "rename" needs "selected" image.
 - Paste button should have a # indicating the number of items.
 - Delete should show how many items (recursively).
@@ -13,7 +15,6 @@ TODO:
 - Can clicking on edit button hide the tab bar?
 - Should del/cut/copy/paste buttons somehow be static (don't scroll with table)?
 
-- in edit, tap folder name to rename.  (Also allow for track names?)
 - updating playDate
 - play tapped artist/album/track
 - in playlist view, hit "edit", should disable "go back" button.

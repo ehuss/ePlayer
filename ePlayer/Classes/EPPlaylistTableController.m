@@ -158,48 +158,8 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     UITableViewCell *cell = (UITableViewCell *)[[[gesture view] superview] superview];
     NSIndexPath *tappedIndexPath = [self.tableView indexPathForCell:cell];
     Entry *entry = self.sections[tappedIndexPath.section][tappedIndexPath.row];
-    // Stop whatever is playing.
-    //[playerController clearQueue];
-    // Add all of these items to the queue.
-    NSMutableArray *newItems = [NSMutableArray arrayWithCapacity:100];
-    [self addEntry:entry toArray:newItems];
-    // Add these items to the queue, start playback, and display the player.
-    // Guard against playing an empty folder (which would cause an exception
-    // when creating the MPMediaItemCollection).
-    if (newItems.count) {
-        [self.playerController clearQueue];
-        [self.playerController addQueueItems:newItems];
-        [self.playerController play];
-        [self.navigationController pushViewController:self.playerController animated:YES];
-    }
-}
-
-- (void)addEntry:(Entry *)entry toArray:(NSMutableArray *)array
-{
-    if ([entry isKindOfClass:[Folder class]]) {
-        Folder *folder = (Folder *)entry;
-        for (Entry *child in folder.sortedEntries) {
-            [self addEntry:child toArray:array];
-        }
-    } else {
-        // is Song type.
-        [self addSong:(Song *)entry toArray:array];
-    }
-}
-
-- (void)addSong:(Song *)song toArray:(NSMutableArray *)array
-{
-    MPMediaQuery *query = [[MPMediaQuery alloc] init];
-    MPMediaPropertyPredicate *pred = [MPMediaPropertyPredicate
-                                      predicateWithValue:song.persistentID
-                                      forProperty:MPMediaItemPropertyPersistentID];
-    [query addFilterPredicate:pred];
-    NSArray *result = query.items;
-    if (result.count) {
-        [array addObject:result[0]];
-    } else {
-        NSLog(@"Failed to fetch MPMediaItem for persistent ID song %@.", song.persistentID);
-    }
+    [self.playerController playEntry:entry];
+    self.tabBarController.selectedIndex = 3;
 }
 
 /*****************************************************************************/

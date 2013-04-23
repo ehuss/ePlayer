@@ -73,7 +73,6 @@
 		079B4126171B961C0036F0D4 /* current-queue-item-stopped@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079B4123171B961B0036F0D4 /* current-queue-item-stopped@2x.png */; };
 		079B4127171B961C0036F0D4 /* queue-pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079B4124171B961C0036F0D4 /* queue-pause@2x.png */; };
 		079B412F171CCA6F0036F0D4 /* EPMediaItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B412E171CCA6E0036F0D4 /* EPMediaItemWrapper.m */; };
-		079B413F171D11170036F0D4 /* EPSortOrderController.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B413E171D11160036F0D4 /* EPSortOrderController.m */; };
 		079B4144171E139E0036F0D4 /* NSArray+EPMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4143171E139C0036F0D4 /* NSArray+EPMap.m */; };
 		079B4147171E309B0036F0D4 /* EPCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4146171E309B0036F0D4 /* EPCommon.m */; };
 		079B4150171E9F980036F0D4 /* EPBrowserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B414F171E9F960036F0D4 /* EPBrowserCell.m */; };
@@ -182,8 +181,6 @@
 		079B4124171B961C0036F0D4 /* queue-pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-pause@2x.png"; sourceTree = "<group>"; };
 		079B412D171CCA6D0036F0D4 /* EPMediaItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPMediaItemWrapper.h; sourceTree = "<group>"; };
 		079B412E171CCA6E0036F0D4 /* EPMediaItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPMediaItemWrapper.m; sourceTree = "<group>"; };
-		079B413D171D11140036F0D4 /* EPSortOrderController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPSortOrderController.h; sourceTree = "<group>"; };
-		079B413E171D11160036F0D4 /* EPSortOrderController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPSortOrderController.m; sourceTree = "<group>"; };
 		079B4142171E139A0036F0D4 /* NSArray+EPMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+EPMap.h"; sourceTree = "<group>"; };
 		079B4143171E139C0036F0D4 /* NSArray+EPMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+EPMap.m"; sourceTree = "<group>"; };
 		079B4145171E309B0036F0D4 /* EPCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPCommon.h; sourceTree = "<group>"; };
@@ -315,8 +312,6 @@
 				079B4143171E139C0036F0D4 /* NSArray+EPMap.m */,
 				079B4145171E309B0036F0D4 /* EPCommon.h */,
 				079B4146171E309B0036F0D4 /* EPCommon.m */,
-				079B413D171D11140036F0D4 /* EPSortOrderController.h */,
-				079B413E171D11160036F0D4 /* EPSortOrderController.m */,
 				07677A5C1719264E00D1784D /* EPScrubberView.h */,
 				07677A5D1719264E00D1784D /* EPScrubberView.m */,
 				079B412D171CCA6D0036F0D4 /* EPMediaItemWrapper.h */,
@@ -574,7 +569,6 @@
 				079B411C171A60340036F0D4 /* EPPlayerCellView.m in Sources */,
 				079B4121171B4F400036F0D4 /* EPBrowseTableController.m in Sources */,
 				079B412F171CCA6F0036F0D4 /* EPMediaItemWrapper.m in Sources */,
-				079B413F171D11170036F0D4 /* EPSortOrderController.m in Sources */,
 				079B4144171E139E0036F0D4 /* NSArray+EPMap.m in Sources */,
 				079B4147171E309B0036F0D4 /* EPCommon.m in Sources */,
 				079B4150171E9F980036F0D4 /* EPBrowserCell.m in Sources */,

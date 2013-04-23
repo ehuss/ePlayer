@@ -429,17 +429,9 @@ sectionForSectionIndexTitle:(NSString *)title
 /*****************************************************************************/
 /* Cell text field                                                           */
 /*****************************************************************************/
-//- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
-//{
-//    if (self.editing) {
-//        return YES;
-//    } else {
-//        return NO;
-//    }
-//}
 - (void)rename:(EPBrowserCell *)cell to:(NSString *)newText
 {
-    
+    // EPPlaylist defines this.
 }
 
 
