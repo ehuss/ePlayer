@@ -34,6 +34,8 @@
 
 - (void)playEntry:(Entry *)entry;
 
+- (void)updateVolumeImage;
+
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property (weak, nonatomic) IBOutlet UIImageView *artImageView;

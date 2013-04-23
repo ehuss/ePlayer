@@ -80,7 +80,7 @@
     self.playlistTableController.managedObjectContext = self.managedObjectContext;
     self.playlistTableController.managedObjectModel = self.managedObjectModel;
     self.playlistTableController.persistentStoreCoordinator = self.persistentStoreCoordinator;
-        
+    
     if ([self loadData]) {
         // Database is ready.  Populate the view.
         // XXX restore state
@@ -94,6 +94,7 @@
     self.playerController.managedObjectContext = self.managedObjectContext;
     self.playerController.managedObjectModel = self.managedObjectModel;
     [self.playerController loadCurrentQueue];
+    [self.playerController updateVolumeImage];
 
     return YES;
 }

@@ -8,6 +8,7 @@
 
 #import "EPPlayerController.h"
 #import "EPPlayerCellView.h"
+#import "UIImage+EPCrop.h"
 
 //static NSTimeInterval scrubberUpdateTime = 0.300;
 
@@ -608,12 +609,32 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)volumeChanged:(id)notification
 {
     // XXX: media player volume vs system volume?
-    NSLog(@"volume changed");
+    [self updateVolumeImage];
 }
 
 - (void)libraryChanged:(id)notification
 {
     NSLog(@"Library changed.");
+}
+
+/****************************************************************************/
+/* Volume                                                                   */
+/****************************************************************************/
+- (void)updateVolumeImage
+{
+    UIImage *on = [UIImage imageNamed:@"queue-volume-on"];
+    UIImage *off = [UIImage imageNamed:@"queue-volume-off"];
+
+    UIGraphicsBeginImageContextWithOptions(on.size, NO, 0.0);
+    CGFloat width = on.size.width*self.player.volume;
+    on = [on crop:CGRectMake(0, 0, width, on.size.height)];
+    off = [off crop:CGRectMake(width, 0, off.size.width-width, off.size.height)];
+    [on drawAtPoint:CGPointMake(0, 0)];
+    [off drawAtPoint:CGPointMake(width, 0)];
+    UIImage* result = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    [self.tabBarItem setFinishedSelectedImage:result
+                  withFinishedUnselectedImage:result];
 }
 
 @end

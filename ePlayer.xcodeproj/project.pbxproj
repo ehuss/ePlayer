@@ -21,6 +21,9 @@
 		0718E64A1723426500301D0E /* NSManagedObjectModel+KCOrderedAccessorFix.m in Sources */ = {isa = PBXBuildFile; fileRef = 0718E6491723426400301D0E /* NSManagedObjectModel+KCOrderedAccessorFix.m */; };
 		0719E2E71723AEE700D325B5 /* EntryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0719E2E51723AEE700D325B5 /* EntryCell.xib */; };
 		0719E2ED1724C76400D325B5 /* EditCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0719E2EB1724C76400D325B5 /* EditCell.xib */; };
+		0719E3741726248100D325B5 /* queue-volume-off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E3731726248100D325B5 /* queue-volume-off@2x.png */; };
+		0719E3761726268E00D325B5 /* queue-volume-on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E3751726268E00D325B5 /* queue-volume-on@2x.png */; };
+		0719E37917262A7D00D325B5 /* UIImage+EPCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */; };
 		0755C2F21714BE0300AAF81F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F11714BE0300AAF81F /* UIKit.framework */; };
 		0755C2F41714BE0300AAF81F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F31714BE0300AAF81F /* Foundation.framework */; };
 		0755C2F61714BE0300AAF81F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F51714BE0300AAF81F /* CoreGraphics.framework */; };
@@ -110,6 +113,10 @@
 		0718E6491723426400301D0E /* NSManagedObjectModel+KCOrderedAccessorFix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectModel+KCOrderedAccessorFix.m"; sourceTree = "<group>"; };
 		0719E2E61723AEE700D325B5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = EntryCell.xib; sourceTree = "<group>"; };
 		0719E2EC1724C76400D325B5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = EditCell.xib; sourceTree = "<group>"; };
+		0719E3731726248100D325B5 /* queue-volume-off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-volume-off@2x.png"; sourceTree = "<group>"; };
+		0719E3751726268E00D325B5 /* queue-volume-on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-volume-on@2x.png"; sourceTree = "<group>"; };
+		0719E37717262A7B00D325B5 /* UIImage+EPCrop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+EPCrop.h"; sourceTree = "<group>"; };
+		0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+EPCrop.m"; sourceTree = "<group>"; };
 		0755C2EE1714BE0300AAF81F /* ePlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ePlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0755C2F11714BE0300AAF81F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0755C2F31714BE0300AAF81F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -306,6 +313,8 @@
 			children = (
 				0718E6481723426300301D0E /* NSManagedObjectModel+KCOrderedAccessorFix.h */,
 				0718E6491723426400301D0E /* NSManagedObjectModel+KCOrderedAccessorFix.m */,
+				0719E37717262A7B00D325B5 /* UIImage+EPCrop.h */,
+				0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */,
 				079B414E171E9F940036F0D4 /* EPBrowserCell.h */,
 				079B414F171E9F960036F0D4 /* EPBrowserCell.m */,
 				079B4142171E139A0036F0D4 /* NSArray+EPMap.h */,
@@ -363,6 +372,8 @@
 		07677A3F171924F200D1784D /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				0719E3751726268E00D325B5 /* queue-volume-on@2x.png */,
+				0719E3731726248100D325B5 /* queue-volume-off@2x.png */,
 				0718E6351721068A00301D0E /* segmented-divider-normal@2x.png */,
 				0718E6361721068A00301D0E /* segmented-divider-selected@2x.png */,
 				0718E6371721068A00301D0E /* segmented-left-normal@2x.png */,
@@ -518,6 +529,8 @@
 				0718E6441721068A00301D0E /* segmented-right-selected@2x.png in Resources */,
 				0719E2E71723AEE700D325B5 /* EntryCell.xib in Resources */,
 				0719E2ED1724C76400D325B5 /* EditCell.xib in Resources */,
+				0719E3741726248100D325B5 /* queue-volume-off@2x.png in Resources */,
+				0719E3761726268E00D325B5 /* queue-volume-on@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -576,6 +589,7 @@
 				0718E6341720E11C00301D0E /* EPSegmentedControl.m in Sources */,
 				0718E647172239FB00301D0E /* EPLibTableController.m in Sources */,
 				0718E64A1723426500301D0E /* NSManagedObjectModel+KCOrderedAccessorFix.m in Sources */,
+				0719E37917262A7D00D325B5 /* UIImage+EPCrop.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
