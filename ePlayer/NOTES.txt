@@ -10,6 +10,9 @@ TODO
 
 High
 ====
+- Edit button improvements:
+    - Disable cut/copy/delete/collapse if nothing is selected.
+    - Disable paste if nothing in pasteboard.
 - "Collapse" action in edit.  Deletes a folder and moves its contents to its place.
 - Allow "add folder" "return" key to be enabled when empty -- then ignore and don't create.
 - Consider:

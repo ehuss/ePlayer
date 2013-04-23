@@ -620,7 +620,12 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     if (buttonIndex == actionSheet.cancelButtonIndex) {
         return;
     } else if (buttonIndex == actionSheet.destructiveButtonIndex) {
-        [self deleteRows:[self.tableView indexPathsForSelectedRows] checkOrphans:YES];
+        NSString *name = [actionSheet buttonTitleAtIndex:buttonIndex];
+        if ([name compare:@"Delete"] == NSOrderedSame) {
+            [self deleteRows:[self.tableView indexPathsForSelectedRows] checkOrphans:YES];
+        } else if ([name compare:@"Collapse"] == NSOrderedSame) {
+            [self collapseRows:[self.tableView indexPathsForSelectedRows]];
+        }
     }
 }
 
@@ -717,7 +722,49 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 
 - (void)collapse:(id)sender
 {
+    if ([self preventOrphanSelection:@"delete" emptyDeleteOK:NO]) {
+        return;
+    }
+    // Verify that all selections are folders.
+    for (NSIndexPath *path in self.tableView.indexPathsForSelectedRows) {
+        Entry *entry = self.sections[path.section-1][path.row];
+        if (![entry.class isSubclassOfClass:[Folder class]]) {
+            UIAlertView *alert = [[UIAlertView alloc]
+                                  initWithTitle:@"Operation Not Permitted"
+                                  message:@"You may only collapse folders."
+                                  delegate:nil
+                                  cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
+    }
+    // Display a confirmation.
+    NSString *title = [NSString stringWithFormat:@"Really collapse %i folders?",
+                       self.tableView.indexPathsForSelectedRows.count];
+    UIActionSheet *sheet = [[UIActionSheet alloc]
+                            initWithTitle:title
+                            delegate:self
+                            cancelButtonTitle:@"Cancel"
+                            destructiveButtonTitle:@"Collapse"
+                            otherButtonTitles:nil];
+    [sheet showFromTabBar:self.tabBarController.tabBar];
     
+}
+
+- (void)collapseRows:(NSArray *)indexPaths
+{
+    for (NSIndexPath *path in indexPaths) {
+        Folder *folder = self.sections[path.section-1][path.row];
+        [self.folder addEntries:folder.entries];
+        [self.folder removeEntriesObject:folder];
+        if (folder.parents.count == 0) {
+            NSLog(@"Collapse: Permanently removing folder %@", folder.name);
+            [self.managedObjectContext deleteObject:folder];
+        }
+    }
+    // Could call insertRowsAtIndexPaths for better animation.
+    [self updateSections];
+    [self.tableView reloadData];
 }
 
 @end
