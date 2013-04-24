@@ -26,6 +26,7 @@
 		0719E37B1726356900D325B5 /* play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E37A1726356900D325B5 /* play@2x.png */; };
 		07475EB017272053001BB7AA /* EPEditCell1.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EAF17272053001BB7AA /* EPEditCell1.m */; };
 		07475EB317272063001BB7AA /* EPEditCell2.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EB217272063001BB7AA /* EPEditCell2.m */; };
+		07475EBA172743FD001BB7AA /* EPPlayUpdater.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EB9172743FC001BB7AA /* EPPlayUpdater.m */; };
 		0755C2F21714BE0300AAF81F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F11714BE0300AAF81F /* UIKit.framework */; };
 		0755C2F41714BE0300AAF81F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F31714BE0300AAF81F /* Foundation.framework */; };
 		0755C2F61714BE0300AAF81F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F51714BE0300AAF81F /* CoreGraphics.framework */; };
@@ -122,6 +123,8 @@
 		07475EAF17272053001BB7AA /* EPEditCell1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPEditCell1.m; sourceTree = "<group>"; };
 		07475EB117272063001BB7AA /* EPEditCell2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPEditCell2.h; sourceTree = "<group>"; };
 		07475EB217272063001BB7AA /* EPEditCell2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPEditCell2.m; sourceTree = "<group>"; };
+		07475EB8172743FC001BB7AA /* EPPlayUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayUpdater.h; sourceTree = "<group>"; };
+		07475EB9172743FC001BB7AA /* EPPlayUpdater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayUpdater.m; sourceTree = "<group>"; };
 		0755C2EE1714BE0300AAF81F /* ePlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ePlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0755C2F11714BE0300AAF81F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0755C2F31714BE0300AAF81F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -392,6 +395,8 @@
 				079B412E171CCA6E0036F0D4 /* EPMediaItemWrapper.m */,
 				0755C36C1715335800AAF81F /* EPMemoryDebug.h */,
 				0755C36D1715335800AAF81F /* EPMemoryDebug.m */,
+				07475EB8172743FC001BB7AA /* EPPlayUpdater.h */,
+				07475EB9172743FC001BB7AA /* EPPlayUpdater.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -630,6 +635,7 @@
 				0719E37917262A7D00D325B5 /* UIImage+EPCrop.m in Sources */,
 				07475EB017272053001BB7AA /* EPEditCell1.m in Sources */,
 				07475EB317272063001BB7AA /* EPEditCell2.m in Sources */,
+				07475EBA172743FD001BB7AA /* EPPlayUpdater.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

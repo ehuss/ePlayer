@@ -91,10 +91,10 @@
     }
 
     self.playerController = self.tabController.viewControllers[3];
+    self.playerController.persistentStoreCoordinator = self.persistentStoreCoordinator;
     self.playerController.managedObjectContext = self.managedObjectContext;
     self.playerController.managedObjectModel = self.managedObjectModel;
-    [self.playerController loadCurrentQueue];
-    [self.playerController updateVolumeImage];
+    [self.playerController mainInit];
 
     return YES;
 }

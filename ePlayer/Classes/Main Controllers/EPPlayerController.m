@@ -20,6 +20,29 @@
 
 @implementation EPPlayerController
 
+- (void)mainInit
+{
+    self.player = [MPMusicPlayerController iPodMusicPlayer];
+    [self registerNotifications];
+    self.playUpdater = [[EPPlayUpdater alloc] initWithStore:self.persistentStoreCoordinator];
+    self.playUpdater.mainMOC = self.managedObjectContext;
+    [self.playUpdater spawnBgThread];
+    [self loadCurrentQueue];
+    [self notifyPlayUpdater];
+    [self updateVolumeImage];
+}
+
+- (void)notifyPlayUpdater
+{
+    if (self.queueItems) {
+        NSMutableArray *ids = [NSMutableArray arrayWithCapacity:self.queueItems.items.count];
+        for (MPMediaItem *item in self.queueItems.items) {
+            [ids addObject:[item valueForProperty:MPMediaItemPropertyPersistentID]];
+        }
+        [self.playUpdater enqueueItems:ids];
+    }
+}
+
 - (Folder *)queueFolder
 {
     if (_queueFolder == nil) {
@@ -80,12 +103,6 @@
             self.queueItems = [MPMediaItemCollection collectionWithItems:items];
         }
     }
-}
-
-- (void)awakeFromNib
-{
-    self.player = [MPMusicPlayerController iPodMusicPlayer];
-    [self registerNotifications];
 }
 
 - (void)viewDidLoad
@@ -267,7 +284,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (IBAction)scrubberDidUpdate:(id)sender
 {
-    // XXX: Track change while holding scrubber?  Stop/pause/interrupt?
+    // XXX: Track change now-playing while holding scrubber?  Stop/pause/interrupt?
     NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
     // Don't update too frequently.
 //    if ((now-self.lastScrubberUpdate) > scrubberUpdateTime) {
@@ -331,6 +348,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     [q addFilterPredicate:[MPMediaPropertyPredicate
                             predicateWithValue:@"__EP_INVALID_NAME__"
                             forProperty:MPMediaItemPropertyTitle]];
+    [self notifyPlayUpdater];
     self.queueItems = nil;
     [self.player setQueueWithQuery:q];
     self.player.nowPlayingItem = nil;
@@ -364,7 +382,9 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 {
     NSLog(@"Setting queue: %@", items);
     [self clearQueueFolder];
+    [self notifyPlayUpdater];
     self.queueItems = [[MPMediaItemCollection alloc] initWithItems:items];
+    [self notifyPlayUpdater];
     [self.player setQueueWithItemCollection:self.queueItems];
     [self.tableView reloadData];
     // Save the db copy.

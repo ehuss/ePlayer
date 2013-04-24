@@ -10,7 +10,6 @@ TODO
 
 High
 ====
-- updating playDate
 - press and hold play to append.
 - songs should display length in EntryCell (and folders show sum (or count)?)
 - show album art next to entry of a playlist that is all from one album?
@@ -30,6 +29,7 @@ High
 
 Medium
 ======
+- playlist controller: click on song should play it or something (like track controller).
 - Paste button should have a # indicating the number of items.
 - Delete should show how many items (recursively).
 - restore state of selected tab/etc
@@ -40,6 +40,7 @@ Medium
 
 Low
 ===
+- del/cut/copy/paste do not update playCount/playDate/addDate/releaseDate
 - Fix alpha sorting so that !Uno! sorts correctly
 - Editing buttons should have some images.  "rename" needs "selected" image.
 - scrubber is a little sloppy.

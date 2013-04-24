@@ -10,8 +10,12 @@
 #import <UIKit/UIKit.h>
 #import "EPScrubberView.h"
 #import "EPCommon.h"
+#import "EPPlayUpdater.h"
 
 @interface EPPlayerController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+
+// Called after object context is set.
+- (void)mainInit;
 
 - (void)loadCurrentQueue;
 
@@ -50,9 +54,11 @@
 @property (weak, nonatomic) IBOutlet EPScrubberView *scrubber;
 @property (weak, nonatomic) IBOutlet UILabel *timeLeftLabel;
 
+@property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong) Folder *queueFolder;
+@property (nonatomic, strong) EPPlayUpdater *playUpdater;
 
 @property (strong, nonatomic) MPMusicPlayerController *player;
 @property (strong, nonatomic) MPMediaItemCollection *queueItems;
