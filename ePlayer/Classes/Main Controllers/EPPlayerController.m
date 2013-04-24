@@ -116,6 +116,8 @@
     [super viewWillAppear:animated];
     self.isDisplayed = YES;
     [self updateNowPlayingView];
+    NSLog(@"View will appear.");
+    [self updatePlaybackState];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -375,10 +377,10 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     } else {
         newItems = items;
     }
-    [self changeQueueItems:newItems];
+    [self changeQueueItems:newItems keepPlaying:YES];
 }
 
-- (void)changeQueueItems:(NSArray *)items
+- (void)changeQueueItems:(NSArray *)items keepPlaying:(BOOL)keepPlaying
 {
     NSLog(@"Setting queue: %@", items);
     [self clearQueueFolder];
@@ -386,6 +388,19 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     self.queueItems = [[MPMediaItemCollection alloc] initWithItems:items];
     [self notifyPlayUpdater];
     [self.player setQueueWithItemCollection:self.queueItems];
+    if (keepPlaying && self.player.playbackState == MPMusicPlaybackStatePlaying) {
+        // Stupid API keeps playing on the old queue until you call "play" (which
+        // will restart at item 1) or "stop".
+        // Unfortunately this causes a momentary pause.  Only solution I can
+        // think of is to switch to AVPlayer.
+        // XXX: Assume currentItem is in items?
+        NSTimeInterval currentTime = self.player.currentPlaybackTime;
+        MPMediaItem *currentItem = self.player.nowPlayingItem;
+        [self.player stop];
+        self.player.nowPlayingItem = currentItem;
+        self.player.currentPlaybackTime = currentTime;
+        [self.player play];
+    }
     [self.tableView reloadData];
     // Save the db copy.
     for (MPMediaItem *item in items) {
@@ -413,7 +428,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)playItems:(NSArray *)items
 {
-    [self changeQueueItems:items];
+    [self changeQueueItems:items keepPlaying:NO];
     [self play];
 }
 
@@ -434,6 +449,18 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     if (newItems.count) {
         [self playItems:newItems];
     }
+}
+
+- (void)appendEntry:(Entry *)entry
+{
+    NSMutableArray *newItems;
+    if (self.queueItems) {
+        newItems = [NSMutableArray arrayWithArray:self.queueItems.items];
+    } else {
+        newItems = [NSMutableArray arrayWithCapacity:100];
+    }
+    [self addEntry:entry toArray:newItems];
+    [self changeQueueItems:newItems keepPlaying:YES];
 }
 
 - (void)addEntry:(Entry *)entry toArray:(NSMutableArray *)array
@@ -493,7 +520,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)nowPlayingItemChanged:(id)notification
 {
     MPMediaItem *item = self.player.nowPlayingItem;
-    NSLog(@"now playing changed %@.", item);
+    NSLog(@"now playing changed %@.", [item valueForProperty:MPMediaItemPropertyTitle]);
     [self updateNowPlayingView];
 }
 
@@ -515,7 +542,6 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         [self startTimer];
     }
     [self updateScrubber];
-    [self updatePlaybackState];
     [self updateCurrentPlayingCell];
 }
 

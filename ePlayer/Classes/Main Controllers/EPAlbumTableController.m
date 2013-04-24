@@ -208,5 +208,12 @@
     self.tabBarController.selectedIndex = 3;
 }
 
+- (void)playAppend:(NSIndexPath *)path
+{
+    EPMediaItemWrapper *album = self.sections[path.section][path.row];
+    [self.playerController addQueueItems:[self albumTracks:album.albumPersistentID]];
+}
+
+
 
 @end

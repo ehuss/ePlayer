@@ -198,15 +198,11 @@
     return albumsQuery.collections;
 }
 
-- (void)playTapped:(UITapGestureRecognizer *)gesture
+- (NSArray *)allItemsForArtist:(EPMediaItemWrapper *)artistWrapper
 {
-    // Determine which entry was tapped.
-    UITableViewCell *cell = (UITableViewCell *)[[[gesture view] superview] superview];
-    NSIndexPath *tappedIndexPath = [self.tableView indexPathForCell:cell];
-    EPMediaItemWrapper *artist = self.sections[tappedIndexPath.section][tappedIndexPath.row];
     // Make a list of MPMediaItems.
     NSMutableArray *items = [[NSMutableArray alloc] init];
-    NSArray *albums = [self artistAlbums:artist.albumArtist];
+    NSArray *albums = [self artistAlbums:artistWrapper.albumArtist];
     // Sort release date oldest to newest.
     NSArray *sortAlbums = [albums sortedArrayUsingComparator:^(MPMediaItemCollection *obj1, MPMediaItemCollection *obj2) {
         NSDate *od1 = [[obj1 representativeItem] valueForProperty:MPMediaItemPropertyReleaseDate];
@@ -216,9 +212,28 @@
     for (MPMediaItemCollection *album in sortAlbums) {
         [items addObjectsFromArray:album.items];
     }
+    return items;
+}
 
+- (void)playTapped:(UITapGestureRecognizer *)gesture
+{
+    // Determine which entry was tapped.
+    UITableViewCell *cell = (UITableViewCell *)[[[gesture view] superview] superview];
+    NSIndexPath *tappedIndexPath = [self.tableView indexPathForCell:cell];
+    EPMediaItemWrapper *artist = self.sections[tappedIndexPath.section][tappedIndexPath.row];
+    NSArray *items = [self allItemsForArtist:artist];
     [self.playerController playItems:items];
     self.tabBarController.selectedIndex = 3;
 }
+
+- (void)playAppend:(NSIndexPath *)path
+{
+    EPMediaItemWrapper *artist = self.sections[path.section][path.row];
+    NSArray *items = [self allItemsForArtist:artist];
+    [self.playerController addQueueItems:items];
+}
+
+
+
 
 @end

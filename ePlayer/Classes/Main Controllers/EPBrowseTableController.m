@@ -109,6 +109,10 @@ NSUInteger minEntriesForSections = 10;
                                               initWithTarget:self
                                               action:@selector(playTapped:)];
         [cell.playButton addGestureRecognizer:tapGesture];
+        UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc]
+                                                     initWithTarget:self
+                                                     action:@selector(playHeld:)];
+        [cell.playButton addGestureRecognizer:longGesture];
     }
     BOOL useDateLabel = ((self.sortOrder==EPSortOrderAddDate ||
                           self.sortOrder==EPSortOrderPlayDate ||
@@ -434,5 +438,73 @@ sectionForSectionIndexTitle:(NSString *)title
     // EPPlaylist defines this.
 }
 
+/*****************************************************************************/
+/* Misc                                                                      */
+/*****************************************************************************/
+- (void)playHeld:(UILongPressGestureRecognizer *)gesture
+{
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        if (self.appendButton != nil) {
+            [self.appendButton removeFromSuperview];
+            self.appendButton = nil;
+        }
+        CGPoint pos = [self.view convertPoint:gesture.view.center fromView:gesture.view];
+        CGFloat height = 65;
+        CGRect frame = CGRectMake(pos.x+80, pos.y-height/2.0f, 100, height);
+        EPAppendButton *button = [[EPAppendButton alloc] initWithFrame:frame];
+        [button addTarget:self action:@selector(playAppendEvent:) forControlEvents:UIControlEventTouchDown];
+        // Keep track of which cell was clicked.
+        UITableViewCell *cell = (UITableViewCell *)[[[gesture view] superview] superview];
+        button.cell = cell;
+        [self.view addSubview:button];
+        self.appendButton = button;
+    } else if (gesture.state == UIGestureRecognizerStateEnded ||
+               gesture.state == UIGestureRecognizerStateCancelled ||
+               gesture.state == UIGestureRecognizerStateFailed) {
+        // Make a local variable so that we remove the correct one.
+        EPAppendButton *button = self.appendButton;
+        [UIView animateWithDuration:4.0 delay:0
+                            options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction
+                         animations:^{
+                             // Don't go all the way to 0 so that it stays enabled.
+                             button.alpha = 0.1;
+                         } completion:^(BOOL finished) {
+                             if (finished) {
+                                 [button removeFromSuperview];
+                                 if (self.appendButton == button) {
+                                     self.appendButton = nil;
+                                 }
+                             }
+                         }];
+    }
+}
+
+// User tapped the "Append" button popup.
+- (void)playAppendEvent:(id)sender
+{
+    EPAppendButton *button = self.appendButton;
+    button.alpha = 1.0;
+    // Make it pulse before going away to give feedback that it did something.
+    [UIView animateWithDuration:0.1 delay:0 options:0
+                     animations:^{
+                         button.transform = CGAffineTransformMakeScale(1.25, 1.25);
+                     }completion:^(BOOL finished) {
+                         [UIView animateWithDuration:0.1 animations:^{
+                             button.transform = CGAffineTransformMakeScale(0, 0);
+                         } completion:^(BOOL finished) {
+                             NSIndexPath *tappedIndexPath = [self.tableView indexPathForCell:button.cell];
+                             [button removeFromSuperview];
+                             if (self.appendButton == button) {
+                                 self.appendButton = nil;
+                             }
+                             [self playAppend:tappedIndexPath];
+                         }];
+                     }];
+}
+
+- (void)playAppend:(NSIndexPath *)path
+{
+    // Subclass implements.
+}
 
 @end

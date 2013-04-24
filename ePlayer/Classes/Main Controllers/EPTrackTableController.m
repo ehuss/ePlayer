@@ -53,7 +53,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self.playerController changeQueueItems:self.tracks];
+    [self.playerController changeQueueItems:self.tracks keepPlaying:NO];
     MPMediaItem *item = self.tracks[indexPath.row];
     self.playerController.player.nowPlayingItem = item;
     [self.playerController play];
@@ -72,5 +72,11 @@
     [self.playerController playItems:@[self.tracks[tappedIndexPath.row]]];
     self.tabBarController.selectedIndex = 3;
 }
+
+- (void)playAppend:(NSIndexPath *)path
+{
+    [self.playerController addQueueItems:@[self.tracks[path.row]]];
+}
+
 
 @end

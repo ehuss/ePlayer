@@ -24,9 +24,9 @@
 - (void)stop;
 - (void)clearQueue;
 // Array of MPMediaItems.
-- (void)changeQueueItems:(NSArray *)items;
+- (void)changeQueueItems:(NSArray *)items keepPlaying:(BOOL)keepPlaying;
 
-// Stop, clear queue, and play these items.
+// Stop, clear queue, and play these items (MPMediaItem).
 - (void)playItems:(NSArray *)items;
 // Array of MPMediaItem objects.
 - (void)addQueueItems:(NSArray *)items;
@@ -40,6 +40,7 @@
 - (IBAction)scrubberTouchUp:(id)sender;
 
 - (void)playEntry:(Entry *)entry;
+- (void)appendEntry:(Entry *)entry;
 
 - (void)updateVolumeImage;
 

@@ -27,6 +27,9 @@
 		07475EB017272053001BB7AA /* EPEditCell1.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EAF17272053001BB7AA /* EPEditCell1.m */; };
 		07475EB317272063001BB7AA /* EPEditCell2.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EB217272063001BB7AA /* EPEditCell2.m */; };
 		07475EBA172743FD001BB7AA /* EPPlayUpdater.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EB9172743FC001BB7AA /* EPPlayUpdater.m */; };
+		07475EBC172761BD001BB7AA /* append-popout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07475EBB172761BD001BB7AA /* append-popout@2x.png */; };
+		07475EBF17278023001BB7AA /* EPAppendButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EBE17278023001BB7AA /* EPAppendButton.m */; };
+		07475EC2172780A4001BB7AA /* Test.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07475EC0172780A4001BB7AA /* Test.xib */; };
 		0755C2F21714BE0300AAF81F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F11714BE0300AAF81F /* UIKit.framework */; };
 		0755C2F41714BE0300AAF81F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F31714BE0300AAF81F /* Foundation.framework */; };
 		0755C2F61714BE0300AAF81F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F51714BE0300AAF81F /* CoreGraphics.framework */; };
@@ -125,6 +128,10 @@
 		07475EB217272063001BB7AA /* EPEditCell2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPEditCell2.m; sourceTree = "<group>"; };
 		07475EB8172743FC001BB7AA /* EPPlayUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayUpdater.h; sourceTree = "<group>"; };
 		07475EB9172743FC001BB7AA /* EPPlayUpdater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayUpdater.m; sourceTree = "<group>"; };
+		07475EBB172761BD001BB7AA /* append-popout@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "append-popout@2x.png"; sourceTree = "<group>"; };
+		07475EBD17278023001BB7AA /* EPAppendButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPAppendButton.h; sourceTree = "<group>"; };
+		07475EBE17278023001BB7AA /* EPAppendButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPAppendButton.m; sourceTree = "<group>"; };
+		07475EC1172780A4001BB7AA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Test.xib; sourceTree = "<group>"; };
 		0755C2EE1714BE0300AAF81F /* ePlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ePlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0755C2F11714BE0300AAF81F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0755C2F31714BE0300AAF81F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -269,6 +276,8 @@
 		07475EB6172725DF001BB7AA /* Controls */ = {
 			isa = PBXGroup;
 			children = (
+				07475EBD17278023001BB7AA /* EPAppendButton.h */,
+				07475EBE17278023001BB7AA /* EPAppendButton.m */,
 				07677A5C1719264E00D1784D /* EPScrubberView.h */,
 				07677A5D1719264E00D1784D /* EPScrubberView.m */,
 				0718E6321720E11C00301D0E /* EPSegmentedControl.h */,
@@ -417,6 +426,7 @@
 		07677A3F171924F200D1784D /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				07475EBB172761BD001BB7AA /* append-popout@2x.png */,
 				0719E3751726268E00D325B5 /* queue-volume-on@2x.png */,
 				0719E3731726248100D325B5 /* queue-volume-off@2x.png */,
 				0718E6351721068A00301D0E /* segmented-divider-normal@2x.png */,
@@ -459,6 +469,7 @@
 				079B4161171F5B5D0036F0D4 /* TableSectionView.xib */,
 				0755C3091714BE0400AAF81F /* MainStoryboard_iPhone.storyboard */,
 				0719E2EB1724C76400D325B5 /* EditCell.xib */,
+				07475EC0172780A4001BB7AA /* Test.xib */,
 			);
 			name = UI;
 			path = en.lproj;
@@ -574,6 +585,8 @@
 				0719E3741726248100D325B5 /* queue-volume-off@2x.png in Resources */,
 				0719E3761726268E00D325B5 /* queue-volume-on@2x.png in Resources */,
 				0719E37B1726356900D325B5 /* play@2x.png in Resources */,
+				07475EBC172761BD001BB7AA /* append-popout@2x.png in Resources */,
+				07475EC2172780A4001BB7AA /* Test.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -636,6 +649,7 @@
 				07475EB017272053001BB7AA /* EPEditCell1.m in Sources */,
 				07475EB317272063001BB7AA /* EPEditCell2.m in Sources */,
 				07475EBA172743FD001BB7AA /* EPPlayUpdater.m in Sources */,
+				07475EBF17278023001BB7AA /* EPAppendButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -672,6 +686,14 @@
 				0719E2EC1724C76400D325B5 /* en */,
 			);
 			name = EditCell.xib;
+			sourceTree = "<group>";
+		};
+		07475EC0172780A4001BB7AA /* Test.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				07475EC1172780A4001BB7AA /* en */,
+			);
+			name = Test.xib;
 			sourceTree = "<group>";
 		};
 		0755C2FA1714BE0400AAF81F /* InfoPlist.strings */ = {

@@ -11,6 +11,7 @@ TODO
 High
 ====
 - press and hold play to append.
+- Adding songs is slow.  If it can't be sped up, give some visual feedback.
 - songs should display length in EntryCell (and folders show sum (or count)?)
 - show album art next to entry of a playlist that is all from one album?
     - Individual songs should always show art if available.
@@ -46,6 +47,7 @@ Low
 - scrubber is a little sloppy.
   - Letting go, it jumps around sometimes.
 - resize entrycell title width to attach to accessory view (disclosure obscures if section indexes).
+- Deal with suffle and repeat.
 
 Ideas
 =====

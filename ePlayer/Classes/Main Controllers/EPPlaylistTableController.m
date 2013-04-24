@@ -149,6 +149,13 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     self.tabBarController.selectedIndex = 3;
 }
 
+- (void)playAppend:(NSIndexPath *)path
+{
+    Entry *entry = self.sections[path.section][path.row];
+    [self.playerController appendEntry:entry];
+}
+
+
 /*****************************************************************************/
 /* Table Delegate                                                            */
 /*****************************************************************************/
