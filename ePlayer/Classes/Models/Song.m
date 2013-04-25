@@ -36,4 +36,10 @@
     return _mediaItem;
 }
 
+- (NSTimeInterval)duration
+{
+    NSNumber *d = [self.mediaItem valueForProperty:MPMediaItemPropertyPlaybackDuration];
+    return [d doubleValue];
+}
+
 @end

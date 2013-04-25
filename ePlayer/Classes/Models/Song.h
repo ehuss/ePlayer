@@ -21,5 +21,6 @@
 // Unsigned version, since core data doesn't support unsigned.
 @property (readonly, nonatomic) NSNumber *UPID;
 @property (readonly, nonatomic) MPMediaItem *mediaItem;
+@property (readonly, nonatomic) NSTimeInterval duration;
 
 @end

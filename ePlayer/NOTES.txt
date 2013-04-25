@@ -10,18 +10,17 @@ TODO
 
 NOW
 ===
-- re-instate max 1-sec scrubber update rate.
-- consider making duration in the db (or at least a property on song to get from mediaItem)..
-    - Currently really broken.
 - save currentQueueIndex to disk
 - a song in a playlist twice won't work.  May need to use intermediate table.
 - do play counts update with AVAudioPlayer?
+    - Currently really broken.
 - Is the scrubber disabled with an empty queue (or nil currentPlayer).
     - disable scrubber
+- As current playing item in queue changes off-screen, scroll to that item.
 
 High
 ====
-- press and hold play to append.
+- Change append popup to be above/below.
 - Adding songs is slow.  If it can't be sped up, give some visual feedback.
 - songs should display length in EntryCell (and folders show sum (or count)?)
 - show album art next to entry of a playlist that is all from one album?
@@ -49,6 +48,7 @@ Medium
     - Resync at start?  Or manual?
 - When paused, change scrubber thumb to red.
 - Queue tab icon - change speaker icon to not have arcs when not playing.
+- re-instate max 1-sec scrubber update rate.
 
 Low
 ===

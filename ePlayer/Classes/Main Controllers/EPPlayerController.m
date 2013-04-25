@@ -178,8 +178,7 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     Song *song = self.queueFolder.entries[indexPath.row];
     cview.queueNumLabel.text = [NSString stringWithFormat:@"%i.", indexPath.row+1];
     cview.trackNameLabel.text = song.name;
-    MPMediaItem *item = song.mediaItem;
-    int duration = (int)[[item valueForProperty:MPMediaItemPropertyPlaybackDuration] doubleValue];
+    int duration = (int)song.duration;
     cview.trackTimeLabel.text = [NSString stringWithFormat:@"%i:%02i",
                                  duration/60, duration%60];
     if (self.currentQueueIndex == indexPath.row) {
@@ -321,10 +320,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
     // Don't update too frequently.
 //    if ((now-self.lastScrubberUpdate) > scrubberUpdateTime) {
-    Song *song = self.queueFolder.entries[self.currentQueueIndex];
-    MPMediaItem *item = song.mediaItem;
     // Compute the playback time for this thumb position.
-    NSTimeInterval duration = (int)[[item valueForProperty:MPMediaItemPropertyPlaybackDuration] doubleValue];
+    NSTimeInterval duration = (int)self.currentPlayer.duration;
     NSTimeInterval newPlaybackTime = duration*self.scrubber.value;
     // Only alter it if the change is >= 1 second.
     if ((int)newPlaybackTime != self.lastScrubberPlayTime) {
@@ -668,13 +665,11 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)updateTimeLabels
 {
     if (self.currentPlayer) {
-        Song *song = self.queueFolder.entries[self.currentQueueIndex];
-        MPMediaItem *item = song.mediaItem;
         int time = self.currentPlayer.currentTime;
         self.currentTimeLabel.text = [NSString stringWithFormat:@"%i:%02i",
                                       time/60, time%60];
         
-        NSTimeInterval duration = (int)[[item valueForProperty:MPMediaItemPropertyPlaybackDuration] doubleValue];
+        NSTimeInterval duration = self.currentPlayer.duration;
         int timeLeft = duration - self.currentPlayer.currentTime;
         
         self.timeLeftLabel.text = [NSString stringWithFormat:@"-%i:%02i",
@@ -691,9 +686,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 {
     [self updateTimeLabels];
     if (self.currentPlayer) {
-        Song *song = self.queueFolder.entries[self.currentQueueIndex];
-        MPMediaItem *item = song.mediaItem;
-        NSTimeInterval duration = (int)[[item valueForProperty:MPMediaItemPropertyPlaybackDuration] doubleValue];
+        NSTimeInterval duration = self.currentPlayer.duration;
         [self.scrubber setValue:self.currentPlayer.currentTime/duration animated:YES];
     } else {
         [self.scrubber setValue:0 animated:YES];
