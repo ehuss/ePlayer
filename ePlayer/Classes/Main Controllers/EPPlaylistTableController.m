@@ -28,7 +28,8 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     controller.managedObjectContext = self.managedObjectContext;
     controller.managedObjectModel = self.managedObjectModel;
     controller.persistentStoreCoordinator = self.persistentStoreCoordinator;
-    controller.tableView.allowsMultipleSelectionDuringEditing = YES;
+    // Be careful not to access the view here, some things in viewDidLoad need
+    // self.sections to be set up.
     return controller;
 }
 
@@ -91,6 +92,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.tableView.allowsMultipleSelectionDuringEditing = YES;
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
 
     // Uncomment the following line to preserve selection between presentations.

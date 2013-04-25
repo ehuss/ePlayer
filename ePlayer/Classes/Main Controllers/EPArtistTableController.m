@@ -1,5 +1,5 @@
 //
-//  EPMediaTableController.m
+//  EPArtistTableController.m
 //  ePlayer
 //
 //  Created by Eric Huss on 4/10/13.
@@ -230,7 +230,7 @@
 {
     EPMediaItemWrapper *artist = self.sections[path.section][path.row];
     NSArray *items = [self allItemsForArtist:artist];
-    [self.playerController addQueueItems:items];
+    [self.playerController appendItems:items];
 }
 
 

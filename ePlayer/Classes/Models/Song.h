@@ -8,13 +8,18 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import <MediaPlayer/MediaPlayer.h>
 #import "Entry.h"
 
 
 @interface Song : Entry
+{
+    MPMediaItem *_mediaItem;
+}
 
 @property (nonatomic, retain) NSNumber * persistentID;
 // Unsigned version, since core data doesn't support unsigned.
 @property (readonly, nonatomic) NSNumber *UPID;
+@property (readonly, nonatomic) MPMediaItem *mediaItem;
 
 @end

@@ -30,6 +30,8 @@
 		07475EBC172761BD001BB7AA /* append-popout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07475EBB172761BD001BB7AA /* append-popout@2x.png */; };
 		07475EBF17278023001BB7AA /* EPAppendButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EBE17278023001BB7AA /* EPAppendButton.m */; };
 		07475EC2172780A4001BB7AA /* Test.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07475EC0172780A4001BB7AA /* Test.xib */; };
+		07475EC417289654001BB7AA /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07475EC317289653001BB7AA /* AVFoundation.framework */; };
+		07475EC81728FF9E001BB7AA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07475EC71728FF9E001BB7AA /* AudioToolbox.framework */; };
 		0755C2F21714BE0300AAF81F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F11714BE0300AAF81F /* UIKit.framework */; };
 		0755C2F41714BE0300AAF81F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F31714BE0300AAF81F /* Foundation.framework */; };
 		0755C2F61714BE0300AAF81F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F51714BE0300AAF81F /* CoreGraphics.framework */; };
@@ -132,6 +134,8 @@
 		07475EBD17278023001BB7AA /* EPAppendButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPAppendButton.h; sourceTree = "<group>"; };
 		07475EBE17278023001BB7AA /* EPAppendButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPAppendButton.m; sourceTree = "<group>"; };
 		07475EC1172780A4001BB7AA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Test.xib; sourceTree = "<group>"; };
+		07475EC317289653001BB7AA /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		07475EC71728FF9E001BB7AA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		0755C2EE1714BE0300AAF81F /* ePlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ePlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0755C2F11714BE0300AAF81F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0755C2F31714BE0300AAF81F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -221,6 +225,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07475EC81728FF9E001BB7AA /* AudioToolbox.framework in Frameworks */,
+				07475EC417289654001BB7AA /* AVFoundation.framework in Frameworks */,
 				07677A641719DF5D00D1784D /* QuartzCore.framework in Frameworks */,
 				0755C3651714F1E800AAF81F /* MediaPlayer.framework in Frameworks */,
 				0755C34D1714ECB100AAF81F /* CoreData.framework in Frameworks */,
@@ -310,6 +316,7 @@
 		0755C2E51714BE0300AAF81F = {
 			isa = PBXGroup;
 			children = (
+				07475EC71728FF9E001BB7AA /* AudioToolbox.framework */,
 				0755C2F71714BE0300AAF81F /* ePlayer */,
 				0755C3291714BE0400AAF81F /* ePlayerTests */,
 				0755C2F01714BE0300AAF81F /* Frameworks */,
@@ -329,6 +336,7 @@
 		0755C2F01714BE0300AAF81F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				07475EC317289653001BB7AA /* AVFoundation.framework */,
 				07677A631719DF5D00D1784D /* QuartzCore.framework */,
 				0755C3641714F1E800AAF81F /* MediaPlayer.framework */,
 				0755C34C1714ECB100AAF81F /* CoreData.framework */,

@@ -8,6 +8,17 @@ NOTES
 TODO
 ****
 
+NOW
+===
+- re-instate max 1-sec scrubber update rate.
+- consider making duration in the db (or at least a property on song to get from mediaItem)..
+    - Currently really broken.
+- save currentQueueIndex to disk
+- a song in a playlist twice won't work.  May need to use intermediate table.
+- do play counts update with AVAudioPlayer?
+- Is the scrubber disabled with an empty queue (or nil currentPlayer).
+    - disable scrubber
+
 High
 ====
 - press and hold play to append.
@@ -48,6 +59,8 @@ Low
   - Letting go, it jumps around sometimes.
 - resize entrycell title width to attach to accessory view (disclosure obscures if section indexes).
 - Deal with suffle and repeat.
+- Docs say that AVAudioPlayer automatically enables/disables audio session, but
+  recommend that you manually enable/disable as well?
 
 Ideas
 =====

@@ -1,5 +1,5 @@
 //
-//  EPMediaTableController.h
+//  EPArtistTableController.h
 //  ePlayer
 //
 //  Created by Eric Huss on 4/10/13.

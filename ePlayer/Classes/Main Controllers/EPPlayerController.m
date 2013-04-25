@@ -6,38 +6,96 @@
 //  Copyright (c) 2013 Eric Huss. All rights reserved.
 //
 
+#import <AudioToolbox/AudioToolbox.h>
 #import "EPPlayerController.h"
 #import "EPPlayerCellView.h"
 #import "UIImage+EPCrop.h"
+#import "EPMediaItemWrapper.h"
 
 //static NSTimeInterval scrubberUpdateTime = 0.300;
 
-@interface EPPlayerController ()
+
+/****************************************************************************/
+/* Audio Callback                                                           */
+/****************************************************************************/
+
+void audioRouteChangeListenerCallback (void                      *inUserData,
+                                       AudioSessionPropertyID    inPropertyID,
+                                       UInt32                    inPropertyValueSize,
+                                       const void                *inPropertyValue
+                                       )
 {
-    Folder *_queueFolder;
+	// ensure that this callback was invoked for a route change
+	if (inPropertyID != kAudioSessionProperty_AudioRouteChange) {
+        return;
+    }
+    
+	// This callback, being outside the implementation block, needs a reference to the
+	//		MainViewController object, which it receives in the inUserData parameter.
+	//		You provide this reference when registering this callback (see the call to
+	//		AudioSessionAddPropertyListener).
+	EPPlayerController *controller = (__bridge EPPlayerController *) inUserData;
+
+    // XXX: interruptedWhilePlaying?
+    if (controller.isPlaying) {
+		// Determines the reason for the route change, to ensure that it is not
+		//		because of a category change.
+		CFDictionaryRef	routeChangeDictionary = inPropertyValue;
+		
+		CFNumberRef routeChangeReasonRef = CFDictionaryGetValue(
+                              routeChangeDictionary,
+                              CFSTR (kAudioSession_AudioRouteChangeKey_Reason));
+        
+		SInt32 routeChangeReason;
+ 		CFNumberGetValue(routeChangeReasonRef,
+                         kCFNumberSInt32Type,
+                         &routeChangeReason);
+		
+		// "Old device unavailable" indicates that a headset was unplugged, or that the
+		//	device was removed from a dock connector that supports audio output. This is
+		//	the recommended test for when to pause audio.
+		if (routeChangeReason == kAudioSessionRouteChangeReason_OldDeviceUnavailable) {
+            [controller pause];
+			NSLog(@"Output device removed, so application audio was paused.");
+            
+//			UIAlertView *routeChangeAlertView =
+//            [[UIAlertView alloc]	initWithTitle: NSLocalizedString (@"Playback Paused", @"Title for audio hardware route-changed alert view")
+//                                       message: NSLocalizedString (@"Audio output was changed", @"Explanation for route-changed alert view")
+//                                      delegate: controller
+//                             cancelButtonTitle: NSLocalizedString (@"StopPlaybackAfterRouteChange", @"Stop button title")
+//                             otherButtonTitles: NSLocalizedString (@"ResumePlaybackAfterRouteChange", @"Play button title"), nil];
+//			[routeChangeAlertView show];
+			// release takes place in alertView:clickedButtonAtIndex: method
+            
+		} else {
+			NSLog (@"A route change occurred that does not require pausing of application audio.");
+		}
+	}
 }
-@end
+
+/****************************************************************************/
+/* Implementation                                                           */
+/****************************************************************************/
 
 @implementation EPPlayerController
 
 - (void)mainInit
 {
-    self.player = [MPMusicPlayerController iPodMusicPlayer];
+    self.mpPlayer = [MPMusicPlayerController applicationMusicPlayer];
     [self registerNotifications];
     self.playUpdater = [[EPPlayUpdater alloc] initWithStore:self.persistentStoreCoordinator];
     self.playUpdater.mainMOC = self.managedObjectContext;
     [self.playUpdater spawnBgThread];
-    [self loadCurrentQueue];
     [self notifyPlayUpdater];
     [self updateVolumeImage];
 }
 
 - (void)notifyPlayUpdater
 {
-    if (self.queueItems) {
-        NSMutableArray *ids = [NSMutableArray arrayWithCapacity:self.queueItems.items.count];
-        for (MPMediaItem *item in self.queueItems.items) {
-            [ids addObject:[item valueForProperty:MPMediaItemPropertyPersistentID]];
+    if (self.queueFolder.entries.count) {
+        NSMutableArray *ids = [NSMutableArray arrayWithCapacity:self.queueFolder.entries.count];
+        for (Song *song in self.queueFolder.entries) {
+            [ids addObject:song.persistentID];
         }
         [self.playUpdater enqueueItems:ids];
     }
@@ -58,53 +116,6 @@
     return _queueFolder;
 }
 
-- (void)loadCurrentQueue
-{
-    BOOL loadQueue = YES;
-    if (self.player.nowPlayingItem == nil) {
-        // Load queue from disk.
-        NSLog(@"now playing is nil");
-    } else {
-        // Check if now playing is in db queue.
-        BOOL found = NO;
-        NSNumber *persistentID = [self.player.nowPlayingItem valueForProperty:MPMediaItemPropertyPersistentID];
-        NSLog(@"Check if %@ %@ is in queue.", persistentID, [self.player.nowPlayingItem valueForProperty:MPMediaItemPropertyTitle]);
-        for (Song *song in self.queueFolder.entries) {
-            NSLog(@"Check against %@ %@", song.UPID, song.name);
-            if ([song.UPID isEqualToNumber:persistentID]) {
-                found = YES;
-                break;
-            }
-        }
-        if (!found) {
-            NSLog(@"Now playing %@ is not in queue.", [self.player.nowPlayingItem valueForProperty:MPMediaItemPropertyTitle]);
-            loadQueue = NO;
-        }
-    }
-    if (loadQueue) {
-        // Assume the queue is the same.
-        if (self.queueFolder.entries.count) {
-            // Populate queueItems from the queue folder.
-            NSArray *entries = [self.queueFolder.entries array];
-            NSArray *items = [entries mapWithBlock:^id(Song * song) {
-                MPMediaQuery *query = [[MPMediaQuery alloc] init];
-                MPMediaPropertyPredicate *pred = [MPMediaPropertyPredicate
-                                                  predicateWithValue:song.persistentID
-                                                  forProperty:MPMediaItemPropertyPersistentID];
-                [query addFilterPredicate:pred];
-                NSArray *result = query.items;
-                if (result.count) {
-                    return result[0];
-                } else {
-                    NSLog(@"Failed to fetch MPMediaItem for persistent ID song %@.", song.persistentID);
-                    return nil;
-                }
-            }];
-            self.queueItems = [MPMediaItemCollection collectionWithItems:items];
-        }
-    }
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -115,9 +126,8 @@
 {
     [super viewWillAppear:animated];
     self.isDisplayed = YES;
-    [self updateNowPlayingView];
+    [self updateDisplay];
     NSLog(@"View will appear.");
-    [self updatePlaybackState];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -152,11 +162,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    if (self.queueItems) {
-        return self.queueItems.count;
-    } else {
-        return 0;
-    }
+    return self.queueFolder.entries.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -169,14 +175,15 @@
         [cell.contentView addSubview:cview];
     }
     EPPlayerCellView *cview = cell.contentView.subviews[0];
-    MPMediaItem *item = self.queueItems.items[indexPath.row];
+    Song *song = self.queueFolder.entries[indexPath.row];
     cview.queueNumLabel.text = [NSString stringWithFormat:@"%i.", indexPath.row+1];
-    cview.trackNameLabel.text = [item valueForProperty:MPMediaItemPropertyTitle];
+    cview.trackNameLabel.text = song.name;
+    MPMediaItem *item = song.mediaItem;
     int duration = (int)[[item valueForProperty:MPMediaItemPropertyPlaybackDuration] doubleValue];
     cview.trackTimeLabel.text = [NSString stringWithFormat:@"%i:%02i",
                                  duration/60, duration%60];
-    if (item == self.player.nowPlayingItem) {
-        [cview setCurrent:self.player.playbackState==MPMusicPlaybackStatePlaying];
+    if (self.currentQueueIndex == indexPath.row) {
+        [cview setCurrent:self.isPlaying];
     } else {
         [cview unsetCurrent];
     }
@@ -243,8 +250,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    MPMediaItem *item = self.queueItems.items[indexPath.row];
-    self.player.nowPlayingItem = item;
+    [self switchToQueueIndex:indexPath.row];
+    [self play];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
@@ -259,24 +266,48 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 /****************************************************************************/
 - (void)tappedPrev:(id)sender
 {
-    [self.player skipToPreviousItem];
+    if (self.queueFolder.entries.count) {
+        if (self.currentQueueIndex == 0) {
+            // Set playback position to 0.
+            if (self.currentPlayer) {
+                self.currentPlayer.currentTime = 0;
+                [self nextPlayerPrepare];
+            }
+        } else {
+            // Switch to previous song.
+            BOOL wasPlaying = self.isPlaying;
+            [self switchToQueueIndex:self.currentQueueIndex-1];
+            if (wasPlaying) {
+                [self play];
+            }
+        }
+    }
 }
 
 - (IBAction)tappedPlay:(id)sender
 {
-    if (self.player.playbackState == MPMusicPlaybackStatePlaying) {
+    if (self.isPlaying) {
         [self pause];
     } else {
-        // Not currently playing.
-        if (self.queueItems) {
-            [self play];
-        }
+        [self play];
     }
 }
 
 - (IBAction)tappedNext:(id)sender
 {
-    [self.player skipToNextItem];
+    if (self.queueFolder.entries.count) {
+        if (self.currentQueueIndex == self.queueFolder.entries.count-1) {
+            [self stop];
+            [self switchToQueueIndex:0];
+        } else {
+            // Switch to next song.
+            BOOL wasPlaying = self.isPlaying;
+            [self switchToQueueIndex:self.currentQueueIndex+1];
+            if (wasPlaying) {
+                [self play];
+            }
+        }
+    }
 }
 
 - (IBAction)tappedSave:(id)sender
@@ -290,18 +321,20 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
     // Don't update too frequently.
 //    if ((now-self.lastScrubberUpdate) > scrubberUpdateTime) {
-        MPMediaItem *item = self.player.nowPlayingItem;
-        // Compute the playback time for this thumb position.
-        NSTimeInterval duration = (int)[[item valueForProperty:MPMediaItemPropertyPlaybackDuration] doubleValue];
-        NSTimeInterval newPlaybackTime = duration*self.scrubber.value;
-        // Only alter it if the change is >= 1 second.
-        if ((int)newPlaybackTime != self.lastScrubberPlayTime) {
-            self.lastScrubberPlayTime = (int)newPlaybackTime;
-            self.lastScrubberUpdate = now;
-            self.player.currentPlaybackTime = duration*self.scrubber.value;
-            NSLog(@"updated to %f", self.player.currentPlaybackTime);
-            [self updateTimeLabels];
-        }
+    Song *song = self.queueFolder.entries[self.currentQueueIndex];
+    MPMediaItem *item = song.mediaItem;
+    // Compute the playback time for this thumb position.
+    NSTimeInterval duration = (int)[[item valueForProperty:MPMediaItemPropertyPlaybackDuration] doubleValue];
+    NSTimeInterval newPlaybackTime = duration*self.scrubber.value;
+    // Only alter it if the change is >= 1 second.
+    if ((int)newPlaybackTime != self.lastScrubberPlayTime) {
+        self.lastScrubberPlayTime = (int)newPlaybackTime;
+        self.lastScrubberUpdate = now;
+        self.currentPlayer.currentTime = duration*self.scrubber.value;
+        [self nextPlayerPrepare];
+        NSLog(@"updated to %f", self.currentPlayer.currentTime);
+        [self updateTimeLabels];
+    }
   //  }
 //    NSLog(@"scrubber update %f %f", self.scrubber.scrubbingSpeed,
 //          self.scrubber.value);
@@ -309,237 +342,307 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (IBAction)scrubberTouchDown:(id)sender
 {
-    self.scrubberUpdateDisabled = YES;
-    // So first update will update player.
+    self.scrubberManualUpdating = YES;
+    // Force the first DidUpdate to update the player.
     self.lastScrubberUpdate = 0;//[NSDate timeIntervalSinceReferenceDate];
-    self.lastScrubberPlayTime = (int)self.player.currentPlaybackTime;
+    self.lastScrubberPlayTime = self.currentPlayer.currentTime;
 }
+
 - (IBAction)scrubberTouchUp:(id)sender
 {
-    self.scrubberUpdateDisabled = NO;
+    self.scrubberManualUpdating = NO;
 }
 
 
 /****************************************************************************/
-/* Player/Queue Methods                                                     */
+/* Player Methods                                                           */
 /****************************************************************************/
 - (void)play
 {
-    NSLog(@"Playing...");
-    [self.player play];
+    NSLog(@"Play");
+    if (!self.isPlaying && self.queueFolder.entries.count) {
+        if (self.currentPlayer == nil) {
+            [self setCurrentPlayer];
+        }
+        [self.currentPlayer play];
+        [self nextPlayerPrepare];
+        self.isPlaying = YES;
+        [self updateDisplay];
+    }
+}
+- (void)nextPlayerPrepare
+{
+    if (self.nextPlayer) {
+        [self.nextPlayer stop];
+        NSTimeInterval now = self.currentPlayer.deviceCurrentTime;
+        NSTimeInterval diff = self.currentPlayer.duration - self.currentPlayer.currentTime;
+        [self.nextPlayer playAtTime:now+diff];
+    }
+}
+
+- (AVAudioPlayer *)playerForIndex:(int)index
+{
+    Song *song = self.queueFolder.entries[index];
+    NSURL *url = [song.mediaItem valueForProperty:MPMediaItemPropertyAssetURL];
+    NSError *error;
+    AVAudioPlayer *player;
+    player = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:&error];
+    player.delegate = self;
+    if (error) {
+        NSLog(@"Failed to create AVAudioPlayer: %@", error);
+        return nil;
+    }
+    return player;    
+}
+
+- (void)setCurrentPlayer
+{
+    assert(!self.isPlaying);
+    self.currentPlayer = [self playerForIndex:self.currentQueueIndex];
+    if (self.currentQueueIndex < self.queueFolder.entries.count-1) {
+        self.nextPlayer = [self playerForIndex:self.currentQueueIndex+1];
+    } else {
+        self.nextPlayer = nil;
+    }
 }
 
 - (void)pause
 {
-    [self.player pause];
+    if (self.isPlaying) {
+        [self.currentPlayer pause];
+        if (self.nextPlayer) {
+            [self.nextPlayer pause];
+        }
+        self.isPlaying = NO;
+        [self updateDisplay];
+    }
 }
 
 - (void)stop
 {
-    NSLog(@"Stop action.");
-    [self.player stop];
+    if (self.isPlaying) {
+        [self.currentPlayer stop];
+        if (self.nextPlayer) {
+            [self.nextPlayer stop];
+        }
+        self.isPlaying = NO;
+        [self updateDisplay];
+    }
 }
 
+/****************************************************************************/
+/* Queue Methods                                                            */
+/****************************************************************************/
+// High-level commands.  These will save to db when done.
 - (void)clearQueue
 {
     NSLog(@"Clearing queue and stopping.");
-    //[self.player stop];
-    // Ugh, initWithItems raises an exception with an empty array.
-    // Fake it out.
-    MPMediaQuery *q = [[MPMediaQuery alloc] init];
-    [q addFilterPredicate:[MPMediaPropertyPredicate
-                            predicateWithValue:@"__EP_INVALID_NAME__"
-                            forProperty:MPMediaItemPropertyTitle]];
+    // XXX Does this send DidFinishPlaying?
+    [self stop];
+    self.currentPlayer = nil;
+    self.nextPlayer = nil;
     [self notifyPlayUpdater];
-    self.queueItems = nil;
-    [self.player setQueueWithQuery:q];
-    self.player.nowPlayingItem = nil;
-    [self.tableView reloadData];
-    // Clear the db copy of the queue.
-    [self clearQueueFolder];
-}
 
-- (void)clearQueueFolder
-{
-    //[self.queueFolder removeEntries:self.queueFolder.entries];
+    // Clear the queue.
     self.queueFolder.entries = [NSOrderedSet orderedSet];
-    NSError *error;
-    if (![self.managedObjectContext save:&error]) {
-        NSLog(@"Failed to save: %@", error);
-    }
-}
-
-- (void)addQueueItems:(NSArray *)items
-{
-    NSArray *newItems;
-    if (self.queueItems) {
-        newItems = [self.queueItems.items arrayByAddingObjectsFromArray:items];
-    } else {
-        newItems = items;
-    }
-    [self changeQueueItems:newItems keepPlaying:YES];
-}
-
-- (void)changeQueueItems:(NSArray *)items keepPlaying:(BOOL)keepPlaying
-{
-    NSLog(@"Setting queue: %@", items);
-    [self clearQueueFolder];
-    [self notifyPlayUpdater];
-    self.queueItems = [[MPMediaItemCollection alloc] initWithItems:items];
-    [self notifyPlayUpdater];
-    [self.player setQueueWithItemCollection:self.queueItems];
-    if (keepPlaying && self.player.playbackState == MPMusicPlaybackStatePlaying) {
-        // Stupid API keeps playing on the old queue until you call "play" (which
-        // will restart at item 1) or "stop".
-        // Unfortunately this causes a momentary pause.  Only solution I can
-        // think of is to switch to AVPlayer.
-        // XXX: Assume currentItem is in items?
-        NSTimeInterval currentTime = self.player.currentPlaybackTime;
-        MPMediaItem *currentItem = self.player.nowPlayingItem;
-        [self.player stop];
-        self.player.nowPlayingItem = currentItem;
-        self.player.currentPlaybackTime = currentTime;
-        [self.player play];
-    }
+    [self softUpdateCurrentQueueIndex:0];
+    [self saveQueue];
+    
     [self.tableView reloadData];
-    // Save the db copy.
+    [self updateDisplay];
+}
+
+- (void)switchToQueueIndex:(int)index
+{
+    [self stop];
+    [self softUpdateCurrentQueueIndex:index];
+    [self setCurrentPlayer];
+    [self updateDisplay];
+}
+
+// Update the index without affecting the player.
+- (void)softUpdateCurrentQueueIndex:(int)index
+{
+    self.currentQueueIndex = index;
+    [self updateDisplay];
+}
+
+- (void)playEntry:(Entry *)entry;
+{
+    [self clearQueue];
+    [self appendEntry:entry];
+    [self play];
+    [self saveQueue];
+}
+
+- (void)appendEntry:(Entry *)entry
+{
+    [self dbAppendEntry:entry];
+    [self saveQueue];
+}
+
+- (void)playEntries:(NSArray *)entries
+{
+    [self clearQueue];
+    [self appendEntries:entries];
+    [self play];
+}
+
+- (void)appendEntries:(NSArray *)entries
+{
+    for (Entry *entry in entries) {
+        [self dbAppendEntry:entry];
+    }
+    [self saveQueue];
+}
+
+- (void)playItems:(NSArray *)items
+{
+    [self clearQueue];
+    [self appendItems:items];
+    [self play];
+}
+
+- (void)appendItems:(NSArray *)items
+{
     for (MPMediaItem *item in items) {
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         NSEntityDescription *entity = [NSEntityDescription entityForName:@"Song"
                                                   inManagedObjectContext:self.managedObjectContext];
         request.entity = entity;
-        NSNumber *itemID = [item valueForProperty:MPMediaItemPropertyPersistentID];
-        request.predicate = [NSPredicate predicateWithFormat:@"persistentID==%@", itemID];
+        request.predicate = [NSPredicate predicateWithFormat:@"persistentID==%@", [item valueForProperty:MPMediaEntityPropertyPersistentID]];
         NSError *error;
         NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
         if (results == nil || results.count==0) {
-            NSLog(@"Failed to query for entries: %@", error);
-        } else {
-            Song *song = results[0];
-            NSLog(@"adding %@", song.name);
-            [self.queueFolder addEntriesObject:song];
+            NSLog(@"Failed to query for entry: %@", error);
+            continue;
         }
+        Song *song = results[0];
+        [self dbAppendEntry:song];
     }
+    [self saveQueue];
+}
+
+// Low-level queue commands.
+- (void)saveQueue
+{
     NSError *error;
     if (![self.managedObjectContext save:&error]) {
         NSLog(@"Failed to save: %@", error);
     }
 }
 
-- (void)playItems:(NSArray *)items
+- (void)dbAppendEntry:(Entry *)entry
 {
-    [self changeQueueItems:items keepPlaying:NO];
-    [self play];
-}
-
-/*****************************************************************************/
-/* Action Methods                                                            */
-/*****************************************************************************/
-
-- (void)playEntry:(Entry *)entry;
-{
-    // Stop whatever is playing.
-    //[playerController clearQueue];
-    // Add all of these items to the queue.
-    NSMutableArray *newItems = [NSMutableArray arrayWithCapacity:100];
-    [self addEntry:entry toArray:newItems];
-    // Add these items to the queue, start playback, and display the player.
-    // Guard against playing an empty folder (which would cause an exception
-    // when creating the MPMediaItemCollection).
-    if (newItems.count) {
-        [self playItems:newItems];
-    }
-}
-
-- (void)appendEntry:(Entry *)entry
-{
-    NSMutableArray *newItems;
-    if (self.queueItems) {
-        newItems = [NSMutableArray arrayWithArray:self.queueItems.items];
-    } else {
-        newItems = [NSMutableArray arrayWithCapacity:100];
-    }
-    [self addEntry:entry toArray:newItems];
-    [self changeQueueItems:newItems keepPlaying:YES];
-}
-
-- (void)addEntry:(Entry *)entry toArray:(NSMutableArray *)array
-{
-    if ([entry isKindOfClass:[Folder class]]) {
+    if ([entry.class isSubclassOfClass:[Folder class]]) {
         Folder *folder = (Folder *)entry;
         for (Entry *child in folder.sortedEntries) {
-            [self addEntry:child toArray:array];
+            [self appendEntry:child];
         }
     } else {
         // is Song type.
-        [self addSong:(Song *)entry toArray:array];
-    }
-}
-
-- (void)addSong:(Song *)song toArray:(NSMutableArray *)array
-{
-    MPMediaQuery *query = [[MPMediaQuery alloc] init];
-    MPMediaPropertyPredicate *pred = [MPMediaPropertyPredicate
-                                      predicateWithValue:song.persistentID
-                                      forProperty:MPMediaItemPropertyPersistentID];
-    [query addFilterPredicate:pred];
-    NSArray *result = query.items;
-    if (result.count) {
-        [array addObject:result[0]];
-    } else {
-        NSLog(@"Failed to fetch MPMediaItem for persistent ID song %@.", song.persistentID);
-    }
+        // XXX BUG: entry already in entries.
+        [self.queueFolder addEntriesObject:entry];
+        NSIndexPath *path = [NSIndexPath indexPathForRow:self.queueFolder.entries.count-1 inSection:0];
+        [self.tableView insertRowsAtIndexPaths:@[path] withRowAnimation:YES];
+    }    
 }
 
 /****************************************************************************/
-/* Media Player Notifications                                               */
+/* Notifications                                                            */
 /****************************************************************************/
 
 - (void)registerNotifications
 {
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter addObserver:self
-                           selector:@selector(nowPlayingItemChanged:)
-                               name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification
-                             object:self.player];
-    [notificationCenter addObserver:self
-                           selector:@selector(playbackStateChanged:)
-                               name:MPMusicPlayerControllerPlaybackStateDidChangeNotification
-                             object:self.player];
+    // I can't get this one to work, use MediaPlayer instead.
+//    [notificationCenter addObserver:self
+//                           selector:@selector(volumeChanged:)
+//                               name:@"AVSystemController_SystemVolumeDidChangeNotification"
+//                             object:nil];
     [notificationCenter addObserver:self
                            selector:@selector(volumeChanged:)
                                name:MPMusicPlayerControllerVolumeDidChangeNotification
-                             object:self.player];
+                             object:self.mpPlayer];
     [notificationCenter addObserver:self
                            selector:@selector(libraryChanged:)
                                name:MPMediaLibraryDidChangeNotification
-                             object:self.player];
-    [self.player beginGeneratingPlaybackNotifications];
+                             object:self.mpPlayer];
+//xxx
+    [self.mpPlayer beginGeneratingPlaybackNotifications];
+    
+    // App state notifications.
+    [notificationCenter addObserver:self
+                           selector:@selector(willResignActive:)
+                               name:UIApplicationWillResignActiveNotification
+                             object:nil];
+    [notificationCenter addObserver:self
+                           selector:@selector(didBecomeActive:)
+                               name:UIApplicationDidBecomeActiveNotification
+                             object:nil];
+
+
+	AudioSessionAddPropertyListener (kAudioSessionProperty_AudioRouteChange,
+                                     audioRouteChangeListenerCallback,
+                                     (__bridge void *)(self)
+                                     );
+
 }
 
-- (void)nowPlayingItemChanged:(id)notification
+- (void)willResignActive:(UIApplication *)application
 {
-    MPMediaItem *item = self.player.nowPlayingItem;
-    NSLog(@"now playing changed %@.", [item valueForProperty:MPMediaItemPropertyTitle]);
-    [self updateNowPlayingView];
+    NSLog(@"PLAYER Resigning");
+    [self stopTimer];
+    self.isDisplayed = NO;
+}
+
+- (void)didBecomeActive:(UIApplication *)application
+{
+    NSLog(@"PLAYER Become active");
+    self.isDisplayed = YES;
+    if (self.isPlaying) {
+        [self startTimer];
+    }
+}
+
+- (void)updateDisplay
+{
+    if (self.isDisplayed) {
+        [self updateNowPlayingView];
+        if (self.isPlaying) {
+            [self.playButton setImage:[UIImage imageNamed:@"queue-pause"] forState:UIControlStateNormal];
+            [self startTimer];
+        } else {
+            [self.playButton setImage:[UIImage imageNamed:@"queue-play"] forState:UIControlStateNormal];
+            [self stopTimer];
+        }
+    }
 }
 
 - (void)updateNowPlayingView
 {
-    MPMediaItem *item = self.player.nowPlayingItem;
-    //    @property (weak, nonatomic) IBOutlet UIImageView *artImageView;
-    self.artistNameLabel.text = [item valueForProperty:MPMediaItemPropertyArtist];
-    self.albumNameLabel.text = [item valueForProperty:MPMediaItemPropertyAlbumTitle];
-    self.trackNameLabel.text = [item valueForProperty:MPMediaItemPropertyTitle];
-    NSNumber *year = [item valueForProperty:@"year"];
-    if (year == nil || [year intValue]==0) {
-        self.releasedDateLabel.text = nil;
+    if (self.queueFolder.entries.count) {
+        Song *song = self.queueFolder.entries[self.currentQueueIndex];
+        EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:song.mediaItem];
+        self.artistNameLabel.text = wrapper.artist;
+        self.albumNameLabel.text = wrapper.albumTitle;
+        self.trackNameLabel.text = wrapper.title;
+        if (wrapper.releaseYear == 0) {
+            self.releasedDateLabel.text = nil;
+        } else {
+            self.releasedDateLabel.text = [NSString stringWithFormat:@"Released %i", wrapper.releaseYear];
+        }
+    
+        if (self.isPlaying) {
+            // Make sure the scrubber is updating.
+            [self startTimer];
+        }
     } else {
-        self.releasedDateLabel.text = [NSString stringWithFormat:@"Released %i", [year integerValue]];
-    }
-    // dow we need to scrubbing forward/backward?
-    if (self.player.playbackState == MPMusicPlaybackStatePlaying) {
-        [self startTimer];
+        // Empty queue.
+        self.artistNameLabel.text = nil;
+        self.albumNameLabel.text = nil;
+        self.trackNameLabel.text = nil;
+        self.releasedDateLabel.text = nil;
     }
     [self updateScrubber];
     [self updateCurrentPlayingCell];
@@ -552,28 +655,27 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         EPPlayerCellView *cview = cell.contentView.subviews[0];
         [cview unsetCurrent];
     }
-    // Now determine which one.
-    NSUInteger index = [self.queueItems.items indexOfObject:self.player.nowPlayingItem];
-    if (index != NSNotFound) {
-        NSIndexPath *path = [NSIndexPath indexPathForRow:index inSection:0];
+    if (self.queueFolder.entries.count) {
+        NSIndexPath *path = [NSIndexPath indexPathForRow:self.currentQueueIndex inSection:0];
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:path];
         if (cell) {
             EPPlayerCellView *cview = cell.contentView.subviews[0];
-            [cview setCurrent:self.player.playbackState==MPMusicPlaybackStatePlaying];
+            [cview setCurrent:self.isPlaying];
         }
     }
 }
 
 - (void)updateTimeLabels
 {
-    MPMediaItem *item = self.player.nowPlayingItem;
-    if (item) {
+    if (self.currentPlayer) {
+        Song *song = self.queueFolder.entries[self.currentQueueIndex];
+        MPMediaItem *item = song.mediaItem;
+        int time = self.currentPlayer.currentTime;
         self.currentTimeLabel.text = [NSString stringWithFormat:@"%i:%02i",
-                                      ((int)self.player.currentPlaybackTime)/60,
-                                      ((int)self.player.currentPlaybackTime)%60];
+                                      time/60, time%60];
         
         NSTimeInterval duration = (int)[[item valueForProperty:MPMediaItemPropertyPlaybackDuration] doubleValue];
-        int timeLeft = duration - self.player.currentPlaybackTime;
+        int timeLeft = duration - self.currentPlayer.currentTime;
         
         self.timeLeftLabel.text = [NSString stringWithFormat:@"-%i:%02i",
                                    timeLeft/60,
@@ -588,10 +690,11 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)updateScrubber
 {
     [self updateTimeLabels];
-    MPMediaItem *item = self.player.nowPlayingItem;
-    if (item) {
+    if (self.currentPlayer) {
+        Song *song = self.queueFolder.entries[self.currentQueueIndex];
+        MPMediaItem *item = song.mediaItem;
         NSTimeInterval duration = (int)[[item valueForProperty:MPMediaItemPropertyPlaybackDuration] doubleValue];
-        [self.scrubber setValue:self.player.currentPlaybackTime/duration animated:YES];
+        [self.scrubber setValue:self.currentPlayer.currentTime/duration animated:YES];
     } else {
         [self.scrubber setValue:0 animated:YES];
     }
@@ -605,7 +708,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
                                                     selector:@selector(timerFired:)
                                                     userInfo:nil
                                                      repeats:YES];
-        self.scrubberUpdateDisabled = NO;
+        self.scrubberManualUpdating = NO;
     }
 }
 
@@ -621,7 +724,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 {
     NSLog(@"timer fired %@", self.isDisplayed ? @"YES" : @"NO");
     if (self.isDisplayed) {
-        if (self.scrubberUpdateDisabled) {
+        if (self.scrubberManualUpdating) {
             [self updateTimeLabels];
         } else {
             [self updateScrubber];
@@ -629,57 +732,81 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     }
 }
 
-- (void)playbackStateChanged:(id)notification
+/****************************************************************************/
+/* AVAudioPlayer Delegate                                                   */
+/****************************************************************************/
+
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
 {
-    [self updatePlaybackState];
+    NSLog(@"%@ Did finish: %hhd", player, flag);
+    self.isPlaying = NO;
+    if (flag) {
+        if (self.currentQueueIndex < self.queueFolder.entries.count-1) {
+            // Prepare for the next track to play.
+            [self softUpdateCurrentQueueIndex:self.currentQueueIndex+1];
+            if (self.nextPlayer) {
+                // Assume nextPlayer will pick up.
+                self.currentPlayer = self.nextPlayer;
+                if (self.currentQueueIndex < self.queueFolder.entries.count-1) {
+                    // Prepare the next track.
+                    self.nextPlayer = [self playerForIndex:self.currentQueueIndex+1];
+                    [self nextPlayerPrepare];
+                } else {
+                    // No next track.
+                    self.nextPlayer = nil;
+                }
+                self.isPlaying = YES;
+            } else {
+                // This can happen if entries are added to the queue while playing
+                // the last entry.  Could fix the queue commands, but that's a
+                // rare case.
+                self.isPlaying = NO;
+                [self setCurrentPlayer];
+                [self play];
+            }
+        } else {
+            // At the end of the queue.
+            self.currentPlayer = nil;
+            self.nextPlayer = nil;  // Probably redundant.
+            self.currentQueueIndex = 0;
+        }
+    } else {
+        // Decode failure.
+        if (self.nextPlayer) {
+            [self.nextPlayer stop];
+            self.nextPlayer = nil;
+        }
+    }
+    [self updateDisplay];
 }
 
-- (void)updatePlaybackState
+- (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error
 {
-    switch (self.player.playbackState) {
-        case MPMusicPlaybackStateStopped:
-            NSLog(@"Notification: playback stopped");
-            // May get events before being displayed the first time.
-            if (self.playButton) {
-                [self.playButton setImage:[UIImage imageNamed:@"queue-play"] forState:UIControlStateNormal];
-                [self stopTimer];
-                [self updateCurrentPlayingCell];
-            }
-            break;
-        case MPMusicPlaybackStatePlaying:
-            NSLog(@"Notification: playback playing");
-            if (self.playButton) {
-                [self.playButton setImage:[UIImage imageNamed:@"queue-pause"] forState:UIControlStateNormal];
-                [self startTimer];
-                [self updateCurrentPlayingCell];
-            }
-            break;
-        case MPMusicPlaybackStatePaused:
-            NSLog(@"Notification: playback paused");
-            if (self.playButton) {
-                [self.playButton setImage:[UIImage imageNamed:@"queue-play"] forState:UIControlStateNormal];
-                [self stopTimer];
-                [self updateCurrentPlayingCell];
-            }
-            break;
-        case MPMusicPlaybackStateInterrupted:
-            NSLog(@"Notification: playback interrupted");
-            [self stopTimer];
-            break;
-        case MPMusicPlaybackStateSeekingForward:
-            NSLog(@"Notification: playback seek forward");
-            [self updateScrubber];
-            break;
-        case MPMusicPlaybackStateSeekingBackward:
-            NSLog(@"Notification: playback seek backward");
-            [self updateScrubber];
-            break;
-    }    
+    NSLog(@"Decode error: %@", error);
+}
+
+- (void)audioPlayerBeginInterruption:(AVAudioPlayer *)player
+{
+    NSLog(@"Begin interruption.");
+    // Automatically paused.
+    if (self.isPlaying) {
+        self.interruptedWhilePlaying = YES;
+        self.isPlaying = NO;
+    }
+}
+
+- (void)audioPlayerEndInterruption:(AVAudioPlayer *)player withOptions:(NSUInteger)flags
+{
+    NSLog(@"End interruption.");
+    // Unpause.
+    if (self.interruptedWhilePlaying) {
+        self.interruptedWhilePlaying = NO;
+        [self play];
+    }
 }
 
 - (void)volumeChanged:(id)notification
 {
-    // XXX: media player volume vs system volume?
     [self updateVolumeImage];
 }
 
@@ -691,13 +818,25 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 /****************************************************************************/
 /* Volume                                                                   */
 /****************************************************************************/
+- (float)volume
+{
+    return self.mpPlayer.volume;
+    // An alternative.
+//    Float32 volume;
+//    UInt32 dataSize = sizeof(Float32);
+//    AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareOutputVolume,
+//                            &dataSize, &volume);
+//    return volume;
+}
+
+
 - (void)updateVolumeImage
 {
     UIImage *on = [UIImage imageNamed:@"queue-volume-on"];
     UIImage *off = [UIImage imageNamed:@"queue-volume-off"];
 
     UIGraphicsBeginImageContextWithOptions(on.size, NO, 0.0);
-    CGFloat width = on.size.width*self.player.volume;
+    CGFloat width = on.size.width*self.volume;
     on = [on crop:CGRectMake(0, 0, width, on.size.height)];
     off = [off crop:CGRectMake(width, 0, off.size.width-width, off.size.height)];
     [on drawAtPoint:CGPointMake(0, 0)];
