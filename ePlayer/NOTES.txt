@@ -10,12 +10,8 @@ TODO
 
 NOW
 ===
-- save currentQueueIndex to disk
-- a song in a playlist twice won't work.  May need to use intermediate table.
 - do play counts update with AVAudioPlayer?
     - Currently really broken.
-- Is the scrubber disabled with an empty queue (or nil currentPlayer).
-    - disable scrubber
 - As current playing item in queue changes off-screen, scroll to that item.
 
 High
@@ -37,9 +33,12 @@ High
 - Some way to view lyrics.
 - Icon
 - Paste with something that already exists, maybe make a copy?
+- save currentQueueIndex to disk
 
 Medium
 ======
+- Is the scrubber disabled with an empty queue (or nil currentPlayer).
+    - disable scrubber
 - playlist controller: click on song should play it or something (like track controller).
 - Paste button should have a # indicating the number of items.
 - Delete should show how many items (recursively).
@@ -66,4 +65,5 @@ Ideas
 =====
 - Should del/cut/copy/paste buttons somehow be static (don't scroll with table)?
 - scrubber should pop up audio visualization.
-
+- Not entirely happy that an entry can't be in a folder more than once.  However,
+  I don't have an immediate need for that.  Can workaround with subfolders.

@@ -538,11 +538,12 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         }
     } else {
         // is Song type.
-        // XXX BUG: entry already in entries.
-        [self.queueFolder addEntriesObject:entry];
-        NSIndexPath *path = [NSIndexPath indexPathForRow:self.queueFolder.entries.count-1 inSection:0];
-        [self.tableView insertRowsAtIndexPaths:@[path] withRowAnimation:YES];
-    }    
+        if (![self.queueFolder.entries containsObject:entry]) {
+            [self.queueFolder addEntriesObject:entry];
+            NSIndexPath *path = [NSIndexPath indexPathForRow:self.queueFolder.entries.count-1 inSection:0];
+            [self.tableView insertRowsAtIndexPaths:@[path] withRowAnimation:YES];
+        }
+    }
 }
 
 /****************************************************************************/
