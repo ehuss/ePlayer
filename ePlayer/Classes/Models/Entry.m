@@ -19,9 +19,23 @@
 @dynamic playCount;
 @dynamic parents;
 
+- (NSUInteger)intPlayCount
+{
+    if (self.playCount == nil) {
+        return 0;
+    } else {
+        return [self.playCount unsignedIntegerValue];
+    }
+}
+
+- (void)setIntPlayCount:(NSUInteger)intPlayCount
+{
+    self.playCount = [NSNumber numberWithUnsignedInteger:intPlayCount];
+}
+
 - (void)propagatePlayCount:(NSUInteger)count
 {
-    int newCount = count+[self.playCount integerValue];
+    int newCount = count+self.intPlayCount;
     self.playCount = @(newCount);
     for (Entry *folder in self.parents) {
         [folder propagatePlayCount:count];

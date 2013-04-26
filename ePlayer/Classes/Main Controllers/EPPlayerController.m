@@ -11,6 +11,7 @@
 #import "EPPlayerCellView.h"
 #import "UIImage+EPCrop.h"
 #import "EPMediaItemWrapper.h"
+#import "EPMainTabController.h"
 
 //static NSTimeInterval scrubberUpdateTime = 0.300;
 
@@ -83,22 +84,7 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
 {
     self.mpPlayer = [MPMusicPlayerController applicationMusicPlayer];
     [self registerNotifications];
-    self.playUpdater = [[EPPlayUpdater alloc] initWithStore:self.persistentStoreCoordinator];
-    self.playUpdater.mainMOC = self.managedObjectContext;
-    [self.playUpdater spawnBgThread];
-    [self notifyPlayUpdater];
     [self updateVolumeImage];
-}
-
-- (void)notifyPlayUpdater
-{
-    if (self.queueFolder.entries.count) {
-        NSMutableArray *ids = [NSMutableArray arrayWithCapacity:self.queueFolder.entries.count];
-        for (Song *song in self.queueFolder.entries) {
-            [ids addObject:song.persistentID];
-        }
-        [self.playUpdater enqueueItems:ids];
-    }
 }
 
 - (Folder *)queueFolder
@@ -114,6 +100,11 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
         _queueFolder = results[0];
     }
     return _queueFolder;
+}
+
+- (EPMainTabController *)mainTabController
+{
+    return (EPMainTabController *)self.tabBarController;
 }
 
 - (void)viewDidLoad
@@ -438,7 +429,6 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     [self stop];
     self.currentPlayer = nil;
     self.nextPlayer = nil;
-    [self notifyPlayUpdater];
 
     // Clear the queue.
     self.queueFolder.entries = [NSOrderedSet orderedSet];
@@ -469,56 +459,15 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     [self clearQueue];
     [self appendEntry:entry];
     [self play];
-    [self saveQueue];
 }
 
 - (void)appendEntry:(Entry *)entry
 {
     [self dbAppendEntry:entry];
     [self saveQueue];
+    [self.mainTabController resortPlayDates];
 }
 
-- (void)playEntries:(NSArray *)entries
-{
-    [self clearQueue];
-    [self appendEntries:entries];
-    [self play];
-}
-
-- (void)appendEntries:(NSArray *)entries
-{
-    for (Entry *entry in entries) {
-        [self dbAppendEntry:entry];
-    }
-    [self saveQueue];
-}
-
-- (void)playItems:(NSArray *)items
-{
-    [self clearQueue];
-    [self appendItems:items];
-    [self play];
-}
-
-- (void)appendItems:(NSArray *)items
-{
-    for (MPMediaItem *item in items) {
-        NSFetchRequest *request = [[NSFetchRequest alloc] init];
-        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Song"
-                                                  inManagedObjectContext:self.managedObjectContext];
-        request.entity = entity;
-        request.predicate = [NSPredicate predicateWithFormat:@"persistentID==%@", [item valueForProperty:MPMediaEntityPropertyPersistentID]];
-        NSError *error;
-        NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
-        if (results == nil || results.count==0) {
-            NSLog(@"Failed to query for entry: %@", error);
-            continue;
-        }
-        Song *song = results[0];
-        [self dbAppendEntry:song];
-    }
-    [self saveQueue];
-}
 
 // Low-level queue commands.
 - (void)saveQueue
@@ -536,6 +485,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         for (Entry *child in folder.sortedEntries) {
             [self appendEntry:child];
         }
+        [folder propagatePlayCount:1];
+        [folder propagatePlayDate:[NSDate date]];
     } else {
         // is Song type.
         if (![self.queueFolder.entries containsObject:entry]) {
@@ -735,6 +686,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     NSLog(@"%@ Did finish: %hhd", player, flag);
     self.isPlaying = NO;
     if (flag) {
+        Song *finishedSong = self.queueFolder.entries[self.currentQueueIndex];
         if (self.currentQueueIndex < self.queueFolder.entries.count-1) {
             // Prepare for the next track to play.
             [self softUpdateCurrentQueueIndex:self.currentQueueIndex+1];
@@ -764,6 +716,9 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             self.nextPlayer = nil;  // Probably redundant.
             self.currentQueueIndex = 0;
         }
+        finishedSong.intPlayCount += 1;
+        finishedSong.playDate = [NSDate date];
+        [self saveQueue];
     } else {
         // Decode failure.
         if (self.nextPlayer) {

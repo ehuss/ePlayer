@@ -11,13 +11,12 @@ TODO
 NOW
 ===
 - In queue, show folders with entries indented.
-- do play counts update with AVAudioPlayer?
-    - Currently really broken.
 - As current playing item in queue changes off-screen, scroll to that item.
-- Way to view playcount/playdate/etc  (song or folder).  Where?
 
 High
 ====
+- Sort on play counts?
+- Way to view playcount/playdate/etc  (song or folder).  Where?
 - Change append popup to be above/below.
 - Adding songs is slow.  If it can't be sped up, give some visual feedback.
 - songs should display length in EntryCell (and folders show sum (or count)?)

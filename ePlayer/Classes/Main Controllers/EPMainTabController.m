@@ -62,6 +62,22 @@
     [(EPPlaylistTableController *)((UINavigationController *)self.viewControllers[2]).topViewController loadInitialFolderTemplate:@"AlbumFolder"];
 }
 
+- (void)resortPlayDates
+{
+    for (UIViewController *controller in self.viewControllers) {
+        if ([controller.class isSubclassOfClass:[UINavigationController class]]) {
+            UINavigationController *navCont = (UINavigationController *)controller;
+            for (EPPlaylistTableController *playlistCont in navCont.viewControllers) {
+                if (playlistCont.sortOrder == EPSortOrderPlayDate) {
+                    [playlistCont updateSections];
+                    [playlistCont.tableView reloadData];
+                }
+            }
+        }
+    }
+}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];

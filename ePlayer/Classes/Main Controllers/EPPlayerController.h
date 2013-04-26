@@ -11,7 +11,8 @@
 #import <UIKit/UIKit.h>
 #import "EPScrubberView.h"
 #import "EPCommon.h"
-#import "EPPlayUpdater.h"
+
+@class EPMainTabController;
 
 @interface EPPlayerController : UIViewController <UITableViewDelegate,
                                                   UITableViewDataSource,
@@ -34,12 +35,6 @@
 
 - (void)playEntry:(Entry *)entry;
 - (void)appendEntry:(Entry *)entry;
-// Array of Entry objectes.
-- (void)playEntries:(NSArray *)entries;
-- (void)appendEntries:(NSArray *)entries;
-// MPMediaItems.
-- (void)playItems:(NSArray *)items;
-- (void)appendItems:(NSArray *)items;
 
 // Actions
 - (IBAction)tappedPrev:(id)sender;
@@ -69,7 +64,6 @@
 @property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) Folder *queueFolder;
 @property (assign, nonatomic) int currentQueueIndex;
-@property (strong, nonatomic) EPPlayUpdater *playUpdater;
 
 // Player
 @property (strong, nonatomic) AVAudioPlayer *currentPlayer;
@@ -93,5 +87,6 @@
 // I can't check self.view.window or self.tabBarController.selectedViewController == self
 // since I want to do things in viewWillAppear, and those haven't updated, yet.
 @property (assign, nonatomic) BOOL isDisplayed;
+@property (readonly, nonatomic) EPMainTabController *mainTabController;
 
 @end

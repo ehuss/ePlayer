@@ -25,7 +25,6 @@
 		0719E37B1726356900D325B5 /* play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E37A1726356900D325B5 /* play@2x.png */; };
 		07475EB017272053001BB7AA /* EPEditCell1.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EAF17272053001BB7AA /* EPEditCell1.m */; };
 		07475EB317272063001BB7AA /* EPEditCell2.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EB217272063001BB7AA /* EPEditCell2.m */; };
-		07475EBA172743FD001BB7AA /* EPPlayUpdater.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EB9172743FC001BB7AA /* EPPlayUpdater.m */; };
 		07475EBC172761BD001BB7AA /* append-popout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07475EBB172761BD001BB7AA /* append-popout@2x.png */; };
 		07475EBF17278023001BB7AA /* EPAppendButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EBE17278023001BB7AA /* EPAppendButton.m */; };
 		07475EC2172780A4001BB7AA /* Test.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07475EC0172780A4001BB7AA /* Test.xib */; };
@@ -123,8 +122,6 @@
 		07475EAF17272053001BB7AA /* EPEditCell1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPEditCell1.m; sourceTree = "<group>"; };
 		07475EB117272063001BB7AA /* EPEditCell2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPEditCell2.h; sourceTree = "<group>"; };
 		07475EB217272063001BB7AA /* EPEditCell2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPEditCell2.m; sourceTree = "<group>"; };
-		07475EB8172743FC001BB7AA /* EPPlayUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayUpdater.h; sourceTree = "<group>"; };
-		07475EB9172743FC001BB7AA /* EPPlayUpdater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayUpdater.m; sourceTree = "<group>"; };
 		07475EBB172761BD001BB7AA /* append-popout@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "append-popout@2x.png"; sourceTree = "<group>"; };
 		07475EBD17278023001BB7AA /* EPAppendButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPAppendButton.h; sourceTree = "<group>"; };
 		07475EBE17278023001BB7AA /* EPAppendButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPAppendButton.m; sourceTree = "<group>"; };
@@ -397,8 +394,6 @@
 				079B412E171CCA6E0036F0D4 /* EPMediaItemWrapper.m */,
 				0755C36C1715335800AAF81F /* EPMemoryDebug.h */,
 				0755C36D1715335800AAF81F /* EPMemoryDebug.m */,
-				07475EB8172743FC001BB7AA /* EPPlayUpdater.h */,
-				07475EB9172743FC001BB7AA /* EPPlayUpdater.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -637,7 +632,6 @@
 				0719E37917262A7D00D325B5 /* UIImage+EPCrop.m in Sources */,
 				07475EB017272053001BB7AA /* EPEditCell1.m in Sources */,
 				07475EB317272063001BB7AA /* EPEditCell2.m in Sources */,
-				07475EBA172743FD001BB7AA /* EPPlayUpdater.m in Sources */,
 				07475EBF17278023001BB7AA /* EPAppendButton.m in Sources */,
 				078A3BEB1729EE8A009A8FF5 /* EPMainTabController.m in Sources */,
 			);

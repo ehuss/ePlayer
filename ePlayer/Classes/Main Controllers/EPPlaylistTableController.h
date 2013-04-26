@@ -19,6 +19,7 @@
 
 - (void)loadInitialFolderTemplate:(NSString *)templateName;
 - (EPPlaylistTableController *)copyMusicController;
+- (void)updateSections;
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSManagedObjectModel *managedObjectModel;

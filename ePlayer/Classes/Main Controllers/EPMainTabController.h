@@ -21,5 +21,6 @@
                     model:(NSManagedObjectModel *)model
                   context:(NSManagedObjectContext *)context;
 - (void)loadInitialFolders;
+- (void)resortPlayDates;
 
 @end

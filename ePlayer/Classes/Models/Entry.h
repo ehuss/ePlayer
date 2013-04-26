@@ -23,6 +23,7 @@
 @property (nonatomic, retain) NSDate * playDate;
 @property (nonatomic, retain) NSDate * releaseDate;
 @property (nonatomic, retain) NSNumber * playCount;
+@property (nonatomic, assign) NSUInteger intPlayCount;
 @property (nonatomic, retain) NSSet *parents;
 @end
 
