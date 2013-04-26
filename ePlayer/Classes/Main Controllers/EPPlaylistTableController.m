@@ -191,13 +191,13 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     }
 }
 
-- (void)loadRootFolder
+- (void)loadInitialFolderTemplate:(NSString *)templateName
 {
-    NSFetchRequest *request = [self.managedObjectModel fetchRequestTemplateForName:@"RootFolder"];
+    NSFetchRequest *request = [self.managedObjectModel fetchRequestTemplateForName:templateName];
     NSError *error;
     NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
     if (results==nil || results.count==0) {
-        NSLog(@"Failed to fetch root folder: %@", error);
+        NSLog(@"Failed to fetch %@ folder: %@", templateName, error);
         return;
     }
     self.folder = results[0];
@@ -205,7 +205,6 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     // (and possibly other things).
     [self.tableView reloadData];
 }
-
 
 - (void)setFolder:(Folder *)folder
 {

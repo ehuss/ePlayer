@@ -10,8 +10,6 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "AppDelegate.h"
 #import "EPCommon.h"
-#import "EPArtistTableController.h"
-#import "EPAlbumTableController.h"
 #import "EPMediaItemWrapper.h"
 #import "NSManagedObjectModel+KCOrderedAccessorFix.h"
 
@@ -19,6 +17,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    //    [[NSFileManager defaultManager] removeItemAtURL:[self dbURL] error:nil];
+
+    // Set up audio.
     AVAudioSession *session = [AVAudioSession sharedInstance];
     NSError *error;
     [session setCategory:AVAudioSessionCategoryPlayback error:&error];
@@ -30,6 +31,7 @@
         NSLog(@"Failed to set audio session active: %@", error);
     }
     
+    // Various globals and other setup.
     createGregorianCalendar();
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:@{EPSettingArtistsSortOrder: [NSNumber numberWithInt:EPSortOrderAlpha],
@@ -37,76 +39,23 @@
                                  EPSettingArtistAlbumsSortOrder: [NSNumber numberWithInt:EPSortOrderReleaseDate]}];
     playlistPasteboard = [UIPasteboard pasteboardWithName:@"org.ehuss.ePlayer" create:YES];
     playlistPasteboard.persistent = YES;
-//    MPMediaQuery *artists = [[MPMediaQuery alloc] init];
-//    [artists setGroupingType:MPMediaGroupingAlbumArtist];
-//    for (MPMediaItemCollection *artist in artists.collections) {
-//        MPMediaItem *item = [artist representativeItem];
-//        NSLog(@"%@ %@", [item valueForProperty:MPMediaItemPropertyArtist],
-//              [item valueForProperty:MPMediaItemPropertyAlbumArtist]);
-//    }
-//    return YES;
-
     
-    /*
-    MPMediaQuery *everything2 = [[MPMediaQuery alloc] init];
-    NSLog(@"Total: %i", everything2.items.count);
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    for (MPMediaItem *song in everything2.items) {
-        [dict setObject:song forKey:[song valueForProperty:MPMediaItemPropertyPersistentID]];
-    }
-    NSMutableDictionary *dict2 = [[NSMutableDictionary alloc] init];
-    
-    MPMediaQuery *everything = [[MPMediaQuery alloc] init];
-    [everything setGroupingType:MPMediaGroupingAlbumArtist];
-    NSArray *artists = [everything collections];
-    NSLog(@"Album artist count %i", artists.count);
-    [everything setGroupingType:MPMediaGroupingArtist];
-    NSArray *artists2 = [everything collections];
-    NSLog(@"Artist count %i", artists2.count);
-    uint count = 0;
-    for (MPMediaItemCollection *artist in artists) {
-        MPMediaItem *representativeItem = [artist representativeItem];
-        NSString *artistName = [representativeItem valueForProperty:MPMediaItemPropertyAlbumArtist];
-        NSString *albumName = [representativeItem valueForProperty:MPMediaItemPropertyAlbumTitle];
-        NSLog(@"%@ by %@ (%i songs)", albumName, artistName, album.items.count);
-        for (MPMediaItem *song in album.items) {
-            NSLog(@"    %@", [song valueForProperty:MPMediaItemPropertyTitle]);
-            count += 1;
-            [dict2 setObject:song forKey:[song valueForProperty:MPMediaItemPropertyPersistentID]];
-        }
-    }
-    NSLog(@"Found %i", count);
-    NSSet *x = [dict keysOfEntriesPassingTest:^BOOL(id key, id obj, BOOL *stop) {
-        return [dict2 objectForKey:key] == nil;
-    }];
-    for (NSString *key in x) {
-        MPMediaItem *e = [dict objectForKey:key];
-        NSLog(@"not in album: %@", [e valueForProperty:MPMediaItemPropertyTitle]);
-    }*/
-//    [[NSFileManager defaultManager] removeItemAtURL:[self dbURL] error:nil];
-    
-    self.tabController = (UITabBarController *)self.window.rootViewController;
-    self.tabController.delegate = self;
-    self.playlistNavController = self.tabController.viewControllers[0];
-    self.playlistTableController = (EPPlaylistTableController *)self.playlistNavController.topViewController;
-    self.playlistTableController.managedObjectContext = self.managedObjectContext;
-    self.playlistTableController.managedObjectModel = self.managedObjectModel;
-    self.playlistTableController.persistentStoreCoordinator = self.persistentStoreCoordinator;
+    // Core data setup.
+    self.mainTabController = (EPMainTabController *)self.window.rootViewController;
+    [self.mainTabController mainInitDataStore:self.persistentStoreCoordinator
+                                        model:self.managedObjectModel
+                                      context:self.managedObjectContext];
     
     if ([self loadData]) {
         // Database is ready.  Populate the view.
         // XXX restore state
-        [self.playlistTableController loadRootFolder];
+        [self.mainTabController loadInitialFolders];
     } else {
         // Database import happens in background.
         // Don't display anything until it is done.
     }
 
-    self.playerController = self.tabController.viewControllers[3];
-    self.playerController.persistentStoreCoordinator = self.persistentStoreCoordinator;
-    self.playerController.managedObjectContext = self.managedObjectContext;
-    self.playerController.managedObjectModel = self.managedObjectModel;
-    [self.playerController mainInit];
+    [self.mainTabController.playerController mainInit];
 
     return YES;
 }
@@ -308,11 +257,27 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     Folder *rootFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
                                                                 inManagedObjectContext:managedObjectContext];
     rootFolder.name = @"Playlists";
-    rootFolder.sortOrder = @(EPSortOrderAlpha);//[NSNumber numberWithInt:EPSortOrderAlpha];
+    rootFolder.sortOrder = @(EPSortOrderAlpha);
     rootFolder.addDate = [NSDate date];
     rootFolder.releaseDate = [NSDate distantPast];
     rootFolder.playDate = [NSDate distantPast];
     
+    Folder *artistsFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
+                                                                    inManagedObjectContext:managedObjectContext];
+    artistsFolder.name = @"Artists";
+    artistsFolder.sortOrder = @(EPSortOrderAlpha);
+    artistsFolder.addDate = [NSDate date];
+    artistsFolder.releaseDate = [NSDate distantPast];
+    artistsFolder.playDate = [NSDate distantPast];
+
+    Folder *albumsFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
+                                                                    inManagedObjectContext:managedObjectContext];
+    albumsFolder.name = @"Albums";
+    albumsFolder.sortOrder = @(EPSortOrderAlpha);
+    albumsFolder.addDate = [NSDate date];
+    albumsFolder.releaseDate = [NSDate distantPast];
+    albumsFolder.playDate = [NSDate distantPast];
+
     // Create a magic folder used for "cut".
     Folder *cutFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
                                                                   inManagedObjectContext:managedObjectContext];
@@ -337,9 +302,11 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     // Iterate over genre's for the top-level folder.
     MPMediaQuery *genreQuery = [[MPMediaQuery alloc] init];
     genreQuery.groupingType = MPMediaGroupingGenre;
-    MPMediaPropertyPredicate *pred = [MPMediaPropertyPredicate predicateWithValue:@(MPMediaTypeMusic) forProperty:MPMediaItemPropertyMediaType];
+    MPMediaPropertyPredicate *pred = [MPMediaPropertyPredicate
+                                      predicateWithValue:@(MPMediaTypeMusic)
+                                      forProperty:MPMediaItemPropertyMediaType];
     [genreQuery addFilterPredicate:pred];
-    // Keep track of genre folders for later.
+    // Keep track of genre folders for later.  Key is genre name, value is Folder.
     NSMutableDictionary *genres = [[NSMutableDictionary alloc] init];
     for (MPMediaItemCollection *genre in genreQuery.collections) {
         // Create a folder for this genre.
@@ -355,96 +322,84 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
         genreFolder.playDate = [NSDate distantPast];
         [rootFolder addEntriesObject:genreFolder];
         [genres setObject:genreFolder forKey:genreFolder.name];
-        // Get all albums in this genre.
-        // (Using albums because AlbumArtist isn't always there, and Artist
-        // isn't always what I want.)
-        MPMediaQuery *albums = [MPMediaQuery albumsQuery];
-        MPMediaPredicate *gPred = [MPMediaPropertyPredicate
-                                   predicateWithValue:[representativeItem valueForProperty:MPMediaItemPropertyGenrePersistentID]
-                                   forProperty:MPMediaItemPropertyGenrePersistentID];
-        [albums addFilterPredicate:gPred];
-        // Create a unique set of artists.  Value is a representative song.
-        NSMutableDictionary *artists = [[NSMutableDictionary alloc] init];
-        for (MPMediaItemCollection *album in albums.collections) {
-            MPMediaItem *representativeItem2 = album.representativeItem;
-            NSString *artistName = artistNameFromMediaItem(representativeItem2);
-            if (artistName == nil) {
-                continue;
-            }
-            [artists setObject:representativeItem2 forKey:artistName];
+    }
+    
+    // Fetch all albums.
+    MPMediaQuery *albums = [MPMediaQuery albumsQuery];
+    // Keep a unique set of artists.
+    NSMutableDictionary *artists = [[NSMutableDictionary alloc] init];
+    for (MPMediaItemCollection *albumItem in albums.collections) {
+        MPMediaItem *representativeItem = albumItem.representativeItem;
+        // XXX: What if genre is nil?
+        Folder *genre = [genres objectForKey:[representativeItem valueForProperty:MPMediaItemPropertyGenre]];
+        NSString *artistName = artistNameFromMediaItem(representativeItem);
+        if (artistName == nil) {
+            continue;
         }
-        // Create artist folders.
-        NSMutableDictionary *artistFolders = [[NSMutableDictionary alloc] init];
-        for (MPMediaItem *item in artists.objectEnumerator) {
-            NSString *artistName = artistNameFromMediaItem(item);
-            NSLog(@"Creating artist %@.", artistName);
-            Folder *artistFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
-                                                                           inManagedObjectContext:managedObjectContext];
-            artistFolder.name = artistName;
-            artistFolder.sortOrder = @(EPSortOrderAddDate);//[NSNumber numberWithInt:];
+        
+        // Create artist if it does not exist.
+        Folder *artist = [artists objectForKey:artistName];
+        if (artist == nil) {
+            // Create artist folder.
+            artist = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
+                                                             inManagedObjectContext:managedObjectContext];
+            artist.name = artistName;
+            artist.sortOrder = @(EPSortOrderAddDate);
             // These dates will be updated once songs are seen.
-            artistFolder.addDate = [NSDate distantPast];
-            artistFolder.releaseDate = [NSDate distantPast];
-            artistFolder.playDate = [NSDate distantPast];
-            [artistFolders setObject:artistFolder forKey:artistName];
-            Folder *genre = [genres objectForKey:[item valueForProperty:MPMediaItemPropertyGenre]];
-            // XXX: Can genre be nil/empty with a group-by with genre?
-            // If so, lazily create an "Unknown" genre folder.
-            [genre addEntriesObject:artistFolder];
+            artist.addDate = [NSDate distantPast];
+            artist.releaseDate = [NSDate distantPast];
+            artist.playDate = [NSDate distantPast];
+            [artists setObject:artist forKey:artistName];
+            [genre addEntriesObject:artist];
+            [artistsFolder addEntriesObject:artist];
+            NSLog(@"Create artist %@", artist.name);
         }
-        NSLog(@"Create album folders.");
-        // Iterate over albums again, inserting album folders.
-        uint albumCount = 0;
-        for (MPMediaItemCollection *album in albums.collections) {
-            MPMediaItem *representativeItem2 = album.representativeItem;
-            // Create album folder.
-            Folder *albumFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
-                                                                          inManagedObjectContext:managedObjectContext];
-            albumFolder.name = [representativeItem2 valueForProperty:MPMediaItemPropertyAlbumTitle];
-            albumFolder.sortOrder = @(EPSortOrderManual);
-            // These dates will be updated once songs are seen.
-            albumFolder.addDate = [NSDate distantPast];
-            albumFolder.releaseDate = [NSDate distantPast];
-            albumFolder.playDate = [NSDate distantPast];
-            NSString *artistName = artistNameFromMediaItem(representativeItem2);
-            Folder *artistFolder = [artistFolders objectForKey:artistName];
-            [artistFolder addEntriesObject:albumFolder];
-            // Insert all songs into album folder.
-            NSLog(@"Iterating over songs in album %@.", albumFolder.name);
-            for (MPMediaItem *songItem in album.items) {
-                EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:songItem];
-                Song *song = (Song *)[NSEntityDescription insertNewObjectForEntityForName:@"Song"
-                                                                   inManagedObjectContext:managedObjectContext];
-                song.name = wrapper.title;
-                song.persistentID = wrapper.persistentID;
-                [albumFolder addEntriesObject:song];
-                NSDate *date;
-
-                date = wrapper.releaseDate;
-                [song propagateReleaseDate:date];
-
-                date = wrapper.lastPlayedDate;
-                if (date == nil) {
-                    date = [NSDate distantPast];
-                }
-                [song propagatePlayDate:date];
-                [song propagateAddDate:song.releaseDate];
-                NSNumber *playCount = wrapper.playCount;
-                if (playCount != nil) {
-                    [song propagatePlayCount:playCount];
-                }
-                songsImported += 1;
+        
+        // Create album folder.
+        Folder *albumFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
+                                                                inManagedObjectContext:managedObjectContext];
+        albumFolder.name = [representativeItem valueForProperty:MPMediaItemPropertyAlbumTitle];
+        albumFolder.sortOrder = @(EPSortOrderManual);
+        // These dates will be updated once songs are seen.
+        albumFolder.addDate = [NSDate distantPast];
+        albumFolder.releaseDate = [NSDate distantPast];
+        albumFolder.playDate = [NSDate distantPast];
+        [artist addEntriesObject:albumFolder];
+        [albumsFolder addEntriesObject:albumFolder];
+        NSLog(@"Create album %@", albumFolder.name);
+        
+        // Add songs to album folder.
+        NSUInteger maxPlayCount = 0;
+        for (MPMediaItem *songItem in albumItem.items) {
+            EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:songItem];
+            Song *song = (Song *)[NSEntityDescription insertNewObjectForEntityForName:@"Song"
+                                                               inManagedObjectContext:managedObjectContext];
+            song.name = wrapper.title;
+            song.persistentID = wrapper.persistentID;
+            [albumFolder addEntriesObject:song];
+            // Propagate will also set on song.
+            [song propagateReleaseDate:wrapper.releaseDate];
+            NSDate *date = wrapper.lastPlayedDate;
+            if (date == nil) {
+                date = [NSDate distantPast];
             }
+            [song propagatePlayDate:date];
+            [song propagateAddDate:song.releaseDate];
+            NSNumber *playCount = wrapper.playCount;
+            if (playCount != nil) {
+                maxPlayCount = MAX(maxPlayCount, [playCount integerValue]);
+            }
+            song.playCount = wrapper.playCount;
+            songsImported += 1;
             [self performSelectorOnMainThread:@selector(importUpdateProgress:)
                                    withObject:@((float)songsImported/(float)libSize)
                                 waitUntilDone:NO];
-            albumCount += 1;
-#ifdef EP_MEMORY_DEBUG
-            logMemUsage();
-#endif
         }
-        
-    }
+        [albumFolder propagatePlayCount:maxPlayCount];
+#ifdef EP_MEMORY_DEBUG
+        logMemUsage();
+#endif
+    } // end for each album.
     NSLog(@"Committing data.");
     if (![managedObjectContext save:&error]) {
         NSLog(@"Failed to save: %@", error);
@@ -461,7 +416,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
 - (void)importDone
 {
     [self.importAlertView dismissWithClickedButtonIndex:0 animated:YES];
-    [self.playlistTableController loadRootFolder];
+    [self.mainTabController loadInitialFolders];
 }
 
 @end

@@ -103,7 +103,8 @@
             int songCount = [song.playCount intValue];
             int wrapperCount = [wrapper.playCount intValue];
             if (wrapperCount > songCount) {
-                [song propagatePlayCount:[NSNumber numberWithInt:wrapperCount-songCount]];
+                // XXX FIXME
+                //[song propagatePlayCount:[NSNumber numberWithInt:wrapperCount-songCount]];
                 NSLog(@"Updated play count for %@", song.name);
                 updated = YES;
             }

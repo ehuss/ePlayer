@@ -17,7 +17,7 @@
     Folder *_cutFolder;
 }
 
-- (void)loadRootFolder;
+- (void)loadInitialFolderTemplate:(NSString *)templateName;
 - (EPPlaylistTableController *)copyMusicController;
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;

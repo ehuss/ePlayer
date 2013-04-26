@@ -19,10 +19,10 @@
 @dynamic playCount;
 @dynamic parents;
 
-- (void)propagatePlayCount:(NSNumber *)count
+- (void)propagatePlayCount:(NSUInteger)count
 {
-    int newCount = [count intValue]+[self.playCount intValue];
-    self.playCount = @(newCount);//[NSNumber numberWithInt:newCount];
+    int newCount = count+[self.playCount integerValue];
+    self.playCount = @(newCount);
     for (Entry *folder in self.parents) {
         [folder propagatePlayCount:count];
     }

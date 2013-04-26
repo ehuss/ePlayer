@@ -24,8 +24,9 @@
         <!--Navigation Controller - Playlists-->
         <scene sceneID="JvA-oW-7Ep">
             <objects>
-                <navigationController definesPresentationContext="YES" id="FRv-XO-hdh" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="PlaylistNavController" definesPresentationContext="YES" id="FRv-XO-hdh" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Playlists" id="WSV-u9-G2D"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="blackOpaque" id="goH-kR-yuJ">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -37,58 +38,12 @@
             </objects>
             <point key="canvasLocation" x="804" y="24"/>
         </scene>
-        <!--Artist Table Controller - Artists-->
-        <scene sceneID="Rvu-hh-lkM">
-            <objects>
-                <tableViewController id="WsJ-u6-8Ua" customClass="EPArtistTableController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="iVO-uY-Qbe">
-                        <rect key="frame" x="0.0" y="64" width="320" height="455"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Artists" id="pFh-px-eFZ"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="6dk-cn-ltf" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1035" y="893"/>
-        </scene>
-        <!--Navigation Controller - Artists-->
-        <scene sceneID="gla-WJ-lPb">
-            <objects>
-                <navigationController definesPresentationContext="YES" id="mwP-EI-0ie" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Artists" id="7Ri-60-fgn"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="blackOpaque" id="Yq4-Jh-Zxj">
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="WsJ-u6-8Ua" kind="relationship" relationship="rootViewController" id="Jin-Wr-DF8"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dWp-Ff-eA5" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="501" y="893"/>
-        </scene>
-        <!--Album Table Controller - Albums-->
-        <scene sceneID="em1-ST-K6o">
-            <objects>
-                <tableViewController id="vg4-8O-gbm" customClass="EPAlbumTableController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" sectionIndexMinimumDisplayRowCount="40" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="BUi-kD-Dqe">
-                        <rect key="frame" x="0.0" y="64" width="320" height="455"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Albums" id="Cps-Ca-rdH"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="gaZ-xd-UpD" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="875" y="1555"/>
-        </scene>
         <!--Player Controller - Queue-->
         <scene sceneID="t9q-fJ-ZFM">
             <objects>
                 <viewController storyboardIdentifier="PlayerScene" hidesBottomBarWhenPushed="YES" id="K2B-5d-QvQ" customClass="EPPlayerController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Rfu-Na-pdg">
-                        <rect key="frame" x="0.0" y="20" width="320" height="499"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xhk-0A-x1R" customClass="EPGradientView">
@@ -292,40 +247,18 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EUP-Zr-jBv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="965" y="2289"/>
+            <point key="canvasLocation" x="659" y="888"/>
         </scene>
-        <!--Navigation Controller - Albums-->
-        <scene sceneID="mR0-iE-qRY">
-            <objects>
-                <navigationController definesPresentationContext="YES" id="dru-XA-5gR" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Albums" id="WB9-5d-zUH"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="blackOpaque" id="8XS-Fj-Rrx">
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="vg4-8O-gbm" kind="relationship" relationship="rootViewController" id="Vfv-sz-RUe"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="I2h-9j-aNb" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="487" y="1570"/>
-        </scene>
-        <!--Tab Bar Controller-->
+        <!--Main Tab Controller-->
         <scene sceneID="15">
             <objects>
-                <tabBarController id="4" sceneMemberID="viewController">
+                <tabBarController id="4" customClass="EPMainTabController" sceneMemberID="viewController">
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="5">
                         <rect key="frame" x="0.0" y="431" width="320" height="49"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
-                    <connections>
-                        <segue destination="FRv-XO-hdh" kind="relationship" relationship="viewControllers" id="LDc-0b-W29"/>
-                        <segue destination="mwP-EI-0ie" kind="relationship" relationship="viewControllers" id="AyK-rJ-Thd"/>
-                        <segue destination="dru-XA-5gR" kind="relationship" relationship="viewControllers" id="Za4-l3-2Nd"/>
-                        <segue destination="K2B-5d-QvQ" kind="relationship" relationship="viewControllers" id="BFC-B8-vHh"/>
-                    </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="14" sceneMemberID="firstResponder"/>
             </objects>

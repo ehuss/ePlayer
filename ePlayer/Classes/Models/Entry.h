@@ -13,7 +13,7 @@
 
 @interface Entry : NSManagedObject
 
-- (void)propagatePlayCount:(NSNumber *)count;
+- (void)propagatePlayCount:(NSUInteger)count;
 - (void)propagatePlayDate:(NSDate *)date;
 - (void)propagateAddDate:(NSDate *)date;
 - (void)propagateReleaseDate:(NSDate *)date;

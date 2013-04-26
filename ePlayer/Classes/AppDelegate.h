@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EPPlaylistTableController.h"
+#import "EPMainTabController.h"
 #import "EPPlayerController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate>
@@ -17,10 +17,7 @@
 - (void)initDB;
 
 @property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) UITabBarController *tabController;
-@property (strong, nonatomic) UINavigationController *playlistNavController;
-@property (strong, nonatomic) EPPlaylistTableController *playlistTableController;
-@property (strong, nonatomic) EPPlayerController *playerController;
+@property (strong, nonatomic) EPMainTabController *mainTabController;
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
