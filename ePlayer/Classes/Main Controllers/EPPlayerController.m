@@ -110,7 +110,9 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    // Register the class for creating cells.
+    UINib *entryNib = [UINib nibWithNibName:@"PlayerCell" bundle:nil];
+    [self.tableView registerNib:entryNib forCellReuseIdentifier:@"PlayerCell"];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -118,7 +120,6 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     [super viewWillAppear:animated];
     self.isDisplayed = YES;
     [self updateDisplay];
-    NSLog(@"View will appear.");
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -159,36 +160,23 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"PlayerCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell==nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        EPPlayerCellView *cview = [[EPPlayerCellView alloc] initWithFrame:cell.contentView.frame];
-        [cell.contentView addSubview:cview];
-    }
-    EPPlayerCellView *cview = cell.contentView.subviews[0];
+    EPPlayerCellView *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     Song *song = self.queueFolder.entries[indexPath.row];
-    cview.queueNumLabel.text = [NSString stringWithFormat:@"%i.", indexPath.row+1];
-    cview.trackNameLabel.text = song.name;
+    cell.queueNumLabel.text = [NSString stringWithFormat:@"%i.", indexPath.row+1];
+    cell.trackNameLabel.text = song.name;
+    cell.albumNameLabel.text = [NSString stringWithFormat:@"%@ - %@",
+                                song.mediaWrapper.albumTitle,
+                                song.mediaWrapper.albumArtist];
     int duration = (int)song.duration;
-    cview.trackTimeLabel.text = [NSString stringWithFormat:@"%i:%02i",
+    cell.trackTimeLabel.text = [NSString stringWithFormat:@"%i:%02i",
                                  duration/60, duration%60];
     if (self.currentQueueIndex == indexPath.row) {
-        [cview setCurrent:self.isPlaying];
+        [cell setCurrent:self.isPlaying];
     } else {
-        [cview unsetCurrent];
+        [cell unsetCurrent];
     }
+    [cell setEvenOdd:indexPath.row%2];
     return cell;
-}
-
-- (void)tableView:(UITableView *)tableView
-  willDisplayCell:(UITableViewCell *)cell
-forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (!(indexPath.row%2)) {
-        cell.backgroundColor = [UIColor colorWithWhite:0.16f alpha:1.0f];
-    } else {
-        cell.backgroundColor = [UIColor colorWithWhite:0.10f alpha:1.0f];
-    }
 }
 
 /*
@@ -600,16 +588,14 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)updateCurrentPlayingCell
 {
     // First clear.
-    for (UITableViewCell *cell in self.tableView.visibleCells) {
-        EPPlayerCellView *cview = cell.contentView.subviews[0];
-        [cview unsetCurrent];
+    for (EPPlayerCellView *cell in self.tableView.visibleCells) {
+        [cell unsetCurrent];
     }
     if (self.queueFolder.entries.count) {
         NSIndexPath *path = [NSIndexPath indexPathForRow:self.currentQueueIndex inSection:0];
-        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:path];
+        EPPlayerCellView *cell = (EPPlayerCellView *)[self.tableView cellForRowAtIndexPath:path];
         if (cell) {
-            EPPlayerCellView *cview = cell.contentView.subviews[0];
-            [cview setCurrent:self.isPlaying];
+            [cell setCurrent:self.isPlaying];
         }
     }
 }

@@ -7,7 +7,7 @@
 //
 
 #import "Song.h"
-
+#import "EPMediaItemWrapper.h"
 
 @implementation Song
 
@@ -34,6 +34,14 @@
         }
     }
     return _mediaItem;
+}
+
+- (EPMediaItemWrapper *)mediaWrapper
+{
+    if (_mediaWrapper == nil) {
+        _mediaWrapper = [EPMediaItemWrapper wrapperFromItem:self.mediaItem];
+    }
+    return _mediaWrapper;
 }
 
 - (NSTimeInterval)duration

@@ -8,14 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-@interface EPPlayerCellView : UIView
+@interface EPPlayerCellView : UITableViewCell
 
 - (void)setCurrent:(BOOL)playing;
 - (void)unsetCurrent;
+- (void)setEvenOdd:(BOOL)odd;
 
-@property (strong, nonatomic) UILabel *queueNumLabel;
-@property (strong, nonatomic) UILabel *trackNameLabel;
-@property (strong, nonatomic) UILabel *trackTimeLabel;
-@property (strong, nonatomic) UIImageView *currentItemView;
+@property (weak, nonatomic) IBOutlet UILabel *queueNumLabel;
+@property (weak, nonatomic) IBOutlet UILabel *trackTimeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *trackNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *albumNameLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *currentItemView;
+@property (weak, nonatomic) IBOutlet UIImageView *evenOddBackgroundView;
 
 @end

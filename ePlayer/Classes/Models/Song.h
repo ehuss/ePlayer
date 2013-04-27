@@ -11,16 +11,19 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "Entry.h"
 
+@class EPMediaItemWrapper;
 
 @interface Song : Entry
 {
     MPMediaItem *_mediaItem;
+    EPMediaItemWrapper *_mediaWrapper;
 }
 
 @property (nonatomic, retain) NSNumber * persistentID;
 // Unsigned version, since core data doesn't support unsigned.
 @property (readonly, nonatomic) NSNumber *UPID;
 @property (readonly, nonatomic) MPMediaItem *mediaItem;
+@property (readonly, nonatomic) EPMediaItemWrapper *mediaWrapper;
 @property (readonly, nonatomic) NSTimeInterval duration;
 
 @end

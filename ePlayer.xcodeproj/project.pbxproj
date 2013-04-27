@@ -74,6 +74,9 @@
 		07677A69171A28F300D1784D /* missing-art@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A68171A28F300D1784D /* missing-art@2x.png */; };
 		07677A6B171A2A1500D1784D /* missing-art.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A6A171A2A1500D1784D /* missing-art.png */; };
 		078A3BEB1729EE8A009A8FF5 /* EPMainTabController.m in Sources */ = {isa = PBXBuildFile; fileRef = 078A3BEA1729EE8A009A8FF5 /* EPMainTabController.m */; };
+		078A3BEE172B5A18009A8FF5 /* PlayerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BEC172B5A18009A8FF5 /* PlayerCell.xib */; };
+		078A3BF1172B5CB1009A8FF5 /* player-cell-dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BEF172B5CB1009A8FF5 /* player-cell-dark@2x.png */; };
+		078A3BF2172B5CB1009A8FF5 /* player-cell-light@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BF0172B5CB1009A8FF5 /* player-cell-light@2x.png */; };
 		079B411C171A60340036F0D4 /* EPPlayerCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B411B171A60340036F0D4 /* EPPlayerCellView.m */; };
 		079B4121171B4F400036F0D4 /* EPBrowseTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4120171B4F400036F0D4 /* EPBrowseTableController.m */; };
 		079B4125171B961C0036F0D4 /* current-queue-item-playing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079B4122171B961B0036F0D4 /* current-queue-item-playing@2x.png */; };
@@ -187,6 +190,9 @@
 		07677A6A171A2A1500D1784D /* missing-art.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "missing-art.png"; sourceTree = "<group>"; };
 		078A3BE91729EE8A009A8FF5 /* EPMainTabController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPMainTabController.h; sourceTree = "<group>"; };
 		078A3BEA1729EE8A009A8FF5 /* EPMainTabController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPMainTabController.m; sourceTree = "<group>"; };
+		078A3BED172B5A18009A8FF5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = PlayerCell.xib; sourceTree = "<group>"; };
+		078A3BEF172B5CB1009A8FF5 /* player-cell-dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "player-cell-dark@2x.png"; sourceTree = "<group>"; };
+		078A3BF0172B5CB1009A8FF5 /* player-cell-light@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "player-cell-light@2x.png"; sourceTree = "<group>"; };
 		079B411A171A60340036F0D4 /* EPPlayerCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayerCellView.h; sourceTree = "<group>"; };
 		079B411B171A60340036F0D4 /* EPPlayerCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayerCellView.m; sourceTree = "<group>"; };
 		079B411F171B4F400036F0D4 /* EPBrowseTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPBrowseTableController.h; sourceTree = "<group>"; };
@@ -414,6 +420,8 @@
 		07677A3F171924F200D1784D /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				078A3BEF172B5CB1009A8FF5 /* player-cell-dark@2x.png */,
+				078A3BF0172B5CB1009A8FF5 /* player-cell-light@2x.png */,
 				07475EBB172761BD001BB7AA /* append-popout@2x.png */,
 				0719E3751726268E00D325B5 /* queue-volume-on@2x.png */,
 				0719E3731726248100D325B5 /* queue-volume-off@2x.png */,
@@ -458,6 +466,7 @@
 				0755C3091714BE0400AAF81F /* MainStoryboard_iPhone.storyboard */,
 				0719E2EB1724C76400D325B5 /* EditCell.xib */,
 				07475EC0172780A4001BB7AA /* Test.xib */,
+				078A3BEC172B5A18009A8FF5 /* PlayerCell.xib */,
 			);
 			name = UI;
 			path = en.lproj;
@@ -575,6 +584,9 @@
 				0719E37B1726356900D325B5 /* play@2x.png in Resources */,
 				07475EBC172761BD001BB7AA /* append-popout@2x.png in Resources */,
 				07475EC2172780A4001BB7AA /* Test.xib in Resources */,
+				078A3BEE172B5A18009A8FF5 /* PlayerCell.xib in Resources */,
+				078A3BF1172B5CB1009A8FF5 /* player-cell-dark@2x.png in Resources */,
+				078A3BF2172B5CB1009A8FF5 /* player-cell-light@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -703,6 +715,14 @@
 				0755C32D1714BE0400AAF81F /* en */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		078A3BEC172B5A18009A8FF5 /* PlayerCell.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				078A3BED172B5A18009A8FF5 /* en */,
+			);
+			name = PlayerCell.xib;
 			sourceTree = "<group>";
 		};
 		079B4161171F5B5D0036F0D4 /* TableSectionView.xib */ = {
