@@ -56,15 +56,9 @@
 		076779E31718E11300D1784D /* EPPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 076779E21718E11300D1784D /* EPPlayerController.m */; };
 		07677A4E171924F200D1784D /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A40171924F200D1784D /* pause.png */; };
 		07677A4F171924F200D1784D /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A41171924F200D1784D /* play.png */; };
-		07677A51171924F200D1784D /* queue-next.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A43171924F200D1784D /* queue-next.png */; };
 		07677A52171924F200D1784D /* queue-next@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A44171924F200D1784D /* queue-next@2x.png */; };
-		07677A53171924F200D1784D /* queue-pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A45171924F200D1784D /* queue-pause.png */; };
-		07677A54171924F200D1784D /* queue-play.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A46171924F200D1784D /* queue-play.png */; };
 		07677A55171924F200D1784D /* queue-play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A47171924F200D1784D /* queue-play@2x.png */; };
-		07677A56171924F200D1784D /* queue-prev.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A48171924F200D1784D /* queue-prev.png */; };
 		07677A57171924F200D1784D /* queue-prev@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A49171924F200D1784D /* queue-prev@2x.png */; };
-		07677A58171924F200D1784D /* queue-save.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A4A171924F200D1784D /* queue-save.png */; };
-		07677A59171924F200D1784D /* queue-save@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A4B171924F200D1784D /* queue-save@2x.png */; };
 		07677A5A171924F200D1784D /* scrubber-thumb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A4C171924F200D1784D /* scrubber-thumb@2x.png */; };
 		07677A5E1719264E00D1784D /* EPScrubberView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07677A5D1719264E00D1784D /* EPScrubberView.m */; };
 		07677A611719380900D1784D /* scrubber-track-max@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A5F1719380900D1784D /* scrubber-track-max@2x.png */; };
@@ -169,15 +163,9 @@
 		076779E21718E11300D1784D /* EPPlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayerController.m; sourceTree = "<group>"; };
 		07677A40171924F200D1784D /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
 		07677A41171924F200D1784D /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
-		07677A43171924F200D1784D /* queue-next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-next.png"; sourceTree = "<group>"; };
 		07677A44171924F200D1784D /* queue-next@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-next@2x.png"; sourceTree = "<group>"; };
-		07677A45171924F200D1784D /* queue-pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-pause.png"; sourceTree = "<group>"; };
-		07677A46171924F200D1784D /* queue-play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-play.png"; sourceTree = "<group>"; };
 		07677A47171924F200D1784D /* queue-play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-play@2x.png"; sourceTree = "<group>"; };
-		07677A48171924F200D1784D /* queue-prev.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-prev.png"; sourceTree = "<group>"; };
 		07677A49171924F200D1784D /* queue-prev@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-prev@2x.png"; sourceTree = "<group>"; };
-		07677A4A171924F200D1784D /* queue-save.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-save.png"; sourceTree = "<group>"; };
-		07677A4B171924F200D1784D /* queue-save@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-save@2x.png"; sourceTree = "<group>"; };
 		07677A4C171924F200D1784D /* scrubber-thumb@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scrubber-thumb@2x.png"; sourceTree = "<group>"; };
 		07677A5C1719264E00D1784D /* EPScrubberView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPScrubberView.h; sourceTree = "<group>"; };
 		07677A5D1719264E00D1784D /* EPScrubberView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPScrubberView.m; sourceTree = "<group>"; };
@@ -443,16 +431,10 @@
 				07677A40171924F200D1784D /* pause.png */,
 				07677A41171924F200D1784D /* play.png */,
 				0719E37A1726356900D325B5 /* play@2x.png */,
-				07677A43171924F200D1784D /* queue-next.png */,
 				07677A44171924F200D1784D /* queue-next@2x.png */,
-				07677A45171924F200D1784D /* queue-pause.png */,
 				079B4124171B961C0036F0D4 /* queue-pause@2x.png */,
-				07677A46171924F200D1784D /* queue-play.png */,
 				07677A47171924F200D1784D /* queue-play@2x.png */,
-				07677A48171924F200D1784D /* queue-prev.png */,
 				07677A49171924F200D1784D /* queue-prev@2x.png */,
-				07677A4A171924F200D1784D /* queue-save.png */,
-				07677A4B171924F200D1784D /* queue-save@2x.png */,
 				07677A4C171924F200D1784D /* scrubber-thumb@2x.png */,
 			);
 			path = Images;
@@ -550,15 +532,9 @@
 				0755C30B1714BE0400AAF81F /* MainStoryboard_iPhone.storyboard in Resources */,
 				07677A4E171924F200D1784D /* pause.png in Resources */,
 				07677A4F171924F200D1784D /* play.png in Resources */,
-				07677A51171924F200D1784D /* queue-next.png in Resources */,
 				07677A52171924F200D1784D /* queue-next@2x.png in Resources */,
-				07677A53171924F200D1784D /* queue-pause.png in Resources */,
-				07677A54171924F200D1784D /* queue-play.png in Resources */,
 				07677A55171924F200D1784D /* queue-play@2x.png in Resources */,
-				07677A56171924F200D1784D /* queue-prev.png in Resources */,
 				07677A57171924F200D1784D /* queue-prev@2x.png in Resources */,
-				07677A58171924F200D1784D /* queue-save.png in Resources */,
-				07677A59171924F200D1784D /* queue-save@2x.png in Resources */,
 				07677A5A171924F200D1784D /* scrubber-thumb@2x.png in Resources */,
 				07677A611719380900D1784D /* scrubber-track-max@2x.png in Resources */,
 				07677A621719380900D1784D /* scrubber-track-min@2x.png in Resources */,

@@ -40,7 +40,6 @@
 - (IBAction)tappedPrev:(id)sender;
 - (IBAction)tappedPlay:(id)sender;
 - (IBAction)tappedNext:(id)sender;
-- (IBAction)tappedSave:(id)sender;
 
 - (IBAction)scrubberDidUpdate:(id)sender;
 - (IBAction)scrubberTouchDown:(id)sender;

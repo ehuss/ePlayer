@@ -288,11 +288,6 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     }
 }
 
-- (IBAction)tappedSave:(id)sender
-{
-    
-}
-
 - (IBAction)scrubberDidUpdate:(id)sender
 {
     // XXX: Track change now-playing while holding scrubber?  Stop/pause/interrupt?
