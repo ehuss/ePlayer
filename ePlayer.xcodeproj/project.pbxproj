@@ -71,6 +71,8 @@
 		078A3BEE172B5A18009A8FF5 /* PlayerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BEC172B5A18009A8FF5 /* PlayerCell.xib */; };
 		078A3BF1172B5CB1009A8FF5 /* player-cell-dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BEF172B5CB1009A8FF5 /* player-cell-dark@2x.png */; };
 		078A3BF2172B5CB1009A8FF5 /* player-cell-light@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BF0172B5CB1009A8FF5 /* player-cell-light@2x.png */; };
+		078A3BF5172BBF0F009A8FF5 /* TrackSummary.xib in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BF3172BBF0F009A8FF5 /* TrackSummary.xib */; };
+		078A3BF9172BC059009A8FF5 /* EPTrackSummaryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 078A3BF8172BC059009A8FF5 /* EPTrackSummaryView.m */; };
 		079B411C171A60340036F0D4 /* EPPlayerCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B411B171A60340036F0D4 /* EPPlayerCellView.m */; };
 		079B4121171B4F400036F0D4 /* EPBrowseTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4120171B4F400036F0D4 /* EPBrowseTableController.m */; };
 		079B4125171B961C0036F0D4 /* current-queue-item-playing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079B4122171B961B0036F0D4 /* current-queue-item-playing@2x.png */; };
@@ -181,6 +183,9 @@
 		078A3BED172B5A18009A8FF5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = PlayerCell.xib; sourceTree = "<group>"; };
 		078A3BEF172B5CB1009A8FF5 /* player-cell-dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "player-cell-dark@2x.png"; sourceTree = "<group>"; };
 		078A3BF0172B5CB1009A8FF5 /* player-cell-light@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "player-cell-light@2x.png"; sourceTree = "<group>"; };
+		078A3BF4172BBF0F009A8FF5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = TrackSummary.xib; sourceTree = "<group>"; };
+		078A3BF7172BC059009A8FF5 /* EPTrackSummaryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPTrackSummaryView.h; sourceTree = "<group>"; };
+		078A3BF8172BC059009A8FF5 /* EPTrackSummaryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPTrackSummaryView.m; sourceTree = "<group>"; };
 		079B411A171A60340036F0D4 /* EPPlayerCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayerCellView.h; sourceTree = "<group>"; };
 		079B411B171A60340036F0D4 /* EPPlayerCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayerCellView.m; sourceTree = "<group>"; };
 		079B411F171B4F400036F0D4 /* EPBrowseTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPBrowseTableController.h; sourceTree = "<group>"; };
@@ -376,6 +381,7 @@
 				07475EB41727240B001BB7AA /* Categories */,
 				07475EB517272505001BB7AA /* Cells */,
 				07475EB6172725DF001BB7AA /* Controls */,
+				078A3BF6172BC019009A8FF5 /* Views */,
 				07475EB7172726A9001BB7AA /* Main Controllers */,
 				0755C3711716215400AAF81F /* Models */,
 				0755C3611714F12200AAF81F /* AppDelegate.h */,
@@ -440,6 +446,15 @@
 			path = Images;
 			sourceTree = "<group>";
 		};
+		078A3BF6172BC019009A8FF5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				078A3BF7172BC059009A8FF5 /* EPTrackSummaryView.h */,
+				078A3BF8172BC059009A8FF5 /* EPTrackSummaryView.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		079B4139171CF2550036F0D4 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -449,6 +464,7 @@
 				0719E2EB1724C76400D325B5 /* EditCell.xib */,
 				07475EC0172780A4001BB7AA /* Test.xib */,
 				078A3BEC172B5A18009A8FF5 /* PlayerCell.xib */,
+				078A3BF3172BBF0F009A8FF5 /* TrackSummary.xib */,
 			);
 			name = UI;
 			path = en.lproj;
@@ -563,6 +579,7 @@
 				078A3BEE172B5A18009A8FF5 /* PlayerCell.xib in Resources */,
 				078A3BF1172B5CB1009A8FF5 /* player-cell-dark@2x.png in Resources */,
 				078A3BF2172B5CB1009A8FF5 /* player-cell-light@2x.png in Resources */,
+				078A3BF5172BBF0F009A8FF5 /* TrackSummary.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -622,6 +639,7 @@
 				07475EB317272063001BB7AA /* EPEditCell2.m in Sources */,
 				07475EBF17278023001BB7AA /* EPAppendButton.m in Sources */,
 				078A3BEB1729EE8A009A8FF5 /* EPMainTabController.m in Sources */,
+				078A3BF9172BC059009A8FF5 /* EPTrackSummaryView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -699,6 +717,14 @@
 				078A3BED172B5A18009A8FF5 /* en */,
 			);
 			name = PlayerCell.xib;
+			sourceTree = "<group>";
+		};
+		078A3BF3172BBF0F009A8FF5 /* TrackSummary.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				078A3BF4172BBF0F009A8FF5 /* en */,
+			);
+			name = TrackSummary.xib;
 			sourceTree = "<group>";
 		};
 		079B4161171F5B5D0036F0D4 /* TableSectionView.xib */ = {

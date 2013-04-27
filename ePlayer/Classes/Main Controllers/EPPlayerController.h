@@ -11,6 +11,7 @@
 #import <UIKit/UIKit.h>
 #import "EPScrubberView.h"
 #import "EPCommon.h"
+#import "EPTrackSummaryView.h"
 
 @class EPMainTabController;
 
@@ -46,11 +47,7 @@
 // Interface Builder Views
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
-@property (weak, nonatomic) IBOutlet UIImageView *artImageView;
-@property (weak, nonatomic) IBOutlet UILabel *artistNameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *albumNameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *trackNameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *releasedDateLabel;
+@property (weak, nonatomic) IBOutlet EPTrackSummaryView *trackSummary;
 @property (weak, nonatomic) IBOutlet UILabel *currentTimeLabel;
 @property (weak, nonatomic) IBOutlet EPScrubberView *scrubber;
 @property (weak, nonatomic) IBOutlet UILabel *timeLeftLabel;

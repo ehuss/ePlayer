@@ -10,7 +10,6 @@ TODO
 
 High
 ====
-- Sort on play counts?
 - Way to view playcount/playdate/etc  (song or folder).  Where?
 - Change append popup to be above/below.
 - Adding songs is slow.  If it can't be sped up, give some visual feedback.
@@ -59,6 +58,7 @@ Low
 
 Ideas
 =====
+- Sort on play counts?
 - Should del/cut/copy/paste buttons somehow be static (don't scroll with table)?
 - scrubber should pop up audio visualization.
 - Not entirely happy that an entry can't be in a folder more than once.  However,

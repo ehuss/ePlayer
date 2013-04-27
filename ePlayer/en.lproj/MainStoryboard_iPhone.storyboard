@@ -46,55 +46,11 @@
                         <rect key="frame" x="0.0" y="20" width="320" height="499"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xhk-0A-x1R" customClass="EPGradientView">
-                                <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="missing-art.png" translatesAutoresizingMaskIntoConstraints="NO" id="fTL-aK-dvD">
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="90" type="user" id="5vw-51-bca"/>
-                                            <constraint firstAttribute="width" constant="90" type="user" id="7d5-70-IZZ"/>
-                                        </constraints>
-                                    </imageView>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Artist Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jXw-Fd-Yov">
-                                        <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="15"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Album Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZHE-1I-nxf">
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Track Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="80W-lx-mbj">
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Released 2000" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="abq-op-6ZV">
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="15" id="jxv-o5-jB2"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                        <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xhk-0A-x1R" customClass="EPTrackSummaryView">
                                 <color key="backgroundColor" white="0.20000000000000001" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="80W-lx-mbj" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="2mB-t7-nd0"/>
-                                    <constraint firstAttribute="trailing" secondItem="ZHE-1I-nxf" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="4jV-jz-war"/>
-                                    <constraint firstItem="ZHE-1I-nxf" firstAttribute="leading" secondItem="fTL-aK-dvD" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="5Jx-9x-vIe"/>
-                                    <constraint firstItem="jXw-Fd-Yov" firstAttribute="leading" secondItem="fTL-aK-dvD" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="9id-qa-Zz7"/>
-                                    <constraint firstAttribute="trailing" secondItem="jXw-Fd-Yov" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="KeU-uF-bzL"/>
                                     <constraint firstAttribute="height" constant="110" type="user" id="MA0-zX-V39"/>
-                                    <constraint firstItem="fTL-aK-dvD" firstAttribute="leading" secondItem="Xhk-0A-x1R" secondAttribute="leading" constant="10" type="user" id="OuS-WJ-H6o"/>
-                                    <constraint firstItem="fTL-aK-dvD" firstAttribute="centerY" secondItem="Xhk-0A-x1R" secondAttribute="centerY" type="default" id="XO7-Kf-IWa"/>
-                                    <constraint firstItem="abq-op-6ZV" firstAttribute="leading" secondItem="fTL-aK-dvD" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="aSi-X6-2vJ"/>
-                                    <constraint firstItem="80W-lx-mbj" firstAttribute="leading" secondItem="fTL-aK-dvD" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="bq2-vU-5qi"/>
-                                    <constraint firstItem="80W-lx-mbj" firstAttribute="top" secondItem="ZHE-1I-nxf" secondAttribute="bottom" constant="4" type="user" id="nDc-99-kNT"/>
-                                    <constraint firstItem="abq-op-6ZV" firstAttribute="bottom" secondItem="fTL-aK-dvD" secondAttribute="bottom" type="default" id="pm4-lt-cgD"/>
-                                    <constraint firstItem="ZHE-1I-nxf" firstAttribute="top" secondItem="jXw-Fd-Yov" secondAttribute="bottom" constant="4" type="user" id="wlt-6z-QpN"/>
-                                    <constraint firstItem="jXw-Fd-Yov" firstAttribute="top" secondItem="fTL-aK-dvD" secondAttribute="top" type="default" id="xvw-MS-OBO"/>
-                                    <constraint firstAttribute="trailing" secondItem="abq-op-6ZV" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="zgk-og-as4"/>
+                                    <constraint firstAttribute="width" constant="320" type="user" id="Y3v-N3-aYq"/>
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="xNe-dI-Yd5">
@@ -229,16 +185,12 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="albumNameLabel" destination="ZHE-1I-nxf" id="We6-Ec-3Kq"/>
-                        <outlet property="artImageView" destination="fTL-aK-dvD" id="jlg-H9-sxT"/>
-                        <outlet property="artistNameLabel" destination="jXw-Fd-Yov" id="5He-wk-fP4"/>
                         <outlet property="currentTimeLabel" destination="DyI-K9-rZa" id="TzK-Bm-tyd"/>
                         <outlet property="playButton" destination="cpe-id-Aeg" id="3vi-aq-g78"/>
-                        <outlet property="releasedDateLabel" destination="abq-op-6ZV" id="2MQ-mt-DT7"/>
                         <outlet property="scrubber" destination="XWg-yK-iLy" id="QMf-Dh-KSB"/>
                         <outlet property="tableView" destination="xNe-dI-Yd5" id="iIh-WW-MwW"/>
                         <outlet property="timeLeftLabel" destination="mgg-Yf-CpX" id="7EX-rB-JVb"/>
-                        <outlet property="trackNameLabel" destination="80W-lx-mbj" id="0eQ-oQ-kNH"/>
+                        <outlet property="trackSummary" destination="Xhk-0A-x1R" id="biT-3P-yrt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EUP-Zr-jBv" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -262,7 +214,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="missing-art.png" width="90" height="90"/>
         <image name="queue-next@2x.png" width="212" height="88"/>
         <image name="queue-play@2x.png" width="212" height="88"/>
         <image name="queue-prev@2x.png" width="212" height="88"/>
@@ -270,9 +221,6 @@
     <classes>
         <class className="EPBrowseTableController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/EPBrowseTableController.h"/>
-        </class>
-        <class className="EPGradientView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EPGradientView.h"/>
         </class>
         <class className="EPMainTabController" superclassName="UITabBarController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/EPMainTabController.h"/>
@@ -286,16 +234,12 @@
                 <relationship kind="action" name="tappedNext:"/>
                 <relationship kind="action" name="tappedPlay:"/>
                 <relationship kind="action" name="tappedPrev:"/>
-                <relationship kind="outlet" name="albumNameLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="artImageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="artistNameLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="currentTimeLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="playButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="releasedDateLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="scrubber" candidateClass="EPScrubberView"/>
                 <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
                 <relationship kind="outlet" name="timeLeftLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="trackNameLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="trackSummary" candidateClass="EPTrackSummaryView"/>
             </relationships>
         </class>
         <class className="EPPlaylistTableController" superclassName="EPBrowseTableController">
@@ -303,6 +247,17 @@
         </class>
         <class className="EPScrubberView" superclassName="UISlider">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/EPScrubberView.h"/>
+        </class>
+        <class className="EPTrackSummaryView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/EPTrackSummaryView.h"/>
+            <relationships>
+                <relationship kind="outlet" name="albumArt" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="albumName" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="artistName" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="contentView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="releasedDate" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="trackName" candidateClass="UILabel"/>
+            </relationships>
         </class>
         <class className="NSLayoutConstraint" superclassName="NSObject">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>

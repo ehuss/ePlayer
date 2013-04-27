@@ -556,13 +556,13 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     if (self.queueFolder.entries.count) {
         Song *song = self.queueFolder.entries[self.currentQueueIndex];
         EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:song.mediaItem];
-        self.artistNameLabel.text = wrapper.artist;
-        self.albumNameLabel.text = wrapper.albumTitle;
-        self.trackNameLabel.text = wrapper.title;
+        self.trackSummary.artistName.text = wrapper.artist;
+        self.trackSummary.albumName.text = wrapper.albumTitle;
+        self.trackSummary.trackName.text = wrapper.title;
         if (wrapper.releaseYear == 0) {
-            self.releasedDateLabel.text = nil;
+            self.trackSummary.releasedDate.text = nil;
         } else {
-            self.releasedDateLabel.text = [NSString stringWithFormat:@"Released %i", wrapper.releaseYear];
+            self.trackSummary.releasedDate.text = [NSString stringWithFormat:@"Released %i", wrapper.releaseYear];
         }
     
         if (self.isPlaying) {
@@ -571,10 +571,10 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         }
     } else {
         // Empty queue.
-        self.artistNameLabel.text = nil;
-        self.albumNameLabel.text = nil;
-        self.trackNameLabel.text = nil;
-        self.releasedDateLabel.text = nil;
+        self.trackSummary.artistName.text = nil;
+        self.trackSummary.albumName.text = nil;
+        self.trackSummary.trackName.text = nil;
+        self.trackSummary.releasedDate.text = nil;
     }
     [self updateScrubber];
     [self updateCurrentPlayingCell];
@@ -599,7 +599,6 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)scrollToCurrent
 {
     if (self.isDisplayed && self.queueFolder.entries.count) {
-        NSLog(@"Scrolling to %i", self.currentQueueIndex);
         NSIndexPath *path = [NSIndexPath indexPathForRow:self.currentQueueIndex inSection:0];
         if (![self.tableView.indexPathsForVisibleRows containsObject:path]) {
             // It is currently not visible, scroll to it.
