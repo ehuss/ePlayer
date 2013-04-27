@@ -389,6 +389,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     }
 }
 
+// Stop does not reset the current play position.
 - (void)stop
 {
     if (self.isPlaying) {
@@ -397,7 +398,6 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             [self.nextPlayer stop];
         }
         self.isPlaying = NO;
-        [self updateDisplay];
     }
 }
 
@@ -592,6 +592,22 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         if (cell) {
             [cell setCurrent:self.isPlaying];
         }
+    }
+    [self scrollToCurrent];
+}
+
+- (void)scrollToCurrent
+{
+    if (self.isDisplayed && self.queueFolder.entries.count) {
+        NSLog(@"Scrolling to %i", self.currentQueueIndex);
+        NSIndexPath *path = [NSIndexPath indexPathForRow:self.currentQueueIndex inSection:0];
+        if (![self.tableView.indexPathsForVisibleRows containsObject:path]) {
+            // It is currently not visible, scroll to it.
+            [self.tableView scrollToRowAtIndexPath:path
+                                  atScrollPosition:UITableViewScrollPositionMiddle
+                                          animated:YES];
+        }
+        
     }
 }
 

@@ -8,11 +8,6 @@ NOTES
 TODO
 ****
 
-NOW
-===
-- In queue, show folders with entries indented.
-- As current playing item in queue changes off-screen, scroll to that item.
-
 High
 ====
 - Sort on play counts?

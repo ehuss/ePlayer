@@ -27,8 +27,6 @@
 // Player commands.
 - (void)play;
 - (void)pause;
-// Stop does not reset the current play position.
-- (void)stop;
 - (void)clearQueue;
 // This will stop play, switch to this index.  Play remains stopped.
 - (void)switchToQueueIndex:(int)index;
