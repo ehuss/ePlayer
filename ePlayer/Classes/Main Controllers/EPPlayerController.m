@@ -483,7 +483,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     if ([entry.class isSubclassOfClass:[Folder class]]) {
         Folder *folder = (Folder *)entry;
         for (Entry *child in folder.sortedEntries) {
-            [self appendEntry:child];
+            [self dbAppendEntry:child];
         }
         [folder propagatePlayCount:1];
         [folder propagatePlayDate:[NSDate date]];

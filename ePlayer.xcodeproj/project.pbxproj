@@ -287,10 +287,10 @@
 				078A3BEA1729EE8A009A8FF5 /* EPMainTabController.m */,
 				079B411F171B4F400036F0D4 /* EPBrowseTableController.h */,
 				079B4120171B4F400036F0D4 /* EPBrowseTableController.m */,
-				076779E11718E11300D1784D /* EPPlayerController.h */,
-				076779E21718E11300D1784D /* EPPlayerController.m */,
 				0755C3571714F0EB00AAF81F /* EPPlaylistTableController.h */,
 				0755C3581714F0EB00AAF81F /* EPPlaylistTableController.m */,
+				076779E11718E11300D1784D /* EPPlayerController.h */,
+				076779E21718E11300D1784D /* EPPlayerController.m */,
 			);
 			path = "Main Controllers";
 			sourceTree = "<group>";
