@@ -585,26 +585,14 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 {
     if (self.queueFolder.entries.count) {
         Song *song = self.queueFolder.entries[self.currentQueueIndex];
-        EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:song.mediaItem];
-        self.trackSummary.artistName.text = wrapper.artist;
-        self.trackSummary.albumName.text = wrapper.albumTitle;
-        self.trackSummary.trackName.text = wrapper.title;
-        if (wrapper.releaseYear == 0) {
-            self.trackSummary.releasedDate.text = nil;
-        } else {
-            self.trackSummary.releasedDate.text = [NSString stringWithFormat:@"Released %i", wrapper.releaseYear];
-        }
-    
+        [self.trackSummary loadSong:song];
         if (self.isPlaying) {
             // Make sure the scrubber is updating.
             [self startTimer];
         }
     } else {
         // Empty queue.
-        self.trackSummary.artistName.text = nil;
-        self.trackSummary.albumName.text = nil;
-        self.trackSummary.trackName.text = nil;
-        self.trackSummary.releasedDate.text = nil;
+        [self.trackSummary loadSong:nil];
     }
     [self updateScrubber];
     [self updateCurrentPlayingCell];

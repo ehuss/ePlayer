@@ -7,10 +7,11 @@
 //
 
 #import <MediaPlayer/MediaPlayer.h>
+#import <QuartzCore/QuartzCore.h>
 #import "EPPlaylistTableController.h"
 #import "EPCommon.h"
 #import "EPPlayerController.h"
-#import <QuartzCore/QuartzCore.h>
+#import "EPTrackController.h"
 
 static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 //static NSString *kEPEntryUTI = @"org.ehuss.ePlayer.entry";
@@ -180,6 +181,12 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     if ([entry isKindOfClass:[Folder class]]) {
         EPPlaylistTableController *controller = [self copyMusicController];
         controller.folder = (Folder *)entry;
+        [self.navigationController pushViewController:controller animated:YES];
+    } else {
+        // A song.
+        EPTrackController *controller = [self.tabBarController.storyboard instantiateViewControllerWithIdentifier:@"TrackController"];
+        [controller loadSong:(Song *)entry];
+        controller.trackSummary.infoButton.hidden = YES;
         [self.navigationController pushViewController:controller animated:YES];
     }
 }

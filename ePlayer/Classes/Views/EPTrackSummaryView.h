@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EPCommon.h"
 
 @interface EPTrackSummaryView : UIView
 
@@ -19,4 +20,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *infoButton;
 @property (weak, nonatomic) IBOutlet UIButton *listButton;
 @property (weak, nonatomic) IBOutlet UIView *flipButtonView;
+
+- (void)loadSong:(Song *)song;
+
 @end

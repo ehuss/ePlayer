@@ -7,17 +7,9 @@
 //
 
 #import "EPTrackSummaryView.h"
+#import "EPMediaItemWrapper.h"
 
 @implementation EPTrackSummaryView
-
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
-}
 
 - (void)awakeFromNib
 {
@@ -25,13 +17,23 @@
     [self addSubview:self.contentView];
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
+- (void)loadSong:(Song *)song
 {
-    // Drawing code
+    if (song) {
+        self.artistName.text = song.mediaWrapper.artist;
+        self.albumName.text = song.mediaWrapper.albumTitle;
+        self.trackName.text = song.mediaWrapper.title;
+        if (song.mediaWrapper.releaseYear == 0) {
+            self.releasedDate.text = nil;
+        } else {
+            self.releasedDate.text = [NSString stringWithFormat:@"Released %i", song.mediaWrapper.releaseYear];
+        }        
+    } else {
+        self.artistName.text = nil;
+        self.albumName.text = nil;
+        self.trackName.text = nil;
+        self.releasedDate.text = nil;
+    }
 }
-*/
 
 @end
