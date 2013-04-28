@@ -27,7 +27,9 @@
             self.releasedDate.text = nil;
         } else {
             self.releasedDate.text = [NSString stringWithFormat:@"Released %i", song.mediaWrapper.releaseYear];
-        }        
+        }
+        MPMediaItemArtwork *art = song.mediaWrapper.artwork;
+        self.albumArt.image = [art imageWithSize:self.albumArt.frame.size];
     } else {
         self.artistName.text = nil;
         self.albumName.text = nil;

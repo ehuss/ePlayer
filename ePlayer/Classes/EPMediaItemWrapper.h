@@ -38,5 +38,6 @@
 @property (readonly, nonatomic) NSString *composer;
 @property (readonly, nonatomic) NSString *lyrics;
 @property (readonly, nonatomic) NSURL *url;
+@property (readonly, nonatomic) MPMediaItemArtwork *artwork;
 
 @end

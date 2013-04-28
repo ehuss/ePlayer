@@ -126,6 +126,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
      withDateLabel:(BOOL)useDateLabel
 {
     Entry *entry = sections[indexPath.section][indexPath.row];
+    cell.entry = entry;
     cell.textView.text = entry.name;
     if ([entry.class isSubclassOfClass:[Folder class]]) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -145,10 +146,8 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 - (void)playTapped:(UITapGestureRecognizer *)gesture
 {
     // Determine which entry was tapped.
-    UITableViewCell *cell = (UITableViewCell *)[[[gesture view] superview] superview];
-    NSIndexPath *tappedIndexPath = [self.tableView indexPathForCell:cell];
-    Entry *entry = self.sections[tappedIndexPath.section][tappedIndexPath.row];
-    [self.playerController playEntry:entry];
+    EPBrowserCell *cell = (EPBrowserCell *)[[[gesture view] superview] superview];
+    [self.playerController playEntry:cell.entry];
     self.tabBarController.selectedIndex = 3;
 }
 

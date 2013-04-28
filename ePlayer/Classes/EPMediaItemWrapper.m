@@ -111,6 +111,11 @@
     return [self.item valueForProperty:MPMediaItemPropertyPlayCount];
 }
 
+- (MPMediaItemArtwork *)artwork
+{
+    return [self.item valueForProperty:MPMediaItemPropertyArtwork];
+}
+
 NSDate *dateFromYear(int year)
 {
     NSDateComponents *comps = [[NSDateComponents alloc] init];

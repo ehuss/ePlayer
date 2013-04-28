@@ -430,6 +430,12 @@ sectionForSectionIndexTitle:(NSString *)title
     return YES;
 }
 
+- (void)searchDisplayController:(UISearchDisplayController *)controller didHideSearchResultsTableView:(UITableView *)tableView
+{
+    self.filteredSections = nil;
+    self.filteredSectionTitles = nil;
+}
+
 /*****************************************************************************/
 /* Cell text field                                                           */
 /*****************************************************************************/
