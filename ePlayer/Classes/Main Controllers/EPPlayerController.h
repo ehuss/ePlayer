@@ -12,6 +12,7 @@
 #import "EPScrubberView.h"
 #import "EPCommon.h"
 #import "EPTrackSummaryView.h"
+#import "EPLyricView.h"
 
 @class EPMainTabController;
 
@@ -51,6 +52,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *currentTimeLabel;
 @property (weak, nonatomic) IBOutlet EPScrubberView *scrubber;
 @property (weak, nonatomic) IBOutlet UILabel *timeLeftLabel;
+@property (weak, nonatomic) IBOutlet EPLyricView *lyricView;
+@property (weak, nonatomic) IBOutlet UIView *centralView;
 
 // Core Data
 @property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;

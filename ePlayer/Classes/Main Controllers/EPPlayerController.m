@@ -17,7 +17,7 @@
 
 
 /****************************************************************************/
-/* Audio Callback                                                           */
+#pragma mark - Audio Callback
 /****************************************************************************/
 
 void audioRouteChangeListenerCallback (void                      *inUserData,
@@ -75,7 +75,7 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
 }
 
 /****************************************************************************/
-/* Implementation                                                           */
+#pragma mark - Implementation
 /****************************************************************************/
 
 @implementation EPPlayerController
@@ -113,6 +113,13 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     // Register the class for creating cells.
     UINib *entryNib = [UINib nibWithNibName:@"PlayerCell" bundle:nil];
     [self.tableView registerNib:entryNib forCellReuseIdentifier:@"PlayerCell"];
+    // There might be a way to do this from IB, but heck if I know.
+    [self.trackSummary.infoButton addTarget:self
+                                     action:@selector(tappedInfo:)
+                           forControlEvents:UIControlEventTouchUpInside];
+    [self.trackSummary.listButton addTarget:self
+                                     action:@selector(tappedInfo:)
+                           forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -141,9 +148,8 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
 //}
 
 /****************************************************************************/
-/* Table Data Source                                                        */
-/****************************************************************************/
 #pragma mark - Table view data source
+/****************************************************************************/
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -222,9 +228,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
  */
 
 /****************************************************************************/
-/* Table Delegate                                                           */
-/****************************************************************************/
 #pragma mark - Table view delegate
+/****************************************************************************/
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -240,8 +245,33 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 }
 
 /****************************************************************************/
-/* Button Actions                                                           */
+#pragma mark - Button Actions
 /****************************************************************************/
+- (void)tappedInfo:(id)sender
+{
+    if (!self.tableView.hidden) {
+        [self.lyricView updateWithSong:self.queueFolder.entries[self.currentQueueIndex]];
+    }
+    NSUInteger transitionType = (self.tableView.hidden ? UIViewAnimationOptionTransitionFlipFromRight : UIViewAnimationOptionTransitionFlipFromLeft);
+    
+    [UIView transitionWithView:self.centralView
+                      duration:0.75
+                       options:transitionType
+                    animations:^{
+                        self.tableView.hidden = !self.tableView.hidden;
+                        self.lyricView.hidden = !self.lyricView.hidden;
+                    }
+                    completion:NULL];
+    [UIView transitionWithView:self.trackSummary.flipButtonView
+                      duration:0.75
+                       options:transitionType
+                    animations:^{
+                        self.trackSummary.infoButton.hidden = !self.trackSummary.infoButton.hidden;
+                        self.trackSummary.listButton.hidden = !self.trackSummary.listButton.hidden;
+                    }
+                    completion:NULL];
+}
+
 - (void)tappedPrev:(id)sender
 {
     if (self.queueFolder.entries.count) {
@@ -326,7 +356,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 
 /****************************************************************************/
-/* Player Methods                                                           */
+#pragma mark - Player Methods
 /****************************************************************************/
 - (void)play
 {
@@ -402,7 +432,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 }
 
 /****************************************************************************/
-/* Queue Methods                                                            */
+#pragma mark - Queue Methods
 /****************************************************************************/
 // High-level commands.  These will save to db when done.
 - (void)clearQueue
@@ -481,7 +511,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 }
 
 /****************************************************************************/
-/* Notifications                                                            */
+#pragma mark - Notifications
 /****************************************************************************/
 
 - (void)registerNotifications
@@ -673,8 +703,20 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     }
 }
 
+// This doesn't work too well (the offset is just too far off).
+// Also, would need to disable when you scroll, defeating its purpose.
+//- (void)scrollLyrics
+//{
+//    if (!self.lyricView.hidden) {
+//        NSTimeInterval duration = self.currentPlayer.duration;
+//        CGFloat proportion = self.currentPlayer.currentTime/duration;
+//        CGFloat y = self.lyricView.contentSize.height*proportion;
+//        [self.lyricView scrollRectToVisible:CGRectMake(0, y, 1, 1) animated:YES];
+//    }
+//}
+
 /****************************************************************************/
-/* AVAudioPlayer Delegate                                                   */
+#pragma mark - AVAudioPlayer Delegate
 /****************************************************************************/
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
@@ -761,7 +803,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 }
 
 /****************************************************************************/
-/* Volume                                                                   */
+#pragma mark - Volume
 /****************************************************************************/
 - (float)volume
 {

@@ -53,14 +53,6 @@
                                     <constraint firstAttribute="width" constant="320" type="user" id="Y3v-N3-aYq"/>
                                 </constraints>
                             </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="xNe-dI-Yd5">
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <color key="separatorColor" white="0.29999999999999999" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="K2B-5d-QvQ" id="W9N-br-5v6"/>
-                                    <outlet property="delegate" destination="K2B-5d-QvQ" id="Y0g-zi-zYV"/>
-                                </connections>
-                            </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qjW-r9-KZf" userLabel="Buttons View">
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yot-eP-KLF" userLabel="Prev Button">
@@ -163,21 +155,51 @@
                                     <constraint firstItem="mgg-Yf-CpX" firstAttribute="centerY" secondItem="t2H-ra-lMT" secondAttribute="centerY" type="user" id="xnB-Qh-aKk"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JRq-RG-YMI" userLabel="Central View">
+                                <subviews>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="xNe-dI-Yd5" propertyAccessControl="none">
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="separatorColor" white="0.29999999999999999" alpha="1" colorSpace="calibratedWhite"/>
+                                        <connections>
+                                            <outlet property="dataSource" destination="K2B-5d-QvQ" id="W9N-br-5v6"/>
+                                            <outlet property="delegate" destination="K2B-5d-QvQ" id="Y0g-zi-zYV"/>
+                                        </connections>
+                                    </tableView>
+                                    <textView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="cEG-PI-CMA" customClass="EPLyricView">
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="xNe-dI-Yd5" firstAttribute="leading" secondItem="JRq-RG-YMI" secondAttribute="leading" type="default" id="8ZF-zk-hzf"/>
+                                    <constraint firstItem="cEG-PI-CMA" firstAttribute="trailing" secondItem="JRq-RG-YMI" secondAttribute="trailing" type="default" id="BpM-4s-dyj"/>
+                                    <constraint firstItem="xNe-dI-Yd5" firstAttribute="bottom" secondItem="JRq-RG-YMI" secondAttribute="bottom" type="default" id="CE3-LU-V3b"/>
+                                    <constraint firstItem="cEG-PI-CMA" firstAttribute="leading" secondItem="JRq-RG-YMI" secondAttribute="leading" type="default" id="DlA-FO-b2U"/>
+                                    <constraint firstItem="xNe-dI-Yd5" firstAttribute="top" secondItem="JRq-RG-YMI" secondAttribute="top" type="default" id="Va8-G0-yS0"/>
+                                    <constraint firstItem="cEG-PI-CMA" firstAttribute="top" secondItem="JRq-RG-YMI" secondAttribute="top" type="default" id="YtA-bw-JCN"/>
+                                    <constraint firstItem="cEG-PI-CMA" firstAttribute="bottom" secondItem="JRq-RG-YMI" secondAttribute="bottom" type="default" id="nCG-Ks-uTt"/>
+                                    <constraint firstItem="xNe-dI-Yd5" firstAttribute="trailing" secondItem="JRq-RG-YMI" secondAttribute="trailing" type="default" id="teV-ef-Cf7"/>
+                                </constraints>
+                            </view>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Xhk-0A-x1R" firstAttribute="top" secondItem="Rfu-Na-pdg" secondAttribute="top" type="user" id="0Gw-WH-csm"/>
-                            <constraint firstItem="xNe-dI-Yd5" firstAttribute="leading" secondItem="Rfu-Na-pdg" secondAttribute="leading" type="user" id="6lj-sL-oH9"/>
                             <constraint firstItem="Xhk-0A-x1R" firstAttribute="trailing" secondItem="Rfu-Na-pdg" secondAttribute="trailing" type="user" id="DVa-Vt-CfN"/>
-                            <constraint firstItem="xNe-dI-Yd5" firstAttribute="top" secondItem="Xhk-0A-x1R" secondAttribute="bottom" type="user" id="Nbj-C5-4CT"/>
-                            <constraint firstItem="qjW-r9-KZf" firstAttribute="top" secondItem="xNe-dI-Yd5" secondAttribute="bottom" type="user" id="Xhe-DJ-Ex7"/>
+                            <constraint firstItem="JRq-RG-YMI" firstAttribute="leading" secondItem="Rfu-Na-pdg" secondAttribute="leading" type="default" id="IdK-Xa-vyz"/>
+                            <constraint firstAttribute="bottom" secondItem="JRq-RG-YMI" secondAttribute="bottom" constant="88" id="NbH-UH-kaX"/>
+                            <constraint firstItem="JRq-RG-YMI" firstAttribute="top" secondItem="Rfu-Na-pdg" secondAttribute="top" constant="110" id="Seo-ED-pWH"/>
                             <constraint firstItem="t2H-ra-lMT" firstAttribute="trailing" secondItem="Rfu-Na-pdg" secondAttribute="trailing" type="user" id="c5u-3h-WjD"/>
+                            <constraint firstItem="JRq-RG-YMI" firstAttribute="trailing" secondItem="Rfu-Na-pdg" secondAttribute="trailing" type="default" id="cxk-Hd-kg7"/>
                             <constraint firstItem="Xhk-0A-x1R" firstAttribute="leading" secondItem="Rfu-Na-pdg" secondAttribute="leading" type="user" id="dBA-Qs-uqr"/>
                             <constraint firstItem="t2H-ra-lMT" firstAttribute="bottom" secondItem="Rfu-Na-pdg" secondAttribute="bottom" type="user" id="eCq-wc-YGp"/>
                             <constraint firstItem="qjW-r9-KZf" firstAttribute="leading" secondItem="Rfu-Na-pdg" secondAttribute="leading" type="user" id="fpF-HY-pZI"/>
                             <constraint firstItem="t2H-ra-lMT" firstAttribute="leading" secondItem="Rfu-Na-pdg" secondAttribute="leading" type="user" id="h69-Vw-yY7"/>
                             <constraint firstItem="t2H-ra-lMT" firstAttribute="top" secondItem="qjW-r9-KZf" secondAttribute="bottom" type="user" id="ngZ-y3-sh2"/>
-                            <constraint firstItem="xNe-dI-Yd5" firstAttribute="trailing" secondItem="Rfu-Na-pdg" secondAttribute="trailing" type="user" id="sIi-vv-7zh"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Queue" id="a9e-PK-GQ5"/>
@@ -185,7 +207,9 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="centralView" destination="JRq-RG-YMI" id="Ux2-E5-vKp"/>
                         <outlet property="currentTimeLabel" destination="DyI-K9-rZa" id="TzK-Bm-tyd"/>
+                        <outlet property="lyricView" destination="cEG-PI-CMA" id="t3e-7k-DEm"/>
                         <outlet property="playButton" destination="cpe-id-Aeg" id="3vi-aq-g78"/>
                         <outlet property="scrubber" destination="XWg-yK-iLy" id="QMf-Dh-KSB"/>
                         <outlet property="tableView" destination="xNe-dI-Yd5" id="iIh-WW-MwW"/>
@@ -222,6 +246,9 @@
         <class className="EPBrowseTableController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/EPBrowseTableController.h"/>
         </class>
+        <class className="EPLyricView" superclassName="UITextView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/EPLyricView.h"/>
+        </class>
         <class className="EPMainTabController" superclassName="UITabBarController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/EPMainTabController.h"/>
         </class>
@@ -234,7 +261,9 @@
                 <relationship kind="action" name="tappedNext:"/>
                 <relationship kind="action" name="tappedPlay:"/>
                 <relationship kind="action" name="tappedPrev:"/>
+                <relationship kind="outlet" name="centralView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="currentTimeLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="lyricView" candidateClass="EPLyricView"/>
                 <relationship kind="outlet" name="playButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="scrubber" candidateClass="EPScrubberView"/>
                 <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
@@ -255,6 +284,9 @@
                 <relationship kind="outlet" name="albumName" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="artistName" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="contentView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="flipButtonView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="infoButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="listButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="releasedDate" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="trackName" candidateClass="UILabel"/>
             </relationships>

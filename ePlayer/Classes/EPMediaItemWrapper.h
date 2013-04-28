@@ -35,5 +35,8 @@
 @property (readonly, nonatomic) NSDate *releaseDate;
 @property (readonly, nonatomic) int releaseYear;
 @property (readonly, nonatomic) NSNumber *playCount;
+@property (readonly, nonatomic) NSString *composer;
+@property (readonly, nonatomic) NSString *lyrics;
+@property (readonly, nonatomic) NSURL *url;
 
 @end

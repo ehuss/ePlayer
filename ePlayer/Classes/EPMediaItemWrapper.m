@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Eric Huss. All rights reserved.
 //
 
+#import <AVFoundation/AVFoundation.h>
 #import "EPMediaItemWrapper.h"
 
 @implementation EPMediaItemWrapper
@@ -82,14 +83,32 @@
     }
 }
 
+- (NSString *)composer
+{
+    return [self.item valueForProperty:MPMediaItemPropertyComposer];
+}
+
+- (NSString *)lyrics
+{
+    // This is bugged.  It won't load unless you load it in the iPod app.
+//    return [self.item valueForProperty:MPMediaItemPropertyLyrics];
+    AVAsset* songAsset = [AVURLAsset URLAssetWithURL:self.url options:nil];
+    return [songAsset lyrics];
+}
+
+- (NSURL *)url
+{
+    return [self.item valueForProperty:MPMediaItemPropertyAssetURL];
+}
+
 - (NSDate *)lastPlayedDate
 {
-    return [self.item valueForKey:MPMediaItemPropertyLastPlayedDate];
+    return [self.item valueForProperty:MPMediaItemPropertyLastPlayedDate];
 }
 
 - (NSDate *)playCount
 {
-    return [self.item valueForKey:MPMediaItemPropertyPlayCount];
+    return [self.item valueForProperty:MPMediaItemPropertyPlayCount];
 }
 
 NSDate *dateFromYear(int year)

@@ -73,6 +73,8 @@
 		078A3BF2172B5CB1009A8FF5 /* player-cell-light@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BF0172B5CB1009A8FF5 /* player-cell-light@2x.png */; };
 		078A3BF5172BBF0F009A8FF5 /* TrackSummary.xib in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BF3172BBF0F009A8FF5 /* TrackSummary.xib */; };
 		078A3BF9172BC059009A8FF5 /* EPTrackSummaryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 078A3BF8172BC059009A8FF5 /* EPTrackSummaryView.m */; };
+		078A3BFC172CA779009A8FF5 /* EPLyricView.m in Sources */ = {isa = PBXBuildFile; fileRef = 078A3BFB172CA779009A8FF5 /* EPLyricView.m */; };
+		078A3BFE172CB37E009A8FF5 /* list-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BFD172CB37E009A8FF5 /* list-button@2x.png */; };
 		079B411C171A60340036F0D4 /* EPPlayerCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B411B171A60340036F0D4 /* EPPlayerCellView.m */; };
 		079B4121171B4F400036F0D4 /* EPBrowseTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4120171B4F400036F0D4 /* EPBrowseTableController.m */; };
 		079B4125171B961C0036F0D4 /* current-queue-item-playing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079B4122171B961B0036F0D4 /* current-queue-item-playing@2x.png */; };
@@ -186,6 +188,9 @@
 		078A3BF4172BBF0F009A8FF5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = TrackSummary.xib; sourceTree = "<group>"; };
 		078A3BF7172BC059009A8FF5 /* EPTrackSummaryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPTrackSummaryView.h; sourceTree = "<group>"; };
 		078A3BF8172BC059009A8FF5 /* EPTrackSummaryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPTrackSummaryView.m; sourceTree = "<group>"; };
+		078A3BFA172CA779009A8FF5 /* EPLyricView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPLyricView.h; sourceTree = "<group>"; };
+		078A3BFB172CA779009A8FF5 /* EPLyricView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPLyricView.m; sourceTree = "<group>"; };
+		078A3BFD172CB37E009A8FF5 /* list-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-button@2x.png"; sourceTree = "<group>"; };
 		079B411A171A60340036F0D4 /* EPPlayerCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayerCellView.h; sourceTree = "<group>"; };
 		079B411B171A60340036F0D4 /* EPPlayerCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayerCellView.m; sourceTree = "<group>"; };
 		079B411F171B4F400036F0D4 /* EPBrowseTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPBrowseTableController.h; sourceTree = "<group>"; };
@@ -414,6 +419,7 @@
 		07677A3F171924F200D1784D /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				078A3BFD172CB37E009A8FF5 /* list-button@2x.png */,
 				078A3BEF172B5CB1009A8FF5 /* player-cell-dark@2x.png */,
 				078A3BF0172B5CB1009A8FF5 /* player-cell-light@2x.png */,
 				07475EBB172761BD001BB7AA /* append-popout@2x.png */,
@@ -451,6 +457,8 @@
 			children = (
 				078A3BF7172BC059009A8FF5 /* EPTrackSummaryView.h */,
 				078A3BF8172BC059009A8FF5 /* EPTrackSummaryView.m */,
+				078A3BFA172CA779009A8FF5 /* EPLyricView.h */,
+				078A3BFB172CA779009A8FF5 /* EPLyricView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -580,6 +588,7 @@
 				078A3BF1172B5CB1009A8FF5 /* player-cell-dark@2x.png in Resources */,
 				078A3BF2172B5CB1009A8FF5 /* player-cell-light@2x.png in Resources */,
 				078A3BF5172BBF0F009A8FF5 /* TrackSummary.xib in Resources */,
+				078A3BFE172CB37E009A8FF5 /* list-button@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -640,6 +649,7 @@
 				07475EBF17278023001BB7AA /* EPAppendButton.m in Sources */,
 				078A3BEB1729EE8A009A8FF5 /* EPMainTabController.m in Sources */,
 				078A3BF9172BC059009A8FF5 /* EPTrackSummaryView.m in Sources */,
+				078A3BFC172CA779009A8FF5 /* EPLyricView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
