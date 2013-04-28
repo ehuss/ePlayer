@@ -29,12 +29,21 @@
             self.releasedDate.text = [NSString stringWithFormat:@"Released %i", song.mediaWrapper.releaseYear];
         }
         MPMediaItemArtwork *art = song.mediaWrapper.artwork;
-        self.albumArt.image = [art imageWithSize:self.albumArt.frame.size];
+        UIImage *image = nil;
+        if (art) {
+            image = [art imageWithSize:self.albumArt.frame.size];
+        }
+        if (image) {
+            self.albumArt.image = image;
+        } else {
+            self.albumArt.image = [UIImage imageNamed:@"missing-art"];
+        }
     } else {
         self.artistName.text = nil;
         self.albumName.text = nil;
         self.trackName.text = nil;
         self.releasedDate.text = nil;
+        self.albumArt.image = [UIImage imageNamed:@"missing-art"];
     }
 }
 
