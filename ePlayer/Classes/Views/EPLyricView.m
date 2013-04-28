@@ -25,15 +25,22 @@
         [text appendString:[NSString stringWithFormat:@"Composer: %@\n", song.mediaWrapper.composer]];
     }
     // Last Play Date
-    NSObject *playDate = song.playDate;
-    if (playDate == nil) {
+    NSString *playDate;
+    if (song.playDate == nil) {
         playDate = @"Never";
+    } else {
+        playDate = [NSDateFormatter localizedStringFromDate:song.playDate
+                                                  dateStyle:NSDateFormatterMediumStyle
+                                                  timeStyle:NSDateFormatterNoStyle];
     }
     [text appendString:[NSString stringWithFormat:@"Last Play Date: %@\n", playDate]];
     // Play Count
     [text appendString:[NSString stringWithFormat:@"Play Count: %@\n", song.playCount]];
     // Added Date
-    [text appendString:[NSString stringWithFormat:@"Added To Library: %@\n", song.addDate]];
+    NSString *addDate = [NSDateFormatter localizedStringFromDate:song.addDate
+                                                       dateStyle:NSDateFormatterMediumStyle
+                                                       timeStyle:NSDateFormatterNoStyle];
+    [text appendString:[NSString stringWithFormat:@"Added To Library: %@\n", addDate]];
 
     [text appendString:@"\n"];
     if (song.mediaWrapper.lyrics) {
