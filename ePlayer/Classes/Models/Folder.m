@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 Eric Huss. All rights reserved.
 //
 
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+
 #import "Folder.h"
 #import "EPCommon.h"
 
@@ -43,22 +45,21 @@
             }];
         } else {
             // Date sorting.
-            NSString *key;
+            SEL s;
             switch ([self.sortOrder intValue]) {
                 case EPSortOrderAddDate:
-                    key = @"addDate";
+                    s = @selector(addDate);
                     break;
                 case EPSortOrderPlayDate:
-                    key = @"playDate";
+                    s = @selector(playDate);
                     break;
                 case EPSortOrderReleaseDate:
-                    key = @"releaseDate";
+                    s = @selector(releaseDate);
                     break;
             }
-            
             return [self.entries sortedArrayUsingComparator:^(Entry *obj1, Entry *obj2) {
                 // Descending order.
-                return [[obj2 valueForKey:key] compare:[obj1 valueForKey:key]];
+                return [[obj2 performSelector:s] compare:[obj1 performSelector:s]];
             }];
         }
     }

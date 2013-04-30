@@ -10,7 +10,7 @@ TODO
 
 High
 ====
-- Way to view playcount/playdate/etc  (song or folder).  Where?
+- MPNowPlayingInfoCenter
 - Change append popup to be above/below.
 - Adding songs is slow.  If it can't be sped up, give some visual feedback.
 - songs should display length in EntryCell (and folders show sum (or count)?)
@@ -18,14 +18,6 @@ High
     - Individual songs should always show art if available.
     - album view - show like ipod app (album art, summary at top, etc.)
         - playlist should try to detect this and do the same.
-- Queue editing
-    - Remove
-    - Rearrange
-    - Save
-        - Update or new?
-    - Don't forget to update left-column numbers after edit.
-    - Fix background cell color alternating while rearranging.
-- Some way to view lyrics.
 - Icon
 - Paste with something that already exists, maybe make a copy?
 - save currentQueueIndex to disk

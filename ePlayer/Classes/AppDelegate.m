@@ -160,6 +160,8 @@
     if (coordinator != nil) {
         context = [[NSManagedObjectContext alloc] init];
         context.persistentStoreCoordinator = coordinator;
+        // Minor performance help.
+        context.undoManager = nil;
     }
     return context;
 }

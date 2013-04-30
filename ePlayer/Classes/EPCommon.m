@@ -39,8 +39,7 @@ NSString *yearFromDate(NSDate *date)
         NSLog(@"nil date, please fix");
         return @"UNKNOWN";
     }
-    NSCalendar *cal = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *comp = [cal components:NSYearCalendarUnit fromDate:date];
+    NSDateComponents *comp = [gregorianCalendar components:NSYearCalendarUnit fromDate:date];
     return [NSString stringWithFormat:@"%i", comp.year];
 }
 
