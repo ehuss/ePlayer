@@ -18,8 +18,6 @@ High
     - album view - show like ipod app (album art, summary at top, etc.)
         - playlist should try to detect this and do the same.
 - Icon
-- Paste with something that already exists, maybe make a copy?
-- save currentQueueIndex to disk
 
 Medium
 ======

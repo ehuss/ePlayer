@@ -14,15 +14,13 @@
 #import "EPTrackSummaryView.h"
 #import "EPLyricView.h"
 #import "EPFolder.h"
+#import "EPRoot.h"
 
 @class EPMainTabController;
 
 @interface EPPlayerController : UIViewController <UITableViewDelegate,
                                                   UITableViewDataSource,
                                                   AVAudioPlayerDelegate>
-{
-    EPFolder *_queueFolder;
-}
 
 // Called after object context is set.
 - (void)mainInit;
@@ -60,8 +58,7 @@
 @property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
-@property (readonly, strong, nonatomic) EPFolder *queueFolder;
-@property (assign, nonatomic) int currentQueueIndex;
+@property (readonly, nonatomic) EPRoot *root;
 
 // Player
 @property (strong, nonatomic) AVAudioPlayer *currentPlayer;

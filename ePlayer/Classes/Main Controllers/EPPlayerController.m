@@ -88,15 +88,6 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     [self updateVolumeImage];
 }
 
-- (EPFolder *)queueFolder
-{
-    if (_queueFolder == nil) {
-        EPRoot *root = [EPRoot sharedRoot];
-        _queueFolder = root.queue;
-    }
-    return _queueFolder;
-}
-
 - (EPMainTabController *)mainTabController
 {
     return (EPMainTabController *)self.tabBarController;
@@ -143,6 +134,14 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
 //}
 
 /****************************************************************************/
+#pragma mark - Accessors
+/****************************************************************************/
+- (EPRoot *)root
+{
+    return [EPRoot sharedRoot];
+}
+
+/****************************************************************************/
 #pragma mark - Table view data source
 /****************************************************************************/
 
@@ -155,14 +154,14 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return self.queueFolder.entries.count;
+    return self.root.queue.entries.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"PlayerCell";
     EPPlayerCellView *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    EPSong *song = self.queueFolder.entries[indexPath.row];
+    EPSong *song = self.root.queue.entries[indexPath.row];
     cell.queueNumLabel.text = [NSString stringWithFormat:@"%i.", indexPath.row+1];
     cell.trackNameLabel.text = song.name;
     cell.albumNameLabel.text = [NSString stringWithFormat:@"%@ - %@",
@@ -171,7 +170,7 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     int duration = (int)song.duration;
     cell.trackTimeLabel.text = [NSString stringWithFormat:@"%i:%02i",
                                  duration/60, duration%60];
-    if (self.currentQueueIndex == indexPath.row) {
+    if (self.root.currentQueueIndex == indexPath.row) {
         [cell setCurrent:self.isPlaying];
     } else {
         [cell unsetCurrent];
@@ -245,7 +244,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)tappedInfo:(id)sender
 {
     if (!self.tableView.hidden) {
-        [self.lyricView updateWithSong:self.queueFolder.entries[self.currentQueueIndex]];
+        [self.lyricView updateWithSong:self.root.queue.entries[self.root.currentQueueIndex]];
     }
     NSUInteger transitionType = (self.tableView.hidden ? UIViewAnimationOptionTransitionFlipFromRight : UIViewAnimationOptionTransitionFlipFromLeft);
     
@@ -269,8 +268,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)tappedPrev:(id)sender
 {
-    if (self.queueFolder.entries.count) {
-        if (self.currentQueueIndex == 0) {
+    if (self.root.queue.entries.count) {
+        if (self.root.currentQueueIndex == 0) {
             // Set playback position to 0.
             if (self.currentPlayer) {
                 self.currentPlayer.currentTime = 0;
@@ -279,7 +278,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         } else {
             // Switch to previous song.
             BOOL wasPlaying = self.isPlaying;
-            [self switchToQueueIndex:self.currentQueueIndex-1];
+            [self switchToQueueIndex:self.root.currentQueueIndex-1];
             if (wasPlaying) {
                 [self play];
             }
@@ -298,14 +297,14 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (IBAction)tappedNext:(id)sender
 {
-    if (self.queueFolder.entries.count) {
-        if (self.currentQueueIndex == self.queueFolder.entries.count-1) {
+    if (self.root.queue.entries.count) {
+        if (self.root.currentQueueIndex == self.root.queue.entries.count-1) {
             [self stop];
             [self switchToQueueIndex:0];
         } else {
             // Switch to next song.
             BOOL wasPlaying = self.isPlaying;
-            [self switchToQueueIndex:self.currentQueueIndex+1];
+            [self switchToQueueIndex:self.root.currentQueueIndex+1];
             if (wasPlaying) {
                 [self play];
             }
@@ -356,7 +355,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)play
 {
     NSLog(@"Play");
-    if (!self.isPlaying && self.queueFolder.entries.count) {
+    if (!self.isPlaying && self.root.queue.entries.count) {
         if (self.currentPlayer == nil) {
             [self setCurrentPlayer];
         }
@@ -378,7 +377,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (AVAudioPlayer *)playerForIndex:(int)index
 {
-    EPSong *song = self.queueFolder.entries[index];
+    EPSong *song = self.root.queue.entries[index];
     NSURL *url = [song.mediaItem valueForProperty:MPMediaItemPropertyAssetURL];
     NSError *error;
     AVAudioPlayer *player;
@@ -394,9 +393,9 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)setCurrentPlayer
 {
     assert(!self.isPlaying);
-    self.currentPlayer = [self playerForIndex:self.currentQueueIndex];
-    if (self.currentQueueIndex < self.queueFolder.entries.count-1) {
-        self.nextPlayer = [self playerForIndex:self.currentQueueIndex+1];
+    self.currentPlayer = [self playerForIndex:self.root.currentQueueIndex];
+    if (self.root.currentQueueIndex < self.root.queue.entries.count-1) {
+        self.nextPlayer = [self playerForIndex:self.root.currentQueueIndex+1];
     } else {
         self.nextPlayer = nil;
     }
@@ -439,8 +438,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     self.nextPlayer = nil;
 
     // Clear the queue.
-    NSArray *oldEnts = [NSArray arrayWithArray:self.queueFolder.entries];
-    [self.queueFolder removeAllEntries];
+    NSArray *oldEnts = [NSArray arrayWithArray:self.root.queue.entries];
+    [self.root.queue removeAllEntries];
     for (EPEntry *ent in oldEnts) {
         [ent checkForOrphan];
     }
@@ -462,7 +461,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 // Update the index without affecting the player.
 - (void)softUpdateCurrentQueueIndex:(int)index
 {
-    self.currentQueueIndex = index;
+    self.root.currentQueueIndex = index;
     [self updateDisplay];
 }
 
@@ -498,8 +497,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         [folder propagatePlayDate:[NSDate date]];
     } else {
         // is Song type.
-        [self.queueFolder addEntriesObject:entry];
-        NSIndexPath *path = [NSIndexPath indexPathForRow:self.queueFolder.entries.count-1 inSection:0];
+        [self.root.queue addEntriesObject:entry];
+        NSIndexPath *path = [NSIndexPath indexPathForRow:self.root.queue.entries.count-1 inSection:0];
         [self.tableView insertRowsAtIndexPaths:@[path] withRowAnimation:YES];
     }
 }
@@ -577,8 +576,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)updateNowPlayingView
 {
-    if (self.queueFolder.entries.count) {
-        EPSong *song = self.queueFolder.entries[self.currentQueueIndex];
+    if (self.root.queue.entries.count) {
+        EPSong *song = self.root.queue.entries[self.root.currentQueueIndex];
         [self.trackSummary loadSong:song];
         if (self.isPlaying) {
             // Make sure the scrubber is updating.
@@ -598,8 +597,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     for (EPPlayerCellView *cell in self.tableView.visibleCells) {
         [cell unsetCurrent];
     }
-    if (self.queueFolder.entries.count) {
-        NSIndexPath *path = [NSIndexPath indexPathForRow:self.currentQueueIndex inSection:0];
+    if (self.root.queue.entries.count) {
+        NSIndexPath *path = [NSIndexPath indexPathForRow:self.root.currentQueueIndex inSection:0];
         EPPlayerCellView *cell = (EPPlayerCellView *)[self.tableView cellForRowAtIndexPath:path];
         if (cell) {
             [cell setCurrent:self.isPlaying];
@@ -610,8 +609,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)scrollToCurrent
 {
-    if (self.isDisplayed && self.queueFolder.entries.count) {
-        NSIndexPath *path = [NSIndexPath indexPathForRow:self.currentQueueIndex inSection:0];
+    if (self.isDisplayed && self.root.queue.entries.count) {
+        NSIndexPath *path = [NSIndexPath indexPathForRow:self.root.currentQueueIndex inSection:0];
         if (![self.tableView.indexPathsForVisibleRows containsObject:path]) {
             // It is currently not visible, scroll to it.
             [self.tableView scrollToRowAtIndexPath:path
@@ -706,16 +705,16 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     NSLog(@"%@ Did finish: %hhd", player, flag);
     self.isPlaying = NO;
     if (flag) {
-        EPSong *finishedSong = self.queueFolder.entries[self.currentQueueIndex];
-        if (self.currentQueueIndex < self.queueFolder.entries.count-1) {
+        EPSong *finishedSong = self.root.queue.entries[self.root.currentQueueIndex];
+        if (self.root.currentQueueIndex < self.root.queue.entries.count-1) {
             // Prepare for the next track to play.
-            [self softUpdateCurrentQueueIndex:self.currentQueueIndex+1];
+            [self softUpdateCurrentQueueIndex:self.root.currentQueueIndex+1];
             if (self.nextPlayer) {
                 // Assume nextPlayer will pick up.
                 self.currentPlayer = self.nextPlayer;
-                if (self.currentQueueIndex < self.queueFolder.entries.count-1) {
+                if (self.root.currentQueueIndex < self.root.queue.entries.count-1) {
                     // Prepare the next track.
-                    self.nextPlayer = [self playerForIndex:self.currentQueueIndex+1];
+                    self.nextPlayer = [self playerForIndex:self.root.currentQueueIndex+1];
                     [self nextPlayerPrepare];
                 } else {
                     // No next track.
@@ -734,7 +733,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             // At the end of the queue.
             self.currentPlayer = nil;
             self.nextPlayer = nil;  // Probably redundant.
-            self.currentQueueIndex = 0;
+            self.root.currentQueueIndex = 0;
         }
         finishedSong.playCount += 1;
         finishedSong.playDate = [NSDate date];

@@ -21,6 +21,7 @@ extern NSString *kEPOrphanFolderName;
 @property (strong, nonatomic) EPFolder *queue;
 @property (strong, nonatomic) EPFolder *orphans;
 @property (assign, nonatomic) BOOL dirty;
+@property (assign, nonatomic) int currentQueueIndex;
 
 + (EPRoot *)sharedRoot;
 + (NSString *)dbPath;
