@@ -33,7 +33,6 @@ NSUInteger minEntriesForSections = 10;
     }
     self.wantsSearch = count > 10;
     // Misc setup.
-    self.indexesEnabled = YES;
     // This seems to be bugged in Interface Builder.
     self.tableView.sectionIndexMinimumDisplayRowCount = 10;
     // Need this for a complex issue.  When bringing up the queue, the bottom
@@ -85,16 +84,10 @@ NSUInteger minEntriesForSections = 10;
 {
     [super viewDidAppear:animated];
 }
-//
-//- (void)didReceiveMemoryWarning
-//{
-//    [super didReceiveMemoryWarning];
-//    // Dispose of any resources that can be recreated.
-//}
-/*****************************************************************************/
-/* Table Data Source                                                         */
+
 /*****************************************************************************/
 #pragma mark - Table view data source
+/*****************************************************************************/
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -208,7 +201,7 @@ NSUInteger minEntriesForSections = 10;
 }
 
 /*****************************************************************************/
-/* Control Cells                                                             */
+#pragma mark - Control Cells
 /*****************************************************************************/
 - (UITableViewCell *)createSortOrderCell
 {
@@ -251,7 +244,7 @@ NSUInteger minEntriesForSections = 10;
 
 
 /*****************************************************************************/
-/* Section Methods                                                           */
+#pragma mark - Section Methods
 /*****************************************************************************/
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -369,7 +362,7 @@ sectionForSectionIndexTitle:(NSString *)title
 }
 
 /*****************************************************************************/
-/* Accessors                                                                 */
+#pragma mark - Accessors
 /*****************************************************************************/
 
 - (void)setSortOrder:(EPSortOrder)sortOrder
@@ -394,7 +387,7 @@ sectionForSectionIndexTitle:(NSString *)title
 }
 
 /*****************************************************************************/
-/* Searching                                                                 */
+#pragma mark - Searching
 /*****************************************************************************/
 - (void)filterContentForSearchText:(NSString *)searchText
 {
@@ -437,7 +430,7 @@ sectionForSectionIndexTitle:(NSString *)title
 }
 
 /*****************************************************************************/
-/* Cell text field                                                           */
+#pragma mark - Cell text field
 /*****************************************************************************/
 - (void)rename:(EPBrowserCell *)cell to:(NSString *)newText
 {
@@ -445,7 +438,7 @@ sectionForSectionIndexTitle:(NSString *)title
 }
 
 /*****************************************************************************/
-/* Misc                                                                      */
+#pragma mark - Misc
 /*****************************************************************************/
 - (void)playHeld:(UILongPressGestureRecognizer *)gesture
 {

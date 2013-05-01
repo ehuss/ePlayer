@@ -111,9 +111,8 @@
 }
 
 /*****************************************************************************/
-/* Table Data Source                                                         */
-/*****************************************************************************/
 #pragma mark - Table view data source
+/*****************************************************************************/
 
 // Populates the labels for a cell with the values for an entry.
 - (void)updateCell:(EPBrowserCell *)cell
@@ -124,11 +123,7 @@
     EPEntry *entry = sections[indexPath.section][indexPath.row];
     cell.entry = entry;
     cell.textView.text = entry.name;
-    if ([entry.class isSubclassOfClass:[EPFolder class]]) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    } else {
-        cell.accessoryType = UITableViewCellAccessoryNone;
-    }
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     if (useDateLabel) {
         cell.dateLabel.text = [self.folder sectionTitleForEntry:entry];
     }    
@@ -136,7 +131,7 @@
 
 
 /*****************************************************************************/
-/* Action Methods                                                            */
+#pragma mark - Action Methods
 /*****************************************************************************/
 
 - (void)playTapped:(UITapGestureRecognizer *)gesture
@@ -155,10 +150,8 @@
 
 
 /*****************************************************************************/
-/* Table Delegate                                                            */
-/*****************************************************************************/
-
 #pragma mark - Table view delegate
+/*****************************************************************************/
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -223,15 +216,17 @@
             }
             [currentSection addObject:entry];
         }
+        self.indexesEnabled = YES;
     } else {
         self.sections = [NSMutableArray arrayWithObject:
                          [NSMutableArray arrayWithArray:sortedEntries]];
         self.sectionTitles = [NSMutableArray arrayWithObject:@""];
+        self.indexesEnabled = NO;
     }
 }
 
 /*****************************************************************************/
-/* Editting Support                                                          */
+#pragma mark - Editting Support
 /*****************************************************************************/
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
@@ -404,7 +399,7 @@
 
 
 /*****************************************************************************/
-/* Insert Cell/Text Field                                                    */
+#pragma mark - Insert Cell/Text Field
 /*****************************************************************************/
 
 
@@ -458,7 +453,7 @@
 
 
 /*****************************************************************************/
-/* Rename                                                                    */
+#pragma mark - Rename
 /*****************************************************************************/
 - (void)rename:(id)sender
 {
@@ -497,7 +492,7 @@
 }
 
 /*****************************************************************************/
-/* Cut/Copy/Paste                                                            */
+#pragma mark - Cut/Copy/Paste
 /*****************************************************************************/
 
 - (BOOL)preventOrphanSelection:(NSString *)action emptyDeleteOK:(BOOL)emptyDeleteOK
@@ -726,7 +721,7 @@
 }
 
 /*****************************************************************************/
-/* Collapse                                                                  */
+#pragma mark - Collapse
 /*****************************************************************************/
 
 - (void)collapse:(id)sender
