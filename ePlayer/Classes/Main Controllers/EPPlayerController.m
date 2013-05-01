@@ -498,11 +498,9 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         [folder propagatePlayDate:[NSDate date]];
     } else {
         // is Song type.
-        if (![self.queueFolder.entries containsObject:entry]) {
-            [self.queueFolder addEntriesObject:entry];
-            NSIndexPath *path = [NSIndexPath indexPathForRow:self.queueFolder.entries.count-1 inSection:0];
-            [self.tableView insertRowsAtIndexPaths:@[path] withRowAnimation:YES];
-        }
+        [self.queueFolder addEntriesObject:entry];
+        NSIndexPath *path = [NSIndexPath indexPathForRow:self.queueFolder.entries.count-1 inSection:0];
+        [self.tableView insertRowsAtIndexPaths:@[path] withRowAnimation:YES];
     }
 }
 

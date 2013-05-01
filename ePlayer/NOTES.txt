@@ -12,7 +12,6 @@ High
 ====
 - MPNowPlayingInfoCenter
 - Change append popup to be above/below.
-- Adding songs is slow.  If it can't be sped up, give some visual feedback.
 - songs should display length in EntryCell (and folders show sum (or count)?)
 - show album art next to entry of a playlist that is all from one album?
     - Individual songs should always show art if available.
@@ -49,6 +48,9 @@ Low
 - Deal with suffle and repeat.
 - Docs say that AVAudioPlayer automatically enables/disables audio session, but
   recommend that you manually enable/disable as well?
+- Not entirely comfortable with saving on entering background.  Ideas:
+    - Save in background thread.  Would require synchronization work.
+    - Save while idle?
 
 Ideas
 =====
