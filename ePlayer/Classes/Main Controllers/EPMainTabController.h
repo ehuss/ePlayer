@@ -13,13 +13,8 @@
 @interface EPMainTabController : UITabBarController
 
 @property (strong, nonatomic) EPPlayerController *playerController;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-@property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
-@property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
-- (void)mainInitDataStore:(NSPersistentStoreCoordinator *)store
-                    model:(NSManagedObjectModel *)model
-                  context:(NSManagedObjectContext *)context;
+- (void)mainInit;
 - (void)loadInitialFolders;
 - (void)resortPlayDates;
 

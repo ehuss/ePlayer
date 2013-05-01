@@ -35,6 +35,8 @@ Medium
 - When paused, change scrubber thumb to red.
 - Queue tab icon - change speaker icon to not have arcs when not playing.
 - re-instate max 1-sec scrubber update rate.
+- Creating orphan folder from player does not update playlists table view.
+    Would be best to have a dirty flag on a folder, and have viewwillappear check it.
 
 Low
 ===

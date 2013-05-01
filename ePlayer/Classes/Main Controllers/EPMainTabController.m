@@ -7,16 +7,12 @@
 //
 
 #import "EPMainTabController.h"
+#import "EPRoot.h"
 
 @implementation EPMainTabController
 
-- (void)mainInitDataStore:(NSPersistentStoreCoordinator *)store
-                    model:(NSManagedObjectModel *)model
-                  context:(NSManagedObjectContext *)context
+- (void)mainInit
 {
-    self.persistentStoreCoordinator = store;
-    self.managedObjectModel = model;
-    self.managedObjectContext = context;
     UIStoryboard *sboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:[NSBundle mainBundle]];
     // Create the 3 main playlist viewers and add them as tabs.
     NSMutableArray *controllers = [NSMutableArray arrayWithCapacity:4];
@@ -41,25 +37,23 @@
     [controllers addObject:self.playerController];
     
     self.viewControllers = controllers;
-
-    for (UIViewController *controller in self.viewControllers) {
-        UIViewController *actualCont = controller;
-        if ([controller.class isSubclassOfClass:[UINavigationController class]]) {
-            actualCont = ((UINavigationController *)controller).topViewController;
-        }
-        if ([actualCont respondsToSelector:@selector(setPersistentStoreCoordinator:)]) {
-            [actualCont performSelector:@selector(setPersistentStoreCoordinator:) withObject:store];
-            [actualCont performSelector:@selector(setManagedObjectModel:) withObject:model];
-            [actualCont performSelector:@selector(setManagedObjectContext:) withObject:context];
-        }
-    }
 }
 
 - (void)loadInitialFolders
 {
-    [(EPPlaylistTableController *)((UINavigationController *)self.viewControllers[0]).topViewController loadInitialFolderTemplate:@"RootFolder"];
-    [(EPPlaylistTableController *)((UINavigationController *)self.viewControllers[1]).topViewController loadInitialFolderTemplate:@"ArtistFolder"];
-    [(EPPlaylistTableController *)((UINavigationController *)self.viewControllers[2]).topViewController loadInitialFolderTemplate:@"AlbumFolder"];
+    EPPlaylistTableController *cont;
+    EPRoot *root = [EPRoot sharedRoot];
+    cont = (EPPlaylistTableController *)((UINavigationController *)self.viewControllers[0]).topViewController;
+    cont.folder = root.playlists;
+    [cont.tableView reloadData];
+
+    cont = (EPPlaylistTableController *)((UINavigationController *)self.viewControllers[1]).topViewController;
+    cont.folder = root.artists;
+    [cont.tableView reloadData];
+
+    cont = (EPPlaylistTableController *)((UINavigationController *)self.viewControllers[2]).topViewController;
+    cont.folder = root.albums;
+    [cont.tableView reloadData];
 }
 
 - (void)resortPlayDates
@@ -77,17 +71,5 @@
     }
 }
 
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
 @end

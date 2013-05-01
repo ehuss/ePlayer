@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Eric Huss. All rights reserved.
 //
 
+// This belongs in project settings.
 #define EP_MEMORY_DEBUG
 
 #ifdef EP_MEMORY_DEBUG

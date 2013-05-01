@@ -13,6 +13,7 @@
 #import "EPCommon.h"
 #import "EPTrackSummaryView.h"
 #import "EPLyricView.h"
+#import "EPFolder.h"
 
 @class EPMainTabController;
 
@@ -20,7 +21,7 @@
                                                   UITableViewDataSource,
                                                   AVAudioPlayerDelegate>
 {
-    Folder *_queueFolder;
+    EPFolder *_queueFolder;
 }
 
 // Called after object context is set.
@@ -33,8 +34,8 @@
 // This will stop play, switch to this index.  Play remains stopped.
 - (void)switchToQueueIndex:(int)index;
 
-- (void)playEntry:(Entry *)entry;
-- (void)appendEntry:(Entry *)entry;
+- (void)playEntry:(EPEntry *)entry;
+- (void)appendEntry:(EPEntry *)entry;
 
 // Actions
 - (IBAction)tappedPrev:(id)sender;
@@ -59,7 +60,7 @@
 @property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
-@property (readonly, strong, nonatomic) Folder *queueFolder;
+@property (readonly, strong, nonatomic) EPFolder *queueFolder;
 @property (assign, nonatomic) int currentQueueIndex;
 
 // Player

@@ -11,21 +11,21 @@
 #import "EPBrowseTableController.h"
 #import "EPEditCell1.h"
 #import "EPEditCell2.h"
+#import "EPRoot.h"
 
 @interface EPPlaylistTableController : EPBrowseTableController <UIActionSheetDelegate>
 {
-    Folder *_cutFolder;
+    EPRoot *_root;
 }
 
-- (void)loadInitialFolderTemplate:(NSString *)templateName;
 - (EPPlaylistTableController *)copyMusicController;
 - (void)updateSections;
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSManagedObjectModel *managedObjectModel;
 @property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-@property (nonatomic, strong) Folder *folder;
-@property (nonatomic, readonly) Folder *cutFolder;
+@property (nonatomic, strong) EPFolder *folder;
+@property (nonatomic, readonly) EPRoot *root;
 @property (nonatomic, assign) BOOL focusAddFolder;
 @property (nonatomic, strong) EPEditCell1 *editCell1;
 @property (nonatomic, strong) EPEditCell2 *editCell2;

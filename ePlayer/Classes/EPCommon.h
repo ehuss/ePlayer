@@ -9,10 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "NSArray+EPMap.h"
 #import "EPMemoryDebug.h"
-// Models
-#import "Entry.h"
-#import "Song.h"
-#import "Folder.h"
 
 typedef enum {
     EPSortOrderAlpha,

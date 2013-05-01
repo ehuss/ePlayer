@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "EPCommon.h"
+#import "EPSong.h"
 
 @interface EPLyricView : UITextView
 
-- (void)updateWithSong:(Song *)song;
+- (void)updateWithSong:(EPSong *)song;
 
 @end

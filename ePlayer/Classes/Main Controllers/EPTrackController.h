@@ -10,11 +10,12 @@
 #import "EPTrackSummaryView.h"
 #import "EPLyricView.h"
 #import "EPCommon.h"
+#import "EPSong.h"
 
 @interface EPTrackController : UIViewController
 @property (weak, nonatomic) IBOutlet EPTrackSummaryView *trackSummary;
 @property (weak, nonatomic) IBOutlet EPLyricView *lyricView;
 
-- (void)loadSong:(Song *)song;
+- (void)loadSong:(EPSong *)song;
 
 @end

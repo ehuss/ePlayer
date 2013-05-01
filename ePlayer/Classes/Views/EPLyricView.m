@@ -11,7 +11,7 @@
 
 @implementation EPLyricView
 
-- (void)updateWithSong:(Song *)song
+- (void)updateWithSong:(EPSong *)song
 {
     NSMutableString *text = [[NSMutableString alloc] init];
     // Artist
@@ -35,7 +35,7 @@
     }
     [text appendString:[NSString stringWithFormat:@"Last Play Date: %@\n", playDate]];
     // Play Count
-    [text appendString:[NSString stringWithFormat:@"Play Count: %@\n", song.playCount]];
+    [text appendString:[NSString stringWithFormat:@"Play Count: %d\n", song.playCount]];
     // Added Date
     NSString *addDate = [NSDateFormatter localizedStringFromDate:song.addDate
                                                        dateStyle:NSDateFormatterMediumStyle

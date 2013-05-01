@@ -12,6 +12,7 @@
 #import "UIImage+EPCrop.h"
 #import "EPMediaItemWrapper.h"
 #import "EPMainTabController.h"
+#import "EPRoot.h"
 
 //static NSTimeInterval scrubberUpdateTime = 0.300;
 
@@ -87,17 +88,11 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     [self updateVolumeImage];
 }
 
-- (Folder *)queueFolder
+- (EPFolder *)queueFolder
 {
     if (_queueFolder == nil) {
-        NSFetchRequest *request = [self.managedObjectModel fetchRequestTemplateForName:@"QueueFolder"];
-        NSError *error;
-        NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
-        if (results==nil || results.count==0) {
-            NSLog(@"Failed to fetch queue folder: %@", error);
-            return nil;
-        }
-        _queueFolder = results[0];
+        EPRoot *root = [EPRoot sharedRoot];
+        _queueFolder = root.queue;
     }
     return _queueFolder;
 }
@@ -167,7 +162,7 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
 {
     static NSString *CellIdentifier = @"PlayerCell";
     EPPlayerCellView *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    Song *song = self.queueFolder.entries[indexPath.row];
+    EPSong *song = self.queueFolder.entries[indexPath.row];
     cell.queueNumLabel.text = [NSString stringWithFormat:@"%i.", indexPath.row+1];
     cell.trackNameLabel.text = song.name;
     cell.albumNameLabel.text = [NSString stringWithFormat:@"%@ - %@",
@@ -383,7 +378,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (AVAudioPlayer *)playerForIndex:(int)index
 {
-    Song *song = self.queueFolder.entries[index];
+    EPSong *song = self.queueFolder.entries[index];
     NSURL *url = [song.mediaItem valueForProperty:MPMediaItemPropertyAssetURL];
     NSError *error;
     AVAudioPlayer *player;
@@ -444,7 +439,11 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     self.nextPlayer = nil;
 
     // Clear the queue.
-    self.queueFolder.entries = [NSOrderedSet orderedSet];
+    NSArray *oldEnts = [NSArray arrayWithArray:self.queueFolder.entries];
+    [self.queueFolder removeAllEntries];
+    for (EPEntry *ent in oldEnts) {
+        [ent checkForOrphan];
+    }
     [self softUpdateCurrentQueueIndex:0];
     [self saveQueue];
     
@@ -467,14 +466,14 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     [self updateDisplay];
 }
 
-- (void)playEntry:(Entry *)entry;
+- (void)playEntry:(EPEntry *)entry;
 {
     [self clearQueue];
     [self appendEntry:entry];
     [self play];
 }
 
-- (void)appendEntry:(Entry *)entry
+- (void)appendEntry:(EPEntry *)entry
 {
     [self dbAppendEntry:entry];
     [self saveQueue];
@@ -485,17 +484,14 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 // Low-level queue commands.
 - (void)saveQueue
 {
-    NSError *error;
-    if (![self.managedObjectContext save:&error]) {
-        NSLog(@"Failed to save: %@", error);
-    }
+    [EPRoot sharedRoot].dirty = YES;
 }
 
-- (void)dbAppendEntry:(Entry *)entry
+- (void)dbAppendEntry:(EPEntry *)entry
 {
-    if ([entry.class isSubclassOfClass:[Folder class]]) {
-        Folder *folder = (Folder *)entry;
-        for (Entry *child in folder.sortedEntries) {
+    if ([entry.class isSubclassOfClass:[EPFolder class]]) {
+        EPFolder *folder = (EPFolder *)entry;
+        for (EPEntry *child in folder.sortedEntries) {
             [self dbAppendEntry:child];
         }
         [folder propagatePlayCount:1];
@@ -584,7 +580,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)updateNowPlayingView
 {
     if (self.queueFolder.entries.count) {
-        Song *song = self.queueFolder.entries[self.currentQueueIndex];
+        EPSong *song = self.queueFolder.entries[self.currentQueueIndex];
         [self.trackSummary loadSong:song];
         if (self.isPlaying) {
             // Make sure the scrubber is updating.
@@ -712,7 +708,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     NSLog(@"%@ Did finish: %hhd", player, flag);
     self.isPlaying = NO;
     if (flag) {
-        Song *finishedSong = self.queueFolder.entries[self.currentQueueIndex];
+        EPSong *finishedSong = self.queueFolder.entries[self.currentQueueIndex];
         if (self.currentQueueIndex < self.queueFolder.entries.count-1) {
             // Prepare for the next track to play.
             [self softUpdateCurrentQueueIndex:self.currentQueueIndex+1];
@@ -742,7 +738,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             self.nextPlayer = nil;  // Probably redundant.
             self.currentQueueIndex = 0;
         }
-        finishedSong.intPlayCount += 1;
+        finishedSong.playCount += 1;
         finishedSong.playDate = [NSDate date];
         [self saveQueue];
     } else {

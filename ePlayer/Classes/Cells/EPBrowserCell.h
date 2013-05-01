@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "EPCommon.h"
+#import "EPEntry.h"
 
 @class EPBrowseTableController;
 
@@ -16,6 +17,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
 @property (weak, nonatomic) EPBrowseTableController *parentController;
-@property (strong, nonatomic) Entry *entry;
+@property (strong, nonatomic) EPEntry *entry;
 
 @end

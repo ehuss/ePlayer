@@ -11,13 +11,13 @@
 #import "AppDelegate.h"
 #import "EPCommon.h"
 #import "EPMediaItemWrapper.h"
-#import "NSManagedObjectModel+KCOrderedAccessorFix.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    //    [[NSFileManager defaultManager] removeItemAtURL:[self dbURL] error:nil];
+    self.initializing = YES;
+//    [[NSFileManager defaultManager] removeItemAtPath:[EPRoot dbPath] error:nil];
 
     // Set up audio.
     AVAudioSession *session = [AVAudioSession sharedInstance];
@@ -42,14 +42,13 @@
     
     // Core data setup.
     self.mainTabController = (EPMainTabController *)self.window.rootViewController;
-    [self.mainTabController mainInitDataStore:self.persistentStoreCoordinator
-                                        model:self.managedObjectModel
-                                      context:self.managedObjectContext];
+    [self.mainTabController mainInit];
     
     if ([self loadData]) {
         // Database is ready.  Populate the view.
         // XXX restore state
         [self.mainTabController loadInitialFolders];
+        self.initializing = NO;
     } else {
         // Database import happens in background.
         // Don't display anything until it is done.
@@ -72,6 +71,11 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 //    NSLog(@"did enter background");
+    if (!self.initializing) {
+        EPRoot *root = [EPRoot sharedRoot];
+        [root save];
+    }
+    
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -98,85 +102,7 @@
 
 
 /*****************************************************************************/
-/* Core Data Stack                                                           */
-/*****************************************************************************/
-- (NSURL *)dbURL
-{
-    NSURL *docDir = [[[NSFileManager defaultManager]
-                      URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask]
-                     lastObject];
-    
-    NSURL *storeURL = [docDir URLByAppendingPathComponent:@"ePlayer.sqlite"];
-    return storeURL;
-}
-
-- (NSManagedObjectModel *)createManagedObjectModel
-{
-    NSManagedObjectModel *model = [NSManagedObjectModel mergedModelFromBundles:nil];
-    [model kc_generateOrderedSetAccessors];
-    return model;
-}
-
-
-- (NSManagedObjectModel *)managedObjectModel
-{
-    if (_managedObjectModel != nil) {
-        return _managedObjectModel;
-    }
-    _managedObjectModel = [self createManagedObjectModel];
-    return _managedObjectModel;
-}
-
-- (NSPersistentStoreCoordinator *)createPersistentStoreCoordinator:(NSManagedObjectModel *)model
-{
-    NSError *error;
-    NSPersistentStoreCoordinator *coordinator;
-    coordinator = [[NSPersistentStoreCoordinator alloc]
-                   initWithManagedObjectModel:model];
-    if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType
-                                   configuration:nil
-                                             URL:[self dbURL]
-                                         options:nil
-                                           error:&error]) {
-        NSLog(@"Error: %@", [error localizedDescription]);
-        return nil;
-    }
-    return coordinator;
-}
-
-- (NSPersistentStoreCoordinator *)persistentStoreCoordinator
-{
-    if (_persistentStoreCoordinator != nil) {
-        return _persistentStoreCoordinator;
-    }
-    _persistentStoreCoordinator = [self createPersistentStoreCoordinator:self.managedObjectModel];
-    return _persistentStoreCoordinator;
-}
-
-- (NSManagedObjectContext *) createManagedObjectContext:(NSPersistentStoreCoordinator *)coordinator
-{
-    NSManagedObjectContext *context = nil;
-    // May be nil if fails to load.
-    if (coordinator != nil) {
-        context = [[NSManagedObjectContext alloc] init];
-        context.persistentStoreCoordinator = coordinator;
-        // Minor performance help.
-        context.undoManager = nil;
-    }
-    return context;
-}
-
-- (NSManagedObjectContext *) managedObjectContext
-{
-    if (_managedObjectContext != nil) {
-        return _managedObjectContext;
-    }
-    _managedObjectContext = [self createManagedObjectContext:self.persistentStoreCoordinator];
-    return _managedObjectContext;
-}
-
-/*****************************************************************************/
-/* Data Importing                                                            */
+#pragma mark - Database
 /*****************************************************************************/
 
 NSString *artistNameFromMediaItem(MPMediaItem *item)
@@ -195,111 +121,46 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
 - (BOOL)loadData
 {
     // First determine if there is anything in the database.
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entry"
-                                              inManagedObjectContext:self.managedObjectContext];
-    request.entity = entity;
-    NSError *error;
-    NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
-    if (results == nil) {
-        NSLog(@"Failed to query for entries: %@", error);
-        // This should probably be a fatal error.
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[EPRoot dbPath]]) {
+        EPRoot *root = [EPRoot sharedRoot];
+        if (root == nil) {
+            // This should not be possible.  Only returns nil on file-not-found.
+            // Otherwise raises an exception.
+            abort();
+        }
         return YES;
     }
-    NSLog(@"query length: %i", results.count);
+    // Create the database.
+    // Populate with defaults from the user's library.
+    // Display a progress indicator.
+    self.importAlertView = [[UIAlertView alloc] initWithTitle:@"Importing..."
+                                                      message:@"Performing first time import."
+                                                     delegate:self
+                                            cancelButtonTitle:nil
+                                            otherButtonTitles:nil];
+    [self.importAlertView show];
+    self.importProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
+    // This is rather hacky.  The alertView frame is an odd size (presumably
+    // for all the shadowing).  It's unfortunate that UIAlertView does not
+    // have a formal way to add accessory views.
+    // The Right Thing to do would be to make a custom view.
+    CGRect avf = self.importAlertView.frame;
+    CGRect pvf = self.importProgressView.frame;
+    self.importProgressView.frame = CGRectMake(20, avf.size.height-pvf.size.height-50,
+                                    avf.size.width-70, pvf.size.height);
     
-    if (results.count == 0) {
-        // Database is empty, running for the first time.
-        // Populate with defaults from the user's library.
-        // Display a progress indicator.
-        self.importAlertView = [[UIAlertView alloc] initWithTitle:@"Importing..." message:@"Performing first time import." delegate:self cancelButtonTitle:nil otherButtonTitles:nil];
-        [self.importAlertView show];
-        self.importProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
-        // This is rather hacky.  The alertView frame is an odd size (presumably
-        // for all the shadowing).  It's unfortunate that UIAlertView does not
-        // have a formal way to add accessory views.
-        // The Right Thing to do would be to make a custom view.
-        CGRect avf = self.importAlertView.frame;
-        CGRect pvf = self.importProgressView.frame;
-        self.importProgressView.frame = CGRectMake(20, avf.size.height-pvf.size.height-50,
-                                        avf.size.width-70, pvf.size.height);
-        
-        [self.importAlertView addSubview:self.importProgressView];
-        [self performSelectorInBackground:@selector(initDB) withObject:nil];
-        return NO;
-    } else {
-        return YES;
-    }
+    [self.importAlertView addSubview:self.importProgressView];
+    [self performSelectorInBackground:@selector(initDB) withObject:nil];
+    return NO;
 }
 
 - (void)initDB
 {
-    /* Things to consider for efficiency:
-     use autorelease pool block?
-     context refreshObject: mergeChanges:NO to unload objects when done (like artist)
-     Is there maybe a way to append to "entries" using something more lightweight, like objectID?
-     */
-    NSError *error;
-    // Using a thread-local context (was having problems otherwise, even though
-    // nothing should be happening on the main thread).
-    // Note: Could probably share the coordinator with the main thread.
-//    NSManagedObjectContext *managedObjectContext = [self createManagedObjectContext:
-//                                                    [self createPersistentStoreCoordinator:
-//                                                     [self createManagedObjectModel]]];
-    NSManagedObjectContext *managedObjectContext = [self createManagedObjectContext:self.persistentStoreCoordinator];
-    // This doesn't seem to make a noticeable performance improvement.
-    managedObjectContext.undoManager = nil;
-    
+    EPRoot *root = [EPRoot initialSharedRoot];
     // Determine the library size for the progress indicator.
     MPMediaQuery *allQuery = [MPMediaQuery songsQuery];
     NSUInteger libSize = allQuery.items.count;
     NSUInteger songsImported = 0;
-    
-    // Create top-level folder.
-    Folder *rootFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
-                                                                inManagedObjectContext:managedObjectContext];
-    rootFolder.name = @"Playlists";
-    rootFolder.sortOrder = @(EPSortOrderAlpha);
-    rootFolder.addDate = [NSDate date];
-    rootFolder.releaseDate = [NSDate distantPast];
-    rootFolder.playDate = [NSDate distantPast];
-    
-    Folder *artistsFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
-                                                                    inManagedObjectContext:managedObjectContext];
-    artistsFolder.name = @"Artists";
-    artistsFolder.sortOrder = @(EPSortOrderAlpha);
-    artistsFolder.addDate = [NSDate date];
-    artistsFolder.releaseDate = [NSDate distantPast];
-    artistsFolder.playDate = [NSDate distantPast];
-
-    Folder *albumsFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
-                                                                    inManagedObjectContext:managedObjectContext];
-    albumsFolder.name = @"Albums";
-    albumsFolder.sortOrder = @(EPSortOrderAlpha);
-    albumsFolder.addDate = [NSDate date];
-    albumsFolder.releaseDate = [NSDate distantPast];
-    albumsFolder.playDate = [NSDate distantPast];
-
-    // Create a magic folder used for "cut".
-    Folder *cutFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
-                                                                  inManagedObjectContext:managedObjectContext];
-    cutFolder.name = @"Internal Cut Folder";
-    cutFolder.sortOrder = @(EPSortOrderManual);
-    // These dates are unused, but are required.
-    cutFolder.addDate = [NSDate date];
-    cutFolder.releaseDate = [NSDate distantPast];
-    cutFolder.playDate = [NSDate distantPast];
-
-    
-    // Create a magic folder used by the queue.
-    Folder *queueFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
-                                                                 inManagedObjectContext:managedObjectContext];
-    queueFolder.name = @"Queue";
-    queueFolder.sortOrder = @(EPSortOrderManual);
-    // These dates are unused, but are required.
-    queueFolder.addDate = [NSDate date];
-    queueFolder.releaseDate = [NSDate distantPast];
-    queueFolder.playDate = [NSDate distantPast];
     
     // Iterate over genre's for the top-level folder.
     MPMediaQuery *genreQuery = [[MPMediaQuery alloc] init];
@@ -314,15 +175,13 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
         // Create a folder for this genre.
         MPMediaItem *representativeItem = genre.representativeItem;
         NSLog(@"Genre: %@", [representativeItem valueForProperty:MPMediaItemPropertyGenre]);
-        Folder *genreFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
-                                                                      inManagedObjectContext:managedObjectContext];
-        genreFolder.name = [representativeItem valueForProperty:MPMediaItemPropertyGenre];
-        genreFolder.sortOrder = @(EPSortOrderAddDate);//[NSNumber numberWithInt:];
         // These dates will be updated once songs are seen.
-        genreFolder.addDate = [NSDate distantPast];
-        genreFolder.releaseDate = [NSDate distantPast];
-        genreFolder.playDate = [NSDate distantPast];
-        [rootFolder addEntriesObject:genreFolder];
+        EPFolder *genreFolder = [EPFolder folderWithName:[representativeItem valueForProperty:MPMediaItemPropertyGenre]
+                                               sortOrder:EPSortOrderAddDate
+                                             releaseDate:[NSDate distantPast]
+                                                 addDate:[NSDate distantPast]
+                                                playDate:[NSDate distantPast]];
+        [root.playlists addEntriesObject:genreFolder];
         [genres setObject:genreFolder forKey:genreFolder.name];
     }
     
@@ -333,51 +192,45 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     for (MPMediaItemCollection *albumItem in albums.collections) {
         MPMediaItem *representativeItem = albumItem.representativeItem;
         // XXX: What if genre is nil?
-        Folder *genre = [genres objectForKey:[representativeItem valueForProperty:MPMediaItemPropertyGenre]];
+        EPFolder *genre = [genres objectForKey:[representativeItem valueForProperty:MPMediaItemPropertyGenre]];
         NSString *artistName = artistNameFromMediaItem(representativeItem);
         if (artistName == nil) {
             continue;
         }
         
         // Create artist if it does not exist.
-        Folder *artist = [artists objectForKey:artistName];
+        EPFolder *artist = [artists objectForKey:artistName];
         if (artist == nil) {
             // Create artist folder.
-            artist = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
-                                                             inManagedObjectContext:managedObjectContext];
-            artist.name = artistName;
-            artist.sortOrder = @(EPSortOrderAddDate);
             // These dates will be updated once songs are seen.
-            artist.addDate = [NSDate distantPast];
-            artist.releaseDate = [NSDate distantPast];
-            artist.playDate = [NSDate distantPast];
+            artist = [EPFolder folderWithName:artistName
+                                    sortOrder:EPSortOrderAddDate
+                                  releaseDate:[NSDate distantPast]
+                                      addDate:[NSDate distantPast]
+                                     playDate:[NSDate distantPast]];
             [artists setObject:artist forKey:artistName];
             [genre addEntriesObject:artist];
-            [artistsFolder addEntriesObject:artist];
+            [root.artists addEntriesObject:artist];
             NSLog(@"Create artist %@", artist.name);
         }
         
         // Create album folder.
-        Folder *albumFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
-                                                                inManagedObjectContext:managedObjectContext];
-        albumFolder.name = [representativeItem valueForProperty:MPMediaItemPropertyAlbumTitle];
-        albumFolder.sortOrder = @(EPSortOrderManual);
         // These dates will be updated once songs are seen.
-        albumFolder.addDate = [NSDate distantPast];
-        albumFolder.releaseDate = [NSDate distantPast];
-        albumFolder.playDate = [NSDate distantPast];
+        EPFolder *albumFolder = [EPFolder folderWithName:[representativeItem valueForProperty:MPMediaItemPropertyAlbumTitle]
+                                               sortOrder:EPSortOrderManual
+                                             releaseDate:[NSDate distantPast]
+                                                 addDate:[NSDate distantPast]
+                                                playDate:[NSDate distantPast]];
         [artist addEntriesObject:albumFolder];
-        [albumsFolder addEntriesObject:albumFolder];
+        [root.albums addEntriesObject:albumFolder];
         NSLog(@"Create album %@", albumFolder.name);
         
         // Add songs to album folder.
         NSUInteger maxPlayCount = 0;
         for (MPMediaItem *songItem in albumItem.items) {
             EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:songItem];
-            Song *song = (Song *)[NSEntityDescription insertNewObjectForEntityForName:@"Song"
-                                                               inManagedObjectContext:managedObjectContext];
-            song.name = wrapper.title;
-            song.persistentID = wrapper.persistentID;
+            EPSong *song = [EPSong songWithName:wrapper.title
+                                   persistentID:wrapper.persistentID];
             [albumFolder addEntriesObject:song];
             // Propagate will also set on song.
             [song propagateReleaseDate:wrapper.releaseDate];
@@ -391,7 +244,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
             if (playCount != nil) {
                 maxPlayCount = MAX(maxPlayCount, [playCount integerValue]);
             }
-            song.playCount = wrapper.playCount;
+            song.playCount = [wrapper.playCount integerValue];
             songsImported += 1;
             [self performSelectorOnMainThread:@selector(importUpdateProgress:)
                                    withObject:@((float)songsImported/(float)libSize)
@@ -403,9 +256,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
 #endif
     } // end for each album.
     NSLog(@"Committing data.");
-    if (![managedObjectContext save:&error]) {
-        NSLog(@"Failed to save: %@", error);
-    }
+    [root save];
     NSLog(@"Done importing...");
     [self performSelectorOnMainThread:@selector(importDone) withObject:nil waitUntilDone:NO];
 }
@@ -419,6 +270,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
 {
     [self.importAlertView dismissWithClickedButtonIndex:0 animated:YES];
     [self.mainTabController loadInitialFolders];
+    self.initializing = NO;
 }
 
 @end

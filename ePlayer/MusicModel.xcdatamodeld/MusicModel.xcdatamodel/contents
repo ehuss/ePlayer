@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2061" systemVersion="11G63b" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="Entry" representedClassName="Entry" syncable="YES">
+    <entity name="EPEntry" representedClassName="EPEntry" syncable="YES">
         <attribute name="addDate" attributeType="Date" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="playCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="playDate" attributeType="Date" syncable="YES"/>
         <attribute name="releaseDate" attributeType="Date" syncable="YES"/>
-        <relationship name="parents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Folder" inverseName="entries" inverseEntity="Folder" syncable="YES"/>
+        <relationship name="parents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EPFolder" inverseName="entries" inverseEntity="EPFolder" syncable="YES"/>
     </entity>
-    <entity name="Folder" representedClassName="Folder" parentEntity="Entry" syncable="YES">
+    <entity name="EPFolder" representedClassName="EPFolder" parentEntity="EPEntry" syncable="YES">
         <attribute name="sortOrder" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="entries" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Entry" inverseName="parents" inverseEntity="Entry" syncable="YES"/>
+        <relationship name="entries" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="EPEntry" inverseName="parents" inverseEntity="EPEntry" syncable="YES"/>
     </entity>
-    <entity name="Song" representedClassName="Song" parentEntity="Entry" syncable="YES">
+    <entity name="EPSong" representedClassName="EPSong" parentEntity="EPEntry" syncable="YES">
         <attribute name="persistentID" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
     </entity>
-    <fetchRequest name="AlbumFolder" entity="Entry" predicateString="name == &quot;Albums&quot;"/>
-    <fetchRequest name="ArtistFolder" entity="Entry" predicateString="name == &quot;Artists&quot;"/>
-    <fetchRequest name="CutFolder" entity="Folder" predicateString="name == &quot;Internal Cut Folder&quot;"/>
-    <fetchRequest name="OrphanFolder" entity="Folder" predicateString="name == &quot;Orphaned Songs&quot;"/>
-    <fetchRequest name="QueueFolder" entity="Folder" predicateString="name == &quot;Queue&quot;"/>
-    <fetchRequest name="RootFolder" entity="Folder" predicateString="name == &quot;Playlists&quot;"/>
+    <fetchRequest name="AlbumFolder" entity="EPEntry" predicateString="name == &quot;Albums&quot;"/>
+    <fetchRequest name="ArtistFolder" entity="EPEntry" predicateString="name == &quot;Artists&quot;"/>
+    <fetchRequest name="CutFolder" entity="EPFolder" predicateString="name == &quot;Internal Cut Folder&quot;"/>
+    <fetchRequest name="OrphanFolder" entity="EPFolder" predicateString="name == &quot;Orphaned Songs&quot;"/>
+    <fetchRequest name="QueueFolder" entity="EPFolder" predicateString="name == &quot;Queue&quot;"/>
+    <fetchRequest name="RootFolder" entity="EPFolder" predicateString="name == &quot;Playlists&quot;"/>
     <elements>
-        <element name="Entry" positionX="0" positionY="0" width="128" height="135"/>
-        <element name="Folder" positionX="0" positionY="0" width="128" height="75"/>
-        <element name="Song" positionX="0" positionY="0" width="128" height="60"/>
+        <element name="EPEntry" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="EPFolder" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="EPSong" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

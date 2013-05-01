@@ -7,23 +7,23 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
 #import <MediaPlayer/MediaPlayer.h>
-#import "Entry.h"
+#import "EPEntry.h"
 
 @class EPMediaItemWrapper;
 
-@interface Song : Entry
+@interface EPSong : EPEntry <NSCoding>
 {
     MPMediaItem *_mediaItem;
     EPMediaItemWrapper *_mediaWrapper;
 }
 
-@property (nonatomic, retain) NSNumber * persistentID;
-// Unsigned version, since core data doesn't support unsigned.
-@property (readonly, nonatomic) NSNumber *UPID;
+// Unsigned 64-bit.
+@property (retain, nonatomic) NSNumber * persistentID;
 @property (readonly, nonatomic) MPMediaItem *mediaItem;
 @property (readonly, nonatomic) EPMediaItemWrapper *mediaWrapper;
 @property (readonly, nonatomic) NSTimeInterval duration;
+
++ (EPSong *)songWithName:(NSString *)name persistentID:(NSNumber *)PID;
 
 @end

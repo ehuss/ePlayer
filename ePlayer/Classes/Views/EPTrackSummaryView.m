@@ -17,7 +17,7 @@
     [self addSubview:self.contentView];
 }
 
-- (void)loadSong:(Song *)song
+- (void)loadSong:(EPSong *)song
 {
     if (song) {
         self.artistName.text = song.mediaWrapper.artist;

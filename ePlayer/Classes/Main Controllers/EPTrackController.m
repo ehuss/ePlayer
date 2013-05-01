@@ -14,7 +14,7 @@
 
 @implementation EPTrackController
 
-- (void)loadSong:(Song *)song
+- (void)loadSong:(EPSong *)song
 {
     // Force view to load (otherwise subviews would be nil).
     [self view];

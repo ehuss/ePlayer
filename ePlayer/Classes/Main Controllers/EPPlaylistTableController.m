@@ -13,7 +13,6 @@
 #import "EPPlayerController.h"
 #import "EPTrackController.h"
 
-static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 //static NSString *kEPEntryUTI = @"org.ehuss.ePlayer.entry";
 
 @interface EPPlaylistTableController ()
@@ -36,18 +35,15 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 
 - (void)setSortOrder:(EPSortOrder)sortOrder
 {
-    self.folder.sortOrder = [NSNumber numberWithInt:sortOrder];
-    NSError *error;
-    if (![self.managedObjectContext save:&error]) {
-        NSLog(@"Failed to save: %@", error);
-    }
+    self.folder.sortOrder = sortOrder;
+    self.root.dirty = YES;
     [self updateSections];
     [self.tableView reloadData];
 }
 
 - (EPSortOrder)sortOrder
 {
-    return [self.folder.sortOrder intValue];
+    return self.folder.sortOrder;
 }
 
 - (NSArray *)supportedSortOrders
@@ -125,10 +121,10 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
       withSections:(NSArray *)sections
      withDateLabel:(BOOL)useDateLabel
 {
-    Entry *entry = sections[indexPath.section][indexPath.row];
+    EPEntry *entry = sections[indexPath.section][indexPath.row];
     cell.entry = entry;
     cell.textView.text = entry.name;
-    if ([entry.class isSubclassOfClass:[Folder class]]) {
+    if ([entry.class isSubclassOfClass:[EPFolder class]]) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     } else {
         cell.accessoryType = UITableViewCellAccessoryNone;
@@ -153,7 +149,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 
 - (void)playAppend:(NSIndexPath *)path
 {
-    Entry *entry = self.sections[path.section][path.row];
+    EPEntry *entry = self.sections[path.section][path.row];
     [self.playerController appendEntry:entry];
 }
 
@@ -176,15 +172,15 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     } else {
         data = self.sections;
     }
-    Entry *entry = data[indexPath.section][indexPath.row];
-    if ([entry isKindOfClass:[Folder class]]) {
+    EPEntry *entry = data[indexPath.section][indexPath.row];
+    if ([entry isKindOfClass:[EPFolder class]]) {
         EPPlaylistTableController *controller = [self copyMusicController];
-        controller.folder = (Folder *)entry;
+        controller.folder = (EPFolder *)entry;
         [self.navigationController pushViewController:controller animated:YES];
     } else {
         // A song.
         EPTrackController *controller = [self.tabBarController.storyboard instantiateViewControllerWithIdentifier:@"TrackController"];
-        [controller loadSong:(Song *)entry];
+        [controller loadSong:(EPSong *)entry];
         controller.trackSummary.infoButton.hidden = YES;
         [self.navigationController pushViewController:controller animated:YES];
     }
@@ -197,22 +193,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     }
 }
 
-- (void)loadInitialFolderTemplate:(NSString *)templateName
-{
-    NSFetchRequest *request = [self.managedObjectModel fetchRequestTemplateForName:templateName];
-    NSError *error;
-    NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
-    if (results==nil || results.count==0) {
-        NSLog(@"Failed to fetch %@ folder: %@", templateName, error);
-        return;
-    }
-    self.folder = results[0];
-    // This is necessary for the initial import which displays an empty table
-    // (and possibly other things).
-    [self.tableView reloadData];
-}
-
-- (void)setFolder:(Folder *)folder
+- (void)setFolder:(EPFolder *)folder
 {
     _folder = folder;
     self.title = folder.name;
@@ -231,7 +212,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
         self.sectionTitles = [[NSMutableArray alloc] init];
         NSMutableArray *currentSection = nil;
         NSString *currentSectionTitle = nil;
-        for (Entry *entry in sortedEntries) {
+        for (EPEntry *entry in sortedEntries) {
             NSString *sectionTitle = [self.folder sectionTitleForEntry:entry];
             // Is this entry a new section?
             if (currentSection == nil || [sectionTitle compare:currentSectionTitle]!=NSOrderedSame) {
@@ -263,12 +244,10 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
         // Make sure enabled status on buttons is correct.
         [self updateEditCellStatus];        
     } else {
+        // Commit editing changes.
         if (self.showingControlCells) {
             // Save any changes made.
-            NSError *error;
-            if (![self.managedObjectContext save:&error]) {
-                NSLog(@"Failed to save: %@", error);
-            }
+            self.root.dirty = YES;
             // Clean up.
             self.showingControlCells = NO;
             self.indexesEnabled = YES;
@@ -309,39 +288,39 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 - (void)deleteRows:(NSArray *)indexPaths checkOrphans:(BOOL)doCheckOrphans
 {
     // Determine the entries to delete.
-    NSMutableOrderedSet *entrySet = [NSMutableOrderedSet orderedSetWithCapacity:indexPaths.count];
+    NSMutableArray *entriesToDelete = [NSMutableArray arrayWithCapacity:indexPaths.count];
     // Remove from sections.  I'm not sure if indexPaths is guaranteed to be
     // grouped by sections.  We need a set of indicies per section.
     // Key is NSNumber section number, value is NSIndexSet.
-    NSMutableDictionary *toDelete = [NSMutableDictionary dictionaryWithCapacity:indexPaths.count];
+    NSMutableDictionary *sectionsToDelete = [NSMutableDictionary dictionaryWithCapacity:indexPaths.count];
     for (NSIndexPath *path in indexPaths) {
         // Adjust index for the 2 special rows if necessary.
         NSIndexPath *realIndexPath = [NSIndexPath indexPathForRow:path.row inSection:path.section-1];
         // Figure out the entry being removed.
-        Entry *entry = self.sections[realIndexPath.section][realIndexPath.row];
+        EPEntry *entry = self.sections[realIndexPath.section][realIndexPath.row];
         NSLog(@"Deleting %@", entry.name);
-        [entrySet addObject:entry];
+        [entriesToDelete addObject:entry];
         // Add to the set of section data to clean up.
         NSNumber *sectionNumber = [NSNumber numberWithInteger:realIndexPath.section];
-        NSMutableIndexSet *indexSet = [toDelete objectForKey:sectionNumber];
+        NSMutableIndexSet *indexSet = [sectionsToDelete objectForKey:sectionNumber];
         if (indexSet == nil) {
             indexSet = [[NSMutableIndexSet alloc] init];
-            [toDelete setObject:indexSet forKey:sectionNumber];
+            [sectionsToDelete setObject:indexSet forKey:sectionNumber];
         }
         [indexSet addIndex:realIndexPath.row];
     }
-    [self.folder removeEntries:entrySet];
+    [self.folder removeEntries:entriesToDelete];
     // Will be committed when editing is done.
 
     if (doCheckOrphans) {
-        for (Entry *entry in entrySet) {
+        for (EPEntry *entry in entriesToDelete) {
             // If any songs in this entry have no parents, put it into a special
             // orphan folder.  Otherwise there would be no way to ever access them.
-            [self checkOrphans:entry];
+            [entry checkForOrphan];
         }
     }
 
-    [toDelete enumerateKeysAndObjectsUsingBlock:^(NSNumber *key, NSMutableIndexSet *obj, BOOL *stop) {
+    [sectionsToDelete enumerateKeysAndObjectsUsingBlock:^(NSNumber *key, NSMutableIndexSet *obj, BOOL *stop) {
         NSMutableArray *section = self.sections[key.integerValue];
         [section removeObjectsAtIndexes:obj];
         // XXX What happens if this was last entry in section?
@@ -350,62 +329,6 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     // Remove from table.
     [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
     [self reloadParents];
-}
-
-- (void)checkOrphans:(Entry *)entry
-{
-    if ([entry.class isSubclassOfClass:[Folder class]]) {
-        Folder *folder = (Folder *)entry;
-        // Create a copy of the entries list so we can delete while iterating
-        // over it.
-        NSArray *entries = [NSArray arrayWithArray:[folder.entries array]];
-        NSLog(@"ORPHAN: Clearing folder %@", folder.name);
-        for (Entry *subentry in entries) {
-            // Remove first so that parents.count can be checked while recursing.
-            [folder removeEntriesObject:subentry];
-            [self checkOrphans:subentry];
-        }
-        if (folder.parents.count == 0) {
-            NSLog(@"ORPHAN: Permanently removing folder %@", folder.name);
-            [self.managedObjectContext deleteObject:folder];
-        }
-    } else {
-        Song *song = (Song *)entry;
-        if (song.parents.count == 0) {
-            NSLog(@"ORPHAN: Putting song %@ into orphaned.", song.name);
-            // Put this song into the orphan folder.
-            NSFetchRequest *request = [self.managedObjectModel fetchRequestTemplateForName:@"OrphanFolder"];
-            NSError *error;
-            NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
-            Folder *orphanFolder;
-            if (results==nil) {
-                NSLog(@"Failed to fetch orphan folder: %@", error);
-                return;
-            } else if (results.count == 0) {
-                // Create the orphan folder.
-                orphanFolder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
-                                                                       inManagedObjectContext:self.managedObjectContext];
-                orphanFolder.name = kEPOrphanFolderName;
-                orphanFolder.sortOrder = @(EPSortOrderManual);
-                orphanFolder.addDate = [NSDate date];
-                orphanFolder.releaseDate = [NSDate distantPast];
-                orphanFolder.playDate = [NSDate distantPast];
-                // Load root folder and insert there.
-                NSFetchRequest *request = [self.managedObjectModel fetchRequestTemplateForName:@"RootFolder"];
-                NSError *error;
-                NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
-                if (results==nil || results.count==0) {
-                    NSLog(@"Failed to fetch root folder: %@", error);
-                    return;
-                }
-                Folder *rootFolder = results[0];
-                [rootFolder addEntriesObject:orphanFolder];
-            } else {
-                orphanFolder = results[0];
-            }
-            [orphanFolder addEntriesObject:song];
-        }
-    }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -439,7 +362,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     fromIndexPath = [NSIndexPath indexPathForRow:fromIndexPath.row inSection:fromIndexPath.section-1];
     toIndexPath = [NSIndexPath indexPathForRow:toIndexPath.row inSection:toIndexPath.section-1];
     // Figure out the entry being moved.
-    Entry *entry = self.sections[fromIndexPath.section][fromIndexPath.row];
+    EPEntry *entry = self.sections[fromIndexPath.section][fromIndexPath.row];
     [self.folder removeEntriesObject:entry];
     [self.folder insertObject:entry inEntriesAtIndex:toIndexPath.row];
     // Will be committed when editing is done.
@@ -488,14 +411,11 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 - (void)addFolderWithText:(NSString *)text
 {
     // New folder.
-    Folder *folder = (Folder *)[NSEntityDescription insertNewObjectForEntityForName:@"Folder"
-                                                             inManagedObjectContext:self.managedObjectContext];
-    folder.name = text;
-    folder.sortOrder = @(EPSortOrderManual);
-    folder.addDate = [NSDate date];
-    folder.releaseDate = [NSDate distantPast];
-    folder.playDate = [NSDate distantPast];
-    
+    EPFolder *folder = [EPFolder folderWithName:text
+                                      sortOrder:EPSortOrderManual
+                                    releaseDate:[NSDate distantPast]
+                                        addDate:[NSDate date]
+                                       playDate:[NSDate distantPast]];
     // Insert into the parent folder.
     [self.folder insertObject:folder inEntriesAtIndex:0];
     // Add to sections.  This will get resorted later.
@@ -566,7 +486,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 - (void)rename:(EPBrowserCell *)cell to:(NSString *)newText
 {
     NSIndexPath *path = [self.tableView indexPathForCell:cell];
-    Entry *entry = self.sections[path.section-1][path.row];
+    EPEntry *entry = self.sections[path.section-1][path.row];
     entry.name = newText;
     // Will save when editing done.
     if (self.focusAddFolder) {
@@ -583,10 +503,10 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 - (BOOL)preventOrphanSelection:(NSString *)action emptyDeleteOK:(BOOL)emptyDeleteOK
 {
     if (self.folder.parents.count == 0) {
-        Folder *orphanFolder = nil;
-        for (Entry *entry in self.folder.entries) {
+        EPFolder *orphanFolder = nil;
+        for (EPEntry *entry in self.folder.entries) {
             if ([entry.name compare:kEPOrphanFolderName] == NSOrderedSame) {
-                orphanFolder = (Folder *)entry;
+                orphanFolder = (EPFolder *)entry;
                 break;
             }
         }
@@ -595,7 +515,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
                 return NO;
             }
             for (NSIndexPath *path in [self.tableView indexPathsForSelectedRows]) {
-                Entry *entry = self.sections[path.section-1][path.row];
+                EPEntry *entry = self.sections[path.section-1][path.row];
                 if (entry == orphanFolder) {
                     NSString *message = [NSString stringWithFormat:@"Cannot %@ the orphaned songs folder.", action];
                     UIAlertView *alert = [[UIAlertView alloc]
@@ -655,29 +575,22 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     [self deleteRows:indexPaths checkOrphans:NO];
 }
 
-- (Folder *)cutFolder
+- (EPRoot *)root
 {
-    if (_cutFolder == nil) {
-        NSFetchRequest *request = [self.managedObjectModel fetchRequestTemplateForName:@"CutFolder"];
-        NSError *error;
-        NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
-        if (results==nil || results.count==0) {
-            NSLog(@"Failed to fetch cut folder: %@", error);
-            return nil;
-        }
-        _cutFolder = results[0];        
+    if (_root == nil) {
+        _root = [EPRoot sharedRoot];
     }
-    return _cutFolder;
+    return _root;
 }
 
 - (void)clearCutFolder
 {
     // Make a copy so we can iterate over them after removing them from the folder.
-    NSArray *entries = [NSArray arrayWithArray:[self.cutFolder.entries array]];
-    [self.cutFolder removeEntries:self.cutFolder.entries];
-    for (Entry *entry in entries) {
-        NSLog(@"Clearing Cut Folder: %@", entry.name);
-        [self checkOrphans:entry];
+    NSArray *entries = [NSArray arrayWithArray:self.root.cut.entries];
+    [self.root.cut removeEntries:self.root.cut.entries];
+    for (EPEntry *entry in entries) {
+        NSLog(@"Checking cut song: %@", entry.name);
+        [entry checkForOrphan];
     }
 }
 
@@ -695,14 +608,13 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     NSMutableArray *copyItems = [NSMutableArray arrayWithCapacity:self.tableView.indexPathsForSelectedRows.count];
     for (NSIndexPath *path in self.tableView.indexPathsForSelectedRows) {
         // Figure out the entry being copied.
-        Entry *entry = self.sections[path.section-1][path.row];
-        //NSDictionary *item = @{kEPEntryUTI: [[entry objectID] URIRepresentation]};
-        [copyItems addObject:[[entry objectID] URIRepresentation]];
+        EPEntry *entry = self.sections[path.section-1][path.row];
+        [copyItems addObject:entry.url];
         // Clear the current selection.
         [self.tableView deselectRowAtIndexPath:path animated:YES];
         if (doCut) {
             // Move entry to the cut folder.
-            [self.cutFolder addEntriesObject:entry];
+            [self.root.cut addEntriesObject:entry];
         }
     }
     playlistPasteboard.URLs = copyItems;
@@ -713,24 +625,34 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 {
     NSUInteger count = 0;
     for (NSURL *objURI in playlistPasteboard.URLs) {
-        if (objURI) {
-            NSManagedObjectID *objID = [self.persistentStoreCoordinator managedObjectIDForURIRepresentation:objURI];
-            if (objID) {
-                Entry *entry = (Entry *)[self.managedObjectContext objectWithID:objID];
+        if (objURI && [objURI.scheme isEqualToString:@"ePlayer"]) {
+            NSLog(@"Paste URL %@", objURI);
+            NSArray *components = objURI.pathComponents;
+            if (components.count == 3) {
+                EPEntry *entry = nil;
+                NSString *type = components[1];
+                if ([type isEqualToString:@"Folder"]) {
+                    NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:components[2]];
+                    entry = [self.root folderWithUUID:uuid];
+                } else if ([type isEqualToString:@"Song"]) {
+                    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+                    formatter.numberStyle = NSNumberFormatterDecimalStyle;
+                    NSNumber *pid = [formatter numberFromString:components[2]];
+                    entry = [self.root songWithPersistentID:pid];
+                }
                 if (entry) {
                     entry = [self checkPasteCycle:entry];
-                    if (![self.folder.entries containsObject:entry]) {
-                        [self.folder addEntriesObject:entry];
-                        // Remove it (this is ignored if it is not there).
-                        [self.cutFolder removeEntriesObject:entry];
-                        count += 1;
-                    }
+                    [self.folder addEntriesObject:entry];
+                    [self.root.cut removeEntriesObject:entry];
+                    count += 1;
                 } else {
-                    NSLog(@"Paste: Failed to load Entry with object ID %@", objID);
+                    NSLog(@"Could not find %@", objURI);
                 }
             } else {
-                NSLog(@"Paste: Failed to determine object ID from URI: %@", objURI);
+                NSLog(@"Invalid paste URL: %@", objURI);
             }
+        } else {
+            NSLog(@"Not a valid paste URL: %@", objURI);
         }
     }
     // Clear out the cut folder in case we aren't pasting from there.
@@ -753,11 +675,11 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     }];
 }
 
-- (Entry *)checkPasteCycle:(Entry *)entry
+- (EPEntry *)checkPasteCycle:(EPEntry *)entry
 {
     // This may not be perfect, but seems to work well enough.
-    if ([entry.class isSubclassOfClass:[Folder class]]) {
-        Folder *folder = (Folder *)entry;
+    if ([entry.class isSubclassOfClass:[EPFolder class]]) {
+        EPFolder *folder = (EPFolder *)entry;
         // Verify that this is not self or any parents of self.
         folder = [self fixCycles:folder];
         return folder;
@@ -767,17 +689,17 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     }
 }
 
-- (Folder *)fixCycles:(Folder *)folder
+- (EPFolder *)fixCycles:(EPFolder *)folder
 {
     if ([self folder:folder inParents:self.folder]) {
         NSLog(@"Cycle: Clone %@", folder.name);
-        folder = [folder clone];
+        folder = [folder copy];
     }
     // Verify no sub-folders in folder are a parent.
     NSUInteger index = 0;
-    for (Entry *entry in folder.entries) {
-        if ([entry.class isSubclassOfClass:[Folder class]]) {
-            Folder *newEntry = [self fixCycles:(Folder *)entry];
+    for (EPEntry *entry in folder.entries) {
+        if ([entry.class isSubclassOfClass:[EPFolder class]]) {
+            EPFolder *newEntry = [self fixCycles:(EPFolder *)entry];
             if (newEntry != entry) {
                 [folder replaceObjectInEntriesAtIndex:index withObject:newEntry];
             }
@@ -787,7 +709,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     return folder;
 }
 
-- (BOOL)folder:(Folder *)folder inParents:(Folder *)inFolder
+- (BOOL)folder:(EPFolder *)folder inParents:(EPFolder *)inFolder
 {
     if (folder == inFolder) {
         return YES;
@@ -795,7 +717,7 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     if ([inFolder.parents containsObject:folder]) {
         return YES;
     }
-    for (Folder *parent in inFolder.parents) {
+    for (EPFolder *parent in inFolder.parents) {
         if ([self folder:folder inParents:parent]) {
             return YES;
         }
@@ -814,8 +736,8 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
     }
     // Verify that all selections are folders.
     for (NSIndexPath *path in self.tableView.indexPathsForSelectedRows) {
-        Entry *entry = self.sections[path.section-1][path.row];
-        if (![entry.class isSubclassOfClass:[Folder class]]) {
+        EPEntry *entry = self.sections[path.section-1][path.row];
+        if (![entry.class isSubclassOfClass:[EPFolder class]]) {
             UIAlertView *alert = [[UIAlertView alloc]
                                   initWithTitle:@"Operation Not Permitted"
                                   message:@"You may only collapse folders."
@@ -841,12 +763,11 @@ static NSString *kEPOrphanFolderName = @"Orphaned Songs";
 - (void)collapseRows:(NSArray *)indexPaths
 {
     for (NSIndexPath *path in indexPaths) {
-        Folder *folder = self.sections[path.section-1][path.row];
+        EPFolder *folder = self.sections[path.section-1][path.row];
         [self.folder addEntries:folder.entries];
         [self.folder removeEntriesObject:folder];
         if (folder.parents.count == 0) {
             NSLog(@"Collapse: Permanently removing folder %@", folder.name);
-            [self.managedObjectContext deleteObject:folder];
         }
     }
     // Could call insertRowsAtIndexPaths for better animation.

@@ -9,21 +9,17 @@
 #import <UIKit/UIKit.h>
 #import "EPMainTabController.h"
 #import "EPPlayerController.h"
+#import "EPRoot.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate>
 
 - (BOOL)loadData;
-- (NSURL *)dbURL;
 - (void)initDB;
 
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) EPMainTabController *mainTabController;
-
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-@property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
-@property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-
 @property (strong, nonatomic) UIAlertView *importAlertView;
 @property (strong, nonatomic) UIProgressView *importProgressView;
+@property (assign, nonatomic) BOOL initializing;
 
 @end
