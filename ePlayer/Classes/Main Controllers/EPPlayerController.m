@@ -268,22 +268,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)tappedPrev:(id)sender
 {
-    if (self.root.queue.entries.count) {
-        if (self.root.currentQueueIndex == 0) {
-            // Set playback position to 0.
-            if (self.currentPlayer) {
-                self.currentPlayer.currentTime = 0;
-                [self nextPlayerPrepare];
-            }
-        } else {
-            // Switch to previous song.
-            BOOL wasPlaying = self.isPlaying;
-            [self switchToQueueIndex:self.root.currentQueueIndex-1];
-            if (wasPlaying) {
-                [self play];
-            }
-        }
-    }
+    [self prevTrack];
 }
 
 - (IBAction)tappedPlay:(id)sender
@@ -297,20 +282,43 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (IBAction)tappedNext:(id)sender
 {
-    if (self.root.queue.entries.count) {
-        if (self.root.currentQueueIndex == self.root.queue.entries.count-1) {
-            [self stop];
-            [self switchToQueueIndex:0];
-        } else {
-            // Switch to next song.
-            BOOL wasPlaying = self.isPlaying;
-            [self switchToQueueIndex:self.root.currentQueueIndex+1];
-            if (wasPlaying) {
-                [self play];
-            }
-        }
+    [self nextTrack];
+}
+
+- (IBAction)heldPrev:(UILongPressGestureRecognizer *)sender
+{
+    switch (sender.state) {
+        case UIGestureRecognizerStateBegan:
+            [self beginSeekingBackward];
+            break;
+            
+        case UIGestureRecognizerStateEnded:
+        case UIGestureRecognizerStateCancelled:
+            [self endSeekingBackward];
+            break;
+            
+        default:
+            break;
     }
 }
+
+- (IBAction)heldNext:(UILongPressGestureRecognizer *)sender
+{
+    switch (sender.state) {
+        case UIGestureRecognizerStateBegan:
+            [self beginSeekingForward];
+            break;
+            
+        case UIGestureRecognizerStateEnded:
+        case UIGestureRecognizerStateCancelled:
+            [self endSeekingForward];
+            break;
+
+        default:
+            break;
+    }
+}
+
 
 - (IBAction)scrubberDidUpdate:(id)sender
 {
@@ -363,8 +371,10 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         [self nextPlayerPrepare];
         self.isPlaying = YES;
         [self updateDisplay];
+        [self updateNowPlayingInfoCenter];
     }
 }
+
 - (void)nextPlayerPrepare
 {
     if (self.nextPlayer) {
@@ -422,6 +432,103 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             [self.nextPlayer stop];
         }
         self.isPlaying = NO;
+    }
+}
+
+- (void)nextTrack
+{
+    if (self.root.queue.entries.count) {
+        if (self.root.currentQueueIndex == self.root.queue.entries.count-1) {
+            [self stop];
+            [self switchToQueueIndex:0];
+        } else {
+            // Switch to next song.
+            BOOL wasPlaying = self.isPlaying;
+            [self switchToQueueIndex:self.root.currentQueueIndex+1];
+            if (wasPlaying) {
+                [self play];
+            }
+        }
+    }    
+}
+
+- (void)prevTrack
+{
+    if (self.root.queue.entries.count) {
+        if (self.root.currentQueueIndex == 0) {
+            // Set playback position to 0.
+            if (self.currentPlayer) {
+                self.currentPlayer.currentTime = 0;
+                [self nextPlayerPrepare];
+            }
+        } else {
+            // Switch to previous song.
+            BOOL wasPlaying = self.isPlaying;
+            [self switchToQueueIndex:self.root.currentQueueIndex-1];
+            if (wasPlaying) {
+                [self play];
+            }
+        }
+    }    
+}
+
+- (void)beginSeekingForward
+{
+    if (self.isPlaying) {
+        self.seekTimer = [NSTimer scheduledTimerWithTimeInterval:0.3
+                                                          target:self
+                                                        selector:@selector(seekForwardTimerFired:)
+                                                        userInfo:nil
+                                                         repeats:YES];
+        if (self.nextPlayer) {
+            [self.nextPlayer stop];
+            self.nextPlayer = nil;
+        }
+    }
+}
+
+- (void)beginSeekingBackward
+{
+    if (self.isPlaying) {
+        self.seekTimer = [NSTimer scheduledTimerWithTimeInterval:0.3
+                                                          target:self
+                                                        selector:@selector(seekBackwardsTimerFired:)
+                                                        userInfo:nil
+                                                         repeats:YES];
+        if (self.nextPlayer) {
+            [self.nextPlayer stop];
+            self.nextPlayer = nil;
+        }
+    }
+}
+
+- (void)endSeekingForward
+{
+    [self nextPlayerPrepare];
+    [self.seekTimer invalidate];
+    self.seekTimer = nil;
+}
+
+- (void)endSeekingBackward
+{
+    [self nextPlayerPrepare];
+    [self.seekTimer invalidate];
+    self.seekTimer = nil;
+}
+
+static NSTimeInterval seekAmount = 2.0;
+
+- (void)seekForwardTimerFired:(NSTimer *)timer
+{
+    if (self.currentPlayer) {
+        self.currentPlayer.currentTime += seekAmount;
+    }
+}
+
+- (void)seekBackwardsTimerFired:(NSTimer *)timer
+{
+    if (self.currentPlayer) {
+        self.currentPlayer.currentTime -= seekAmount;
     }
 }
 
@@ -558,6 +665,31 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     if (self.isPlaying) {
         [self startTimer];
     }
+}
+
+/****************************************************************************/
+#pragma mark - Display Update
+/****************************************************************************/
+
+- (void)updateNowPlayingInfoCenter
+{
+    if (self.isPlaying) {
+        EPSong *song = self.root.queue.entries[self.root.currentQueueIndex];
+        NSDictionary *info = @{MPMediaItemPropertyAlbumTitle: song.mediaWrapper.albumTitle,
+                               MPMediaItemPropertyArtist: song.mediaWrapper.artist,
+                               MPMediaItemPropertyArtwork: song.mediaWrapper.artwork,
+                               MPMediaItemPropertyPersistentID: song.persistentID,
+                               MPMediaItemPropertyPlaybackDuration: [song.mediaItem valueForProperty:MPMediaItemPropertyPlaybackDuration],
+                               MPMediaItemPropertyTitle: song.name,
+                               MPNowPlayingInfoPropertyElapsedPlaybackTime: @(self.currentPlayer.currentTime),
+                               MPNowPlayingInfoPropertyPlaybackQueueIndex: @(self.root.currentQueueIndex),
+                               MPNowPlayingInfoPropertyPlaybackQueueCount: @(self.root.queue.entries.count),
+                               };
+        [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo = info;
+    } else {
+        [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo = nil;
+    }
+
 }
 
 - (void)updateDisplay
@@ -746,6 +878,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         }
     }
     [self updateDisplay];
+    [self updateNowPlayingInfoCenter];
 }
 
 - (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error
@@ -813,6 +946,64 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     UIGraphicsEndImageContext();
     [self.tabBarItem setFinishedSelectedImage:result
                   withFinishedUnselectedImage:result];
+}
+
+/****************************************************************************/
+#pragma mark - Remote Control
+/****************************************************************************/
+- (void)handleRemoteControlEvent:(UIEvent *)event
+{
+    if (event.type == UIEventTypeRemoteControl) {
+        switch (event.subtype) {
+            case UIEventSubtypeRemoteControlNextTrack:
+                [self nextTrack];
+                break;
+                
+            case UIEventSubtypeRemoteControlPause:
+                [self pause];
+                break;
+                
+            case UIEventSubtypeRemoteControlPlay:
+                [self play];
+                break;
+                
+            case UIEventSubtypeRemoteControlPreviousTrack:
+                [self prevTrack];
+                break;
+                
+            case UIEventSubtypeRemoteControlStop:
+                [self stop];
+                break;
+                
+            case UIEventSubtypeRemoteControlTogglePlayPause:
+                if (self.isPlaying) {
+                    [self pause];
+                } else {
+                    [self play];
+                }
+                break;
+                
+            case UIEventSubtypeRemoteControlBeginSeekingBackward:
+                [self beginSeekingBackward];
+                break;
+                
+            case UIEventSubtypeRemoteControlBeginSeekingForward:
+                [self beginSeekingForward];
+                break;
+
+            case UIEventSubtypeRemoteControlEndSeekingBackward:
+                [self endSeekingBackward];
+                break;
+
+            case UIEventSubtypeRemoteControlEndSeekingForward:
+                [self endSeekingForward];
+                break;
+
+            default:
+                break;
+        }
+    }
+    
 }
 
 @end

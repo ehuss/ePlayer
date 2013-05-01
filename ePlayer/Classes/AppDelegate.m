@@ -18,6 +18,9 @@
 {
     self.initializing = YES;
 //    [[NSFileManager defaultManager] removeItemAtPath:[EPRoot dbPath] error:nil];
+    
+    [application beginReceivingRemoteControlEvents];
+
 
     // Set up audio.
     AVAudioSession *session = [AVAudioSession sharedInstance];
@@ -97,9 +100,18 @@
 }
 
 /*****************************************************************************/
-/* Misc                                                                      */
+#pragma mark - Remote Control
 /*****************************************************************************/
 
+- (void)remoteControlReceivedWithEvent:(UIEvent *)event
+{
+    [self.mainTabController.playerController handleRemoteControlEvent:event];
+}
+
+- (BOOL)canBecomeFirstResponder
+{
+    return YES;
+}
 
 /*****************************************************************************/
 #pragma mark - Database

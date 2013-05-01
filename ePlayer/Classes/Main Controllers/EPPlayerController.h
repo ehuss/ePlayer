@@ -24,6 +24,7 @@
 
 // Called after object context is set.
 - (void)mainInit;
+- (void)handleRemoteControlEvent:(UIEvent *)event;
 
 // Player commands.
 - (void)play;
@@ -39,6 +40,8 @@
 - (IBAction)tappedPrev:(id)sender;
 - (IBAction)tappedPlay:(id)sender;
 - (IBAction)tappedNext:(id)sender;
+- (IBAction)heldPrev:(id)sender;
+- (IBAction)heldNext:(id)sender;
 
 - (IBAction)scrubberDidUpdate:(id)sender;
 - (IBAction)scrubberTouchDown:(id)sender;
@@ -68,6 +71,8 @@
 @property (readonly, nonatomic) float volume;
 // This is used for volume/libray stuff.
 @property (strong, nonatomic) MPMusicPlayerController *mpPlayer;
+@property (assign, nonatomic) NSTimeInterval lastFastSeekTime;
+@property (strong, nonatomic) NSTimer *seekTimer;
 
 // Scrubber/Display update support.
 @property (strong, nonatomic) NSTimer *timer;

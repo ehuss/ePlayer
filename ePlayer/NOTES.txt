@@ -10,7 +10,6 @@ TODO
 
 High
 ====
-- MPNowPlayingInfoCenter
 - Change append popup to be above/below.
 - songs should display length in EntryCell (and folders show sum (or count)?)
 - show album art next to entry of a playlist that is all from one album?
