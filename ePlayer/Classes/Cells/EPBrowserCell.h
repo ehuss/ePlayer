@@ -16,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *textView;
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
+@property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property (weak, nonatomic) EPBrowseTableController *parentController;
 @property (strong, nonatomic) EPEntry *entry;
 

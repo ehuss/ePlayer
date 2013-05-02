@@ -16,13 +16,13 @@
 {
     MPMediaItem *_mediaItem;
     EPMediaItemWrapper *_mediaWrapper;
+    NSTimeInterval _duration;
 }
 
 // Unsigned 64-bit.
 @property (retain, nonatomic) NSNumber * persistentID;
 @property (readonly, nonatomic) MPMediaItem *mediaItem;
 @property (readonly, nonatomic) EPMediaItemWrapper *mediaWrapper;
-@property (readonly, nonatomic) NSTimeInterval duration;
 
 + (EPSong *)songWithName:(NSString *)name persistentID:(NSNumber *)PID;
 

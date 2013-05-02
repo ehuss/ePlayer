@@ -40,9 +40,10 @@
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        self.sortOrder = [aDecoder decodeIntForKey:@"sortOrder"];
-        self.entries = [aDecoder decodeObjectForKey:@"entries"];
-        self.uuid = [aDecoder decodeObjectForKey:@"uuid"];
+        _sortOrder = [aDecoder decodeIntForKey:@"sortOrder"];
+        _entries = [aDecoder decodeObjectForKey:@"entries"];
+        _uuid = [aDecoder decodeObjectForKey:@"uuid"];
+        _duration = [aDecoder decodeDoubleForKey:@"duration"];
     }
     return self;
 }
@@ -50,9 +51,10 @@
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
     [super encodeWithCoder:aCoder];
-    [aCoder encodeInt:self.sortOrder forKey:@"sortOrder"];
-    [aCoder encodeObject:self.entries forKey:@"entries"];
-    [aCoder encodeObject:self.uuid forKey:@"uuid"];
+    [aCoder encodeInt:_sortOrder forKey:@"sortOrder"];
+    [aCoder encodeObject:_entries forKey:@"entries"];
+    [aCoder encodeObject:_uuid forKey:@"uuid"];
+    [aCoder encodeDouble:_duration forKey:@"duration"];
 }
 
 /*****************************************************************************/
@@ -76,6 +78,19 @@
 /*****************************************************************************/
 #pragma mark - Misc
 /*****************************************************************************/
+
+- (NSTimeInterval)duration
+{
+    return _duration;
+}
+
+- (void)incrementDuration:(NSTimeInterval)duration
+{
+    _duration += duration;
+    for (EPFolder *parent in self.parents) {
+        [parent incrementDuration:duration];
+    }
+}
 
 - (NSURL *)url
 {
@@ -210,6 +225,14 @@
 {
     [self.entries insertObject:value atIndex:idx];
     [value.parents addObject:self];
+    [self incrementDuration:value.duration];
+}
+
+- (void)removeObjectFromEntriesAtIndex:(NSUInteger)idx
+{
+    EPEntry *oldEntry = self.entries[idx];
+    [self.entries removeObjectAtIndex:idx];
+    [self incrementDuration:-oldEntry.duration];
 }
 
 - (void)replaceObjectInEntriesAtIndex:(NSUInteger)idx withObject:(EPEntry *)value
@@ -221,17 +244,26 @@
         // Last occurance of this object.        
         [oldObject.parents removeObject:self];
     }
+    [self incrementDuration:value.duration-oldObject.duration];
 }
 
 - (void)addEntriesObject:(EPEntry *)value
 {
     [self.entries addObject:value];
     [value.parents addObject:self];
+    [self incrementDuration:value.duration];
 }
 
 - (void)removeEntriesObject:(EPEntry *)value
 {
-    [self.entries removeObject:value];
+    while (1) {
+        NSUInteger index = [self.entries indexOfObject:value];
+        if (index == NSNotFound) {
+            break;
+        }
+        [self.entries removeObjectAtIndex:index];
+        [self incrementDuration:-value.duration];
+    }
     [value.parents removeObject:self];
 }
 
@@ -240,13 +272,14 @@
     [self.entries addObjectsFromArray:values];
     for (EPEntry *entry in values) {
         [entry.parents addObject:self];
+        [self incrementDuration:entry.duration];
     }
 }
 
 - (void)removeEntries:(NSArray *)values
 {
     for (EPEntry *entry in values) {
-        [self.entries removeObject:entry];
+        [self removeEntriesObject:entry];
         [entry.parents removeObject:self];
     }
 }
@@ -257,6 +290,7 @@
         [entry.parents removeObject:self];
     }
     [self.entries removeAllObjects];
+    [self incrementDuration:-self.duration];
 }
 
 

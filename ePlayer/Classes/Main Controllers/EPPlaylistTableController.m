@@ -91,12 +91,16 @@
     [super viewDidLoad];
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
 
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    if (self.editing) {
+        // Hit the back button while editing.  It won't turn editing off, so
+        // do anything that needs to be done.
+        [self reloadParents];
+    }
 }
 
 - (NSString *)filterPropertyName
@@ -123,6 +127,18 @@
     EPEntry *entry = sections[indexPath.section][indexPath.row];
     cell.entry = entry;
     cell.textView.text = entry.name;
+    if (entry.duration > 120*60) {
+        cell.timeLabel.text = [NSString stringWithFormat:@"%ih", (int)entry.duration/(60*60)];
+    } else {
+        cell.timeLabel.text = [NSString stringWithFormat:@"%i:%02i",
+                               (int)entry.duration/60, (int)entry.duration%60
+                               ];
+    }
+    if (self.indexesEnabled) {
+        cell.timeLabel.center = CGPointMake(258, cell.timeLabel.center.y);
+    } else {
+        cell.timeLabel.center = CGPointMake(279, cell.timeLabel.center.y);
+    }
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     if (useDateLabel) {
         cell.dateLabel.text = [self.folder sectionTitleForEntry:entry];
@@ -254,6 +270,8 @@
             // Re-sort in case anything was added.
             [self updateSections];
             [self.tableView reloadData];
+            // Update previous tables.
+            [self reloadParents];
         }
     }
 }
@@ -273,10 +291,11 @@
 {
     // Tell any table controllers higher in the chain to reload, just in case
     // anything changed (dates, etc.).
-    for (int i=0; i<self.navigationController.viewControllers.count-1; i++) {
-        EPPlaylistTableController *controller = self.navigationController.viewControllers[0];
-        [controller updateSections];
-        [controller.tableView reloadData];
+    for (EPPlaylistTableController *controller in self.navigationController.viewControllers) {
+        if (controller != self) {
+            [controller updateSections];
+            [controller.tableView reloadData];
+        }
     }
 }
 
@@ -358,7 +377,7 @@
     toIndexPath = [NSIndexPath indexPathForRow:toIndexPath.row inSection:toIndexPath.section-1];
     // Figure out the entry being moved.
     EPEntry *entry = self.sections[fromIndexPath.section][fromIndexPath.row];
-    [self.folder removeEntriesObject:entry];
+    [self.folder removeObjectFromEntriesAtIndex:fromIndexPath.row];
     [self.folder insertObject:entry inEntriesAtIndex:toIndexPath.row];
     // Will be committed when editing is done.
     // Remove from sections.
@@ -582,7 +601,7 @@
 {
     // Make a copy so we can iterate over them after removing them from the folder.
     NSArray *entries = [NSArray arrayWithArray:self.root.cut.entries];
-    [self.root.cut removeEntries:self.root.cut.entries];
+    [self.root.cut removeAllEntries];
     for (EPEntry *entry in entries) {
         NSLog(@"Checking cut song: %@", entry.name);
         [entry checkForOrphan];

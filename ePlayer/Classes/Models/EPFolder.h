@@ -13,6 +13,9 @@
 @class EPEntry;
 
 @interface EPFolder : EPEntry <NSCoding, NSCopying>
+{
+    NSTimeInterval _duration;
+}
 
 @property (assign, nonatomic) EPSortOrder sortOrder;
 @property (strong, nonatomic) NSMutableArray *entries;
@@ -30,7 +33,7 @@
 - (EPSong *)songWithPersistentID:(NSNumber *)persistentID;
 
 - (void)insertObject:(EPEntry *)value inEntriesAtIndex:(NSUInteger)idx;
-//- (void)removeObjectFromEntriesAtIndex:(NSUInteger)idx;
+- (void)removeObjectFromEntriesAtIndex:(NSUInteger)idx;
 // - (void)insertEntries:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
 // - (void)removeEntriesAtIndexes:(NSIndexSet *)indexes;
 - (void)replaceObjectInEntriesAtIndex:(NSUInteger)idx withObject:(EPEntry *)value;

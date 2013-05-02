@@ -32,12 +32,12 @@
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-    [aCoder encodeObject:self.name forKey:@"name"];
-    [aCoder encodeObject:self.addDate forKey:@"addDate"];
-    [aCoder encodeObject:self.playDate forKey:@"playDate"];
-    [aCoder encodeObject:self.releaseDate forKey:@"releaseDate"];
-    [aCoder encodeInt:self.playCount forKey:@"playCount"];
-    [aCoder encodeObject:self.parents forKey:@"parents"];
+    [aCoder encodeObject:_name forKey:@"name"];
+    [aCoder encodeObject:_addDate forKey:@"addDate"];
+    [aCoder encodeObject:_playDate forKey:@"playDate"];
+    [aCoder encodeObject:_releaseDate forKey:@"releaseDate"];
+    [aCoder encodeInt:_playCount forKey:@"playCount"];
+    [aCoder encodeObject:_parents forKey:@"parents"];
 }
 
 /*****************************************************************************/
@@ -61,6 +61,12 @@
 /*****************************************************************************/
 #pragma mark - Accessors
 /*****************************************************************************/
+
+- (NSTimeInterval)duration
+{
+    // Subclasses implement.
+    return 0;
+}
 
 - (NSURL *)url
 {

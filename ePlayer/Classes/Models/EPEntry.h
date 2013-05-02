@@ -19,6 +19,7 @@
 @property (strong, nonatomic) NSMutableSet *parents;
 
 - (NSURL *)url;
+- (NSTimeInterval)duration;
 
 - (void)propagatePlayCount:(int)count;
 - (void)propagatePlayDate:(NSDate *)date;

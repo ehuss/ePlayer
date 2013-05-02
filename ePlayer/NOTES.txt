@@ -11,7 +11,6 @@ TODO
 High
 ====
 - Change append popup to be above/below.
-- songs should display length in EntryCell (and folders show sum (or count)?)
 - show album art next to entry of a playlist that is all from one album?
     - Individual songs should always show art if available.
     - album view - show like ipod app (album art, summary at top, etc.)
@@ -22,7 +21,6 @@ Medium
 ======
 - Is the scrubber disabled with an empty queue (or nil currentPlayer).
     - disable scrubber
-- playlist controller: click on song should play it or something (like track controller).
 - Paste button should have a # indicating the number of items.
 - Delete should show how many items (recursively).
 - restore state of selected tab/etc
@@ -33,10 +31,15 @@ Medium
 - re-instate max 1-sec scrubber update rate.
 - Creating orphan folder from player does not update playlists table view.
     Would be best to have a dirty flag on a folder, and have viewwillappear check it.
+- del/cut/copy/paste do not update playCount/playDate/addDate/releaseDate
 
 Low
 ===
-- del/cut/copy/paste do not update playCount/playDate/addDate/releaseDate
+- Supporting duplicates in a folder is prone to bugs:
+  - Bug in copy/paste.  If a song appears in a folder multiple times, it will only
+  be pasted once because it is using the song persistentID.
+  - Same with collapse.
+  - Probably others.
 - Fix alpha sorting so that !Uno! sorts correctly
 - Editing buttons should have some images.  "rename" needs "selected" image.
 - scrubber is a little sloppy.
