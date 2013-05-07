@@ -26,7 +26,7 @@
     }
     // Last Play Date
     NSString *playDate;
-    if (song.playDate == nil) {
+    if (song.playDate == nil || [song.playDate compare:[NSDate distantPast]]==NSOrderedSame) {
         playDate = @"Never";
     } else {
         playDate = [NSDateFormatter localizedStringFromDate:song.playDate

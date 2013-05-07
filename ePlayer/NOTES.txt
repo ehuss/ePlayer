@@ -10,12 +10,16 @@ TODO
 
 High
 ====
+- Fewer than 10 section title indexes, don't show indexes.
 - Change append popup to be above/below.
 - show album art next to entry of a playlist that is all from one album?
     - Individual songs should always show art if available.
     - album view - show like ipod app (album art, summary at top, etc.)
         - playlist should try to detect this and do the same.
 - Icon
+- cut/copy/paste does not propagate play/add/release dates.  Consider adding that
+  logic to the entries methods in EPFolder (may have performance issues during import, maybe a global disable).
+- What happens when tableview is open when it is removed (via db update).
 
 Medium
 ======
@@ -32,6 +36,8 @@ Medium
 - Creating orphan folder from player does not update playlists table view.
     Would be best to have a dirty flag on a folder, and have viewwillappear check it.
 - del/cut/copy/paste do not update playCount/playDate/addDate/releaseDate
+- libraryChanged notification doesn't seem to show up.  Would be nice to pop
+  up an alert or something.
 
 Low
 ===
@@ -51,6 +57,8 @@ Low
 - Not entirely comfortable with saving on entering background.  Ideas:
     - Save in background thread.  Would require synchronization work.
     - Save while idle?
+- Hitting paste while a cell is selected deselects the cell, but doesn't disable
+  the delete/cut/copy buttons.
 
 Ideas
 =====

@@ -16,10 +16,13 @@
 - (BOOL)loadData;
 - (void)initDB;
 
+- (void)beginDBUpdate:(NSObject *)sender;
+
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) EPMainTabController *mainTabController;
 @property (strong, nonatomic) UIAlertView *importAlertView;
 @property (strong, nonatomic) UIProgressView *importProgressView;
 @property (assign, nonatomic) BOOL initializing;
+@property (weak, nonatomic) NSObject *dbSender;
 
 @end

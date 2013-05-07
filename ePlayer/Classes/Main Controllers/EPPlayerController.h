@@ -57,10 +57,6 @@
 @property (weak, nonatomic) IBOutlet EPLyricView *lyricView;
 @property (weak, nonatomic) IBOutlet UIView *centralView;
 
-// Core Data
-@property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-@property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, nonatomic) EPRoot *root;
 
 // Player

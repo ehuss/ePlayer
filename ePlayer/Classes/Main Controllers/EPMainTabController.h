@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EPPlaylistTableController.h"
 #import "EPPlayerController.h"
 
 @interface EPMainTabController : UITabBarController
@@ -16,6 +15,6 @@
 
 - (void)mainInit;
 - (void)loadInitialFolders;
-- (void)resortPlayDates;
+- (void)reloadBrowsers;
 
 @end

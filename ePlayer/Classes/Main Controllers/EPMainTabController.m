@@ -7,6 +7,7 @@
 //
 
 #import "EPMainTabController.h"
+#import "EPBrowseTableController.h"
 #import "EPRoot.h"
 
 @implementation EPMainTabController
@@ -41,30 +42,32 @@
 
 - (void)loadInitialFolders
 {
-    EPPlaylistTableController *cont;
+    EPBrowseTableController *cont;
     EPRoot *root = [EPRoot sharedRoot];
-    cont = (EPPlaylistTableController *)((UINavigationController *)self.viewControllers[0]).topViewController;
+    cont = (EPBrowseTableController *)((UINavigationController *)self.viewControllers[0]).topViewController;
     cont.folder = root.playlists;
     [cont.tableView reloadData];
 
-    cont = (EPPlaylistTableController *)((UINavigationController *)self.viewControllers[1]).topViewController;
+    cont = (EPBrowseTableController *)((UINavigationController *)self.viewControllers[1]).topViewController;
     cont.folder = root.artists;
     [cont.tableView reloadData];
 
-    cont = (EPPlaylistTableController *)((UINavigationController *)self.viewControllers[2]).topViewController;
+    cont = (EPBrowseTableController *)((UINavigationController *)self.viewControllers[2]).topViewController;
     cont.folder = root.albums;
     [cont.tableView reloadData];
 }
 
-- (void)resortPlayDates
+- (void)reloadBrowsers
 {
     for (UIViewController *controller in self.viewControllers) {
         if ([controller.class isSubclassOfClass:[UINavigationController class]]) {
             UINavigationController *navCont = (UINavigationController *)controller;
-            for (EPPlaylistTableController *playlistCont in navCont.viewControllers) {
-                if (playlistCont.sortOrder == EPSortOrderPlayDate) {
-                    [playlistCont updateSections];
-                    [playlistCont.tableView reloadData];
+            for (EPBrowseTableController *browseCont in navCont.viewControllers) {
+                if ([browseCont.class isSubclassOfClass:[EPBrowseTableController class]]) {
+                    if (browseCont.sortOrder == EPSortOrderPlayDate) {
+                        [browseCont updateSections];
+                        [browseCont.tableView reloadData];
+                    }
                 }
             }
         }

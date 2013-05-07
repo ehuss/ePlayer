@@ -31,5 +31,6 @@ extern NSString *kEPOrphanFolderName;
 - (EPFolder *)getOrMakeOraphans;
 - (EPFolder *)folderWithUUID:(NSUUID *)uuid;
 - (EPSong *)songWithPersistentID:(NSNumber *)persistentID;
+- (NSArray *)topFolders;
 
 @end

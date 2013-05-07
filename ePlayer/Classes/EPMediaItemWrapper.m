@@ -116,6 +116,11 @@
     return [self.item valueForProperty:MPMediaItemPropertyArtwork];
 }
 
+- (NSString *)genre
+{
+    return [self.item valueForProperty:MPMediaItemPropertyGenre];
+}
+
 NSDate *dateFromYear(int year)
 {
     NSDateComponents *comps = [[NSDateComponents alloc] init];

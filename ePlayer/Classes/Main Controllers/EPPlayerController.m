@@ -583,7 +583,7 @@ static NSTimeInterval seekAmount = 2.0;
 {
     [self dbAppendEntry:entry];
     [self saveQueue];
-    [self.mainTabController resortPlayDates];
+    [self.mainTabController reloadBrowsers];
 }
 
 
@@ -913,6 +913,7 @@ static NSTimeInterval seekAmount = 2.0;
 
 - (void)libraryChanged:(id)notification
 {
+    // This never seems to be called.
     NSLog(@"Library changed.");
 }
 

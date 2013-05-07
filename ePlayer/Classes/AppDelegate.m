@@ -144,9 +144,16 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     }
     // Create the database.
     // Populate with defaults from the user's library.
+    [self showProgressAlert:@"Importing..." message:@"Performing first time import."];
+    [self performSelectorInBackground:@selector(initDB) withObject:nil];
+    return NO;
+}
+
+- (void)showProgressAlert:(NSString *)title message:(NSString *)message
+{
     // Display a progress indicator.
-    self.importAlertView = [[UIAlertView alloc] initWithTitle:@"Importing..."
-                                                      message:@"Performing first time import."
+    self.importAlertView = [[UIAlertView alloc] initWithTitle:title
+                                                      message:message
                                                      delegate:self
                                             cancelButtonTitle:nil
                                             otherButtonTitles:nil];
@@ -156,14 +163,12 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     // for all the shadowing).  It's unfortunate that UIAlertView does not
     // have a formal way to add accessory views.
     // The Right Thing to do would be to make a custom view.
-    CGRect avf = self.importAlertView.frame;
     CGRect pvf = self.importProgressView.frame;
-    self.importProgressView.frame = CGRectMake(20, avf.size.height-pvf.size.height-50,
-                                    avf.size.width-70, pvf.size.height);
+    self.importProgressView.frame = CGRectMake(20, 96,
+                                               242, pvf.size.height);
     
     [self.importAlertView addSubview:self.importProgressView];
-    [self performSelectorInBackground:@selector(initDB) withObject:nil];
-    return NO;
+    
 }
 
 - (void)initDB
@@ -201,6 +206,8 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     MPMediaQuery *albums = [MPMediaQuery albumsQuery];
     // Keep a unique set of artists.
     NSMutableDictionary *artists = [[NSMutableDictionary alloc] init];
+    // Playlists gets separate folders.
+    NSMutableDictionary *playlistArtists = [[NSMutableDictionary alloc] init];
     for (MPMediaItemCollection *albumItem in albums.collections) {
         MPMediaItem *representativeItem = albumItem.representativeItem;
         // XXX: What if genre is nil?
@@ -221,11 +228,16 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
                                       addDate:[NSDate distantPast]
                                      playDate:[NSDate distantPast]];
             [artists setObject:artist forKey:artistName];
-            [genre addEntriesObject:artist];
             [root.artists addEntriesObject:artist];
             NSLog(@"Create artist %@", artist.name);
         }
-        
+        EPFolder *playlistArtist = [playlistArtists objectForKey:artistName];
+        if (playlistArtist == nil) {
+            playlistArtist = [artist copy];
+            playlistArtist.addDate = playlistArtist.releaseDate;
+            [genre addEntriesObject:playlistArtist];
+            [playlistArtists setObject:playlistArtist forKey:artistName];
+        }
         // Create album folder.
         // These dates will be updated once songs are seen.
         EPFolder *albumFolder = [EPFolder folderWithName:[representativeItem valueForProperty:MPMediaItemPropertyAlbumTitle]
@@ -233,7 +245,12 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
                                              releaseDate:[NSDate distantPast]
                                                  addDate:[NSDate distantPast]
                                                 playDate:[NSDate distantPast]];
+        EPFolder *playlistAlbum = [albumFolder copy];
+        playlistAlbum.addDate = playlistAlbum.releaseDate;
+        
         [artist addEntriesObject:albumFolder];
+        [playlistArtist addEntriesObject:playlistAlbum];
+        
         [root.albums addEntriesObject:albumFolder];
         NSLog(@"Create album %@", albumFolder.name);
         
@@ -244,6 +261,8 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
             EPSong *song = [EPSong songWithName:wrapper.title
                                    persistentID:wrapper.persistentID];
             [albumFolder addEntriesObject:song];
+            [playlistAlbum addEntriesObject:song];
+            
             // Propagate will also set on song.
             [song propagateReleaseDate:wrapper.releaseDate];
             NSDate *date = wrapper.lastPlayedDate;
@@ -263,6 +282,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
                                 waitUntilDone:NO];
         }
         [albumFolder propagatePlayCount:maxPlayCount];
+        [playlistAlbum propagatePlayCount:maxPlayCount];
 #ifdef EP_MEMORY_DEBUG
         logMemUsage();
 #endif
@@ -283,6 +303,190 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     [self.importAlertView dismissWithClickedButtonIndex:0 animated:YES];
     [self.mainTabController loadInitialFolders];
     self.initializing = NO;
+}
+
+- (void)beginDBUpdate:(NSObject *)sender
+{
+    self.dbSender = sender;
+    [self showProgressAlert:@"Scanning..." message:@"Updating database."];
+    [self performSelectorInBackground:@selector(updateDB) withObject:nil];
+}
+
+- (void)updateDB
+{
+    EPRoot *root = [EPRoot sharedRoot];
+    // Array of EPMediaItemWrappers.
+    NSMutableArray *addedSongs = [[NSMutableArray alloc] init];
+    // Array of EPSongs.
+    NSMutableArray *removedSongs = [[NSMutableArray alloc] init];
+    NSInteger removedSongCount = 0;
+    // Array of EPMediaItemWrappers.
+    NSMutableArray *brokenItems = [[NSMutableArray alloc] init];
+    
+    // Find all the songs currently in the database.
+    NSMutableDictionary *allSongs = [[NSMutableDictionary alloc] init];
+    for (EPFolder *folder in root.topFolders) {
+        [self addToAllSongs:allSongs folder:folder];
+    }
+    
+    // Create a dictionary of all items used to check for deleted songs.
+    MPMediaQuery *allQuery = [MPMediaQuery songsQuery];
+    NSMutableDictionary *allItems = [[NSMutableDictionary alloc] init];
+
+    // Determine the library size for the progress indicator.
+    NSUInteger libSize = allQuery.items.count + allSongs.count;
+    NSUInteger songsScanned = 0;
+    
+    // For each song not already in the database, add it.
+    for (MPMediaItem *item in allQuery.items) {
+        
+        songsScanned += 1;
+        [self performSelectorOnMainThread:@selector(importUpdateProgress:)
+                               withObject:@((float)songsScanned/(float)libSize)
+                            waitUntilDone:NO];
+
+        EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:item];
+        [allItems setObject:wrapper forKey:wrapper.persistentID];
+        if ([allSongs objectForKey:wrapper.persistentID] == nil) {
+            if (wrapper.genre == nil || wrapper.albumArtist == nil || wrapper.albumTitle == nil) {
+                [brokenItems addObject:wrapper];
+                continue;
+            }
+            EPSong *song = [EPSong songWithName:wrapper.title
+                                   persistentID:wrapper.persistentID];
+            [addedSongs addObject:wrapper];
+            // Add this song to the correct places, creating folders as necessary.
+            // Not going to bother propogating this (normally is zero anyways).
+            song.playCount = [wrapper.playCount integerValue];
+
+            // Determine where it should go in "playlists".
+            EPFolder *genreFolder = [root.playlists folderWithName:wrapper.genre];
+            if (genreFolder == nil) {
+                genreFolder = [EPFolder folderWithName:wrapper.genre
+                                             sortOrder:EPSortOrderAddDate
+                                           releaseDate:[NSDate distantPast]
+                                               addDate:[NSDate distantPast]
+                                              playDate:[NSDate distantPast]];
+                [root.playlists addEntriesObject:genreFolder];
+            }
+            EPFolder *genreArtist = [genreFolder folderWithName:wrapper.albumArtist];
+            if (genreArtist == nil) {
+                genreArtist = [EPFolder folderWithName:wrapper.albumArtist
+                                             sortOrder:EPSortOrderAddDate
+                                           releaseDate:[NSDate distantPast]
+                                               addDate:[NSDate distantPast]
+                                              playDate:[NSDate distantPast]];
+                [genreFolder addEntriesObject:genreArtist];
+            }
+            EPFolder *genreAlbum = [genreArtist folderWithName:wrapper.albumTitle];
+            if (genreAlbum == nil) {
+                genreAlbum = [EPFolder folderWithName:wrapper.albumTitle
+                                            sortOrder:EPSortOrderManual
+                                          releaseDate:[NSDate distantPast]
+                                              addDate:[NSDate distantPast]
+                                             playDate:[NSDate distantPast]];
+                [genreArtist addEntriesObject:genreAlbum];
+            }
+            [genreAlbum addEntriesObject:song];
+
+            // Determine where it should go in artists.
+            EPFolder *artistFolder = [root.artists folderWithName:wrapper.albumArtist];
+            if (artistFolder == nil) {
+                artistFolder = [EPFolder folderWithName:wrapper.albumArtist
+                                              sortOrder:EPSortOrderAddDate
+                                            releaseDate:[NSDate distantPast]
+                                                addDate:[NSDate distantPast]
+                                               playDate:[NSDate distantPast]];
+                [root.artists addEntriesObject:artistFolder];
+            }
+            
+            // Determine where it should go in albums.
+            EPFolder *albumFolder = [root.albums folderWithName:wrapper.albumTitle];
+            if (albumFolder == nil) {
+                albumFolder = [EPFolder folderWithName:wrapper.albumTitle
+                                             sortOrder:EPSortOrderManual
+                                           releaseDate:[NSDate distantPast]
+                                               addDate:[NSDate distantPast]
+                                              playDate:[NSDate distantPast]];
+                [root.albums addEntriesObject:albumFolder];
+                // Assume album is missing in artist as well.
+                [artistFolder addEntriesObject:albumFolder];
+            }
+            [albumFolder addEntriesObject:song];
+            
+            [song propagateAddDate:[NSDate date]];
+            [song propagateReleaseDate:wrapper.releaseDate];
+            song.playDate = [NSDate distantPast];
+        }
+    }
+    
+    // Check if any songs have been removed.
+    for (NSNumber *persistentID in allSongs) {
+        if ([allItems objectForKey:persistentID] == nil) {
+            // Remove song.
+            EPSong *song = [allSongs objectForKey:persistentID];
+            [removedSongs addObjectsFromArray:[song pathNames]];
+            removedSongCount += 1;
+            NSSet *parentsCopy = [NSSet setWithSet:song.parents];
+            for (EPFolder *parent in parentsCopy) {
+                [parent removeEntriesObject:song];
+                [parent removeIfEmpty];
+            }
+        }
+        songsScanned += 1;
+        [self performSelectorOnMainThread:@selector(importUpdateProgress:)
+                               withObject:@((float)songsScanned/(float)libSize)
+                            waitUntilDone:NO];
+    }
+    
+    NSLog(@"Committing data.");
+    [root save];
+    NSLog(@"Done update scan...");
+    
+    // Prepare a view of what's added and removed.
+    NSMutableString *results = [[NSMutableString alloc] init];
+    if (addedSongs.count) {
+        [results appendFormat:@"Added %i songs:\n", addedSongs.count];
+        for (EPMediaItemWrapper *wrapper in addedSongs) {
+            [results appendFormat:@"\t%@ - %@ - %@\n", wrapper.artist, wrapper.albumTitle, wrapper.title];
+        }
+    } else {
+        [results appendString:@"No songs added.\n"];
+    }
+    if (removedSongCount) {
+        [results appendFormat:@"Removed %i songs:\n", removedSongCount];
+        for (NSString *path in removedSongs) {
+            [results appendFormat:@"\t%@\n", path];
+        }
+    } else {
+        [results appendString:@"No songs removed.\n"];
+    }
+    if (brokenItems.count) {
+        [results appendFormat:@"Found %i invalid songs:\n", brokenItems.count];
+        for (EPMediaItemWrapper *wrapper in brokenItems) {
+            [results appendFormat:@"\t%@ - %@ - %@\n", wrapper.artist, wrapper.albumTitle, wrapper.title];
+        }
+    }
+
+    [self performSelectorOnMainThread:@selector(updateDBDone:) withObject:results waitUntilDone:NO];
+}
+
+- (void)addToAllSongs:(NSMutableDictionary *)allSongs folder:(EPFolder *)folder
+{
+    for (EPEntry *entry in folder.entries) {
+        if ([entry.class isSubclassOfClass:[EPFolder class]]) {
+            [self addToAllSongs:allSongs folder:(EPFolder *)entry];
+        } else {
+            EPSong *song = (EPSong *)entry;
+            [allSongs setObject:entry forKey:song.persistentID];
+        }
+    }
+}
+
+- (void)updateDBDone:(NSString *)results
+{
+    [self.importAlertView dismissWithClickedButtonIndex:0 animated:YES];
+    [self.dbSender performSelector:@selector(dbUpdateDone:) withObject:results];
 }
 
 @end

@@ -31,6 +31,9 @@
 - (NSArray *)sortedEntries;
 - (EPFolder *)folderWithUUID:(NSUUID *)uuid;
 - (EPSong *)songWithPersistentID:(NSNumber *)persistentID;
+// Remove this folder if it is empty (and it is not a top-level folder).
+- (void)removeIfEmpty;
+- (EPFolder *)folderWithName:(NSString *)name;
 
 - (void)insertObject:(EPEntry *)value inEntriesAtIndex:(NSUInteger)idx;
 - (void)removeObjectFromEntriesAtIndex:(NSUInteger)idx;

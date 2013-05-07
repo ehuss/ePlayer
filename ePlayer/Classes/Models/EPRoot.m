@@ -143,34 +143,31 @@ static EPRoot *theSharedRoot;
 {
     EPFolder *f;
 
-    f = [self.playlists folderWithUUID:uuid];
-    if (f) { return f; }
-    f = [self.artists folderWithUUID:uuid];
-    if (f) { return f; }
-    f = [self.albums folderWithUUID:uuid];
-    if (f) { return f; }
-    f = [self.cut folderWithUUID:uuid];
-    if (f) { return f; }
-    f = [self.queue folderWithUUID:uuid];
-    if (f) { return f; }
+    for (EPFolder *folder in [self topFolders]) {
+        f = [folder folderWithUUID:uuid];
+        if (f) { return f; }
+    }
     return nil;
 }
 
 - (EPSong *)songWithPersistentID:(NSNumber *)persistentID
 {
     EPSong *s;
-
-    s = [self.playlists songWithPersistentID:persistentID];
-    if (s) { return s; }
-    s = [self.artists songWithPersistentID:persistentID];
-    if (s) { return s; }
-    s = [self.albums songWithPersistentID:persistentID];
-    if (s) { return s; }
-    s = [self.cut songWithPersistentID:persistentID];
-    if (s) { return s; }
-    s = [self.queue songWithPersistentID:persistentID];
-    if (s) { return s; }
+    
+    for (EPFolder *folder in [self topFolders]) {
+        s = [folder songWithPersistentID:persistentID];
+        if (s) { return s; }
+    }
     return nil;
+}
+
+- (NSArray *)topFolders
+{
+    return @[self.playlists,
+             self.artists,
+             self.albums,
+             self.cut,
+             self.queue];
 }
 
 @end

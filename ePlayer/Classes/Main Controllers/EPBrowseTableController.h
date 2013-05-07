@@ -12,20 +12,21 @@
 #import "EPPlayerController.h"
 #import "EPSegmentedControl.h"
 #import "EPAppendButton.h"
+#import "EPEditCell1.h"
+#import "EPEditCell2.h"
+#import "EPRoot.h"
 
 extern NSUInteger minEntriesForSections;
 
 @interface EPBrowseTableController : UITableViewController
-    <UISearchBarDelegate, UISearchDisplayDelegate, UITextFieldDelegate>
+    <UISearchBarDelegate, UISearchDisplayDelegate, UITextFieldDelegate, UIActionSheetDelegate>
 {
     NSArray *_controlCells;
     BOOL _renaming;
+    EPRoot *_root;
 }
 
-- (void)updateCell:(EPBrowserCell *)cell
-      forIndexPath:(NSIndexPath *)indexPath
-      withSections:(NSArray *)sections
-     withDateLabel:(BOOL)useDateLabel;
+- (void)updateSections;
 
 - (void)touchSortOrder:(EPSegmentedControl *)sender;
 - (NSArray *)supportedSortOrders;
@@ -33,26 +34,32 @@ extern NSUInteger minEntriesForSections;
 - (void)rename:(EPBrowserCell *)cell to:(NSString *)newText;
 - (void)playAppend:(NSIndexPath *)path;
 
+@property (strong, nonatomic) EPFolder *folder;
+@property (readonly, nonatomic) EPRoot *root;
+@property (assign, nonatomic) BOOL focusAddFolder;
+@property (strong, nonatomic) EPEditCell1 *editCell1;
+@property (strong, nonatomic) EPEditCell2 *editCell2;
+
 @property (assign, nonatomic)EPSortOrder sortOrder;
 // Array of arrays.  The types of items depends on the subclass.
 // The sections are passed to  "updateCell..." in order to set the cell content.
-@property (nonatomic, strong) NSMutableArray *sections;
+@property (strong, nonatomic) NSMutableArray *sections;
 // sectionTitles is nil if there are no sections.
-@property (nonatomic, strong) NSMutableArray *sectionTitles;
-@property (nonatomic, readonly) EPPlayerController *playerController;
+@property (strong, nonatomic) NSMutableArray *sectionTitles;
+@property (readonly, nonatomic) EPPlayerController *playerController;
 // Control cells are the ones at the top used for setting sort order,
 // inserting rows, etc.
-@property (nonatomic, strong) NSArray *controlCells;
-@property (nonatomic, assign) BOOL showingControlCells;
-@property (nonatomic, assign) BOOL renaming;
+@property (readonly, nonatomic) NSArray *controlCells;
+@property (assign, nonatomic) BOOL showingControlCells;
+@property (assign, nonatomic) BOOL renaming;
 
 // Searching.
-@property (nonatomic, strong) UISearchDisplayController *searchController;
-@property (nonatomic, strong) NSArray *filteredSections;
-@property (nonatomic, strong) NSArray *filteredSectionTitles;
+@property (strong, nonatomic) UISearchDisplayController *searchController;
+@property (strong, nonatomic) NSArray *filteredSections;
+@property (strong, nonatomic) NSArray *filteredSectionTitles;
 // When searching, the property in self.sections to look at.
-@property (nonatomic, readonly) NSString *filterPropertyName;
-@property (nonatomic, assign) BOOL wantsSearch;
-@property (nonatomic, assign) BOOL indexesEnabled;
-@property (nonatomic, strong) EPAppendButton *appendButton;
+@property (readonly, nonatomic) NSString *filterPropertyName;
+@property (assign, nonatomic) BOOL wantsSearch;
+@property (assign, nonatomic) BOOL indexesEnabled;
+@property (strong, nonatomic) EPAppendButton *appendButton;
 @end

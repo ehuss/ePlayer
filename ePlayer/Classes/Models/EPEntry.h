@@ -20,6 +20,7 @@
 
 - (NSURL *)url;
 - (NSTimeInterval)duration;
+- (NSArray *)pathNames;
 
 - (void)propagatePlayCount:(int)count;
 - (void)propagatePlayDate:(NSDate *)date;

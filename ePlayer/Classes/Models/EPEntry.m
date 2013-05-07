@@ -48,7 +48,7 @@
 {
     EPEntry *entry = [[self.class allocWithZone:zone] init];
     if (entry) {
-        entry->_name = [NSString stringWithFormat:@"%@ Copy", self.name];
+        entry->_name = self.name;
         entry->_addDate = [NSDate date];
         entry->_playDate = _playDate;
         entry->_releaseDate = _releaseDate;
@@ -82,6 +82,31 @@
 {
     // Subclasses implement.
     return;
+}
+
+- (NSArray *)pathNames
+{
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    NSMutableArray *paths = [[NSMutableArray alloc] init];
+    NSMutableArray *selfChain = [[NSMutableArray alloc] init];
+    [self addPaths:selfChain intoResults:paths];
+    for (NSMutableArray *chain in paths) {
+        NSString *path = [chain componentsJoinedByString:@"/"];
+        [result addObject:path];
+    }
+    return result;
+}
+
+- (void)addPaths:(NSMutableArray *)chain intoResults:(NSMutableArray *)results
+{
+    [chain insertObject:self.name atIndex:0];
+    for (EPFolder *parent in self.parents) {
+        NSMutableArray *chainCopy = [NSMutableArray arrayWithArray:chain];
+        [parent addPaths:chainCopy intoResults:results];
+    }
+    if (self.parents.count == 0) {
+        [results addObject:chain];
+    }
 }
 
 

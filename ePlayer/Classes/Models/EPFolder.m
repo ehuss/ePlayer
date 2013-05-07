@@ -218,6 +218,29 @@
     }
 }
 
+- (void)removeIfEmpty
+{
+    if (self.entries.count == 0 && self.parents.count) {
+        NSSet *parentsCopy = [NSSet setWithSet:self.parents];
+        for (EPFolder *parent in parentsCopy) {
+            [parent removeEntriesObject:self];
+        }
+        for (EPFolder *parent in parentsCopy) {
+            [parent removeIfEmpty];
+        }
+    }
+}
+
+- (EPFolder *)folderWithName:(NSString *)name
+{
+    for (EPEntry *entry in self.entries) {
+        if ([entry.name isEqualToString:name] && [entry.class isSubclassOfClass:EPFolder.class]) {
+            return (EPFolder *)entry;
+        }
+    }
+    return nil;
+}
+
 /*****************************************************************************/
 #pragma mark - Entries mutators.
 /*****************************************************************************/
