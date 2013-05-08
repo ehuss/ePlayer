@@ -362,7 +362,11 @@ NSUInteger minEntriesForSections = 10;
         } else {
             data = self.sectionTitles;
         }
-        return data;
+        if (data.count < 4) {
+            return nil;
+        } else {
+            return data;
+        }
     } else {
         return nil;
     }

@@ -10,7 +10,6 @@ TODO
 
 High
 ====
-- Fewer than 10 section title indexes, don't show indexes.
 - Change append popup to be above/below.
 - show album art next to entry of a playlist that is all from one album?
     - Individual songs should always show art if available.
