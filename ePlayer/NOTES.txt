@@ -15,7 +15,6 @@ High
     - Individual songs should always show art if available.
     - album view - show like ipod app (album art, summary at top, etc.)
         - playlist should try to detect this and do the same.
-- Icon
 - cut/copy/paste does not propagate play/add/release dates.  Consider adding that
   logic to the entries methods in EPFolder (may have performance issues during import, maybe a global disable).
 - What happens when tableview is open when it is removed (via db update).
