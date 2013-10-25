@@ -806,7 +806,7 @@ static NSTimeInterval seekAmount = 2.0;
 
 - (void)timerFired:(NSTimer *)timer
 {
-    NSLog(@"timer fired %@", self.isDisplayed ? @"YES" : @"NO");
+//    NSLog(@"timer fired %@", self.isDisplayed ? @"YES" : @"NO");
     if (self.isDisplayed) {
         if (self.scrubberManualUpdating) {
             [self updateTimeLabels];

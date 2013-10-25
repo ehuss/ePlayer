@@ -26,13 +26,13 @@
 {
     [super awakeFromNib];
 
-    [self setThumbImage:[UIImage imageNamed:@"scrubber-thumb"] forState:UIControlStateNormal];
     UIImage *minTrack = [[UIImage imageNamed:@"scrubber-track-min"]
                          resizableImageWithCapInsets:UIEdgeInsetsMake(0, 9, 0, 0)];
     UIImage *maxTrack = [[UIImage imageNamed:@"scrubber-track-max"]
                          resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 9)];
     [self setMinimumTrackImage:minTrack forState:UIControlStateNormal];
     [self setMaximumTrackImage:maxTrack forState:UIControlStateNormal];
+    [self setThumbImage:[UIImage imageNamed:@"scrubber-thumb"] forState:UIControlStateNormal];
 }
 
 - (id)initWithFrame:(CGRect)frame

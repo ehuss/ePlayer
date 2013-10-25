@@ -11,13 +11,6 @@
 
 @implementation EPBrowserCell
 
-//- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-//{
-//    [super setSelected:selected animated:animated];
-//
-//    // Configure the view for the selected state
-//}
-
 static CGFloat textViewOffset = 4.0;
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated

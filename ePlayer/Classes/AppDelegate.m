@@ -18,7 +18,7 @@
 {
     self.initializing = YES;
 //    [[NSFileManager defaultManager] removeItemAtPath:[EPRoot dbPath] error:nil];
-    
+
     [application beginReceivingRemoteControlEvents];
 
 

@@ -14,6 +14,7 @@
 #import "EPPlayerController.h"
 #import "EPTrackController.h"
 #import "EPGearTableController.h"
+#import "EPPlayButton.h"
 
 NSUInteger minEntriesForSections = 10;
 
@@ -552,8 +553,8 @@ sectionForSectionIndexTitle:(NSString *)title
         EPAppendButton *button = [[EPAppendButton alloc] initWithFrame:frame];
         [button addTarget:self action:@selector(playAppendEvent:) forControlEvents:UIControlEventTouchDown];
         // Keep track of which cell was clicked.
-        UITableViewCell *cell = (UITableViewCell *)[[[gesture view] superview] superview];
-        button.cell = cell;
+        EPPlayButton *playButton = (EPPlayButton *)gesture.view;
+        button.cell = playButton.browserCell;
         [self.view addSubview:button];
         self.appendButton = button;
     } else if (gesture.state == UIGestureRecognizerStateEnded ||
@@ -604,8 +605,8 @@ sectionForSectionIndexTitle:(NSString *)title
 - (void)playTapped:(UITapGestureRecognizer *)gesture
 {
     // Determine which entry was tapped.
-    EPBrowserCell *cell = (EPBrowserCell *)[[[gesture view] superview] superview];
-    [self.playerController playEntry:cell.entry];
+    EPPlayButton *playButton = (EPPlayButton *)gesture.view;
+    [self.playerController playEntry:playButton.browserCell.entry];
     self.tabBarController.selectedIndex = 3;
 }
 

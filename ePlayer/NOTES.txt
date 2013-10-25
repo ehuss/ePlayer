@@ -10,6 +10,7 @@ TODO
 
 High
 ====
+- Remove a track in itunes, try playing that track will crash.
 - Change append popup to be above/below.
 - show album art next to entry of a playlist that is all from one album?
     - Individual songs should always show art if available.

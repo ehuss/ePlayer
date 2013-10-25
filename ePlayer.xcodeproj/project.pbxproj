@@ -22,6 +22,7 @@
 		0719E3761726268E00D325B5 /* queue-volume-on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E3751726268E00D325B5 /* queue-volume-on@2x.png */; };
 		0719E37917262A7D00D325B5 /* UIImage+EPCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */; };
 		0719E37B1726356900D325B5 /* play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E37A1726356900D325B5 /* play@2x.png */; };
+		0746FA88181A398E0056D3A5 /* EPPlayButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0746FA87181A398E0056D3A5 /* EPPlayButton.m */; };
 		07475EB017272053001BB7AA /* EPEditCell1.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EAF17272053001BB7AA /* EPEditCell1.m */; };
 		07475EB317272063001BB7AA /* EPEditCell2.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EB217272063001BB7AA /* EPEditCell2.m */; };
 		07475EBC172761BD001BB7AA /* append-popout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07475EBB172761BD001BB7AA /* append-popout@2x.png */; };
@@ -122,6 +123,8 @@
 		0719E37717262A7B00D325B5 /* UIImage+EPCrop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+EPCrop.h"; sourceTree = "<group>"; };
 		0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+EPCrop.m"; sourceTree = "<group>"; };
 		0719E37A1726356900D325B5 /* play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play@2x.png"; sourceTree = "<group>"; };
+		0746FA86181A398E0056D3A5 /* EPPlayButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayButton.h; sourceTree = "<group>"; };
+		0746FA87181A398E0056D3A5 /* EPPlayButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayButton.m; sourceTree = "<group>"; };
 		07475EAE17272053001BB7AA /* EPEditCell1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPEditCell1.h; sourceTree = "<group>"; };
 		07475EAF17272053001BB7AA /* EPEditCell1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPEditCell1.m; sourceTree = "<group>"; };
 		07475EB117272063001BB7AA /* EPEditCell2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPEditCell2.h; sourceTree = "<group>"; };
@@ -293,6 +296,8 @@
 				0718E6331720E11C00301D0E /* EPSegmentedControl.m */,
 				07D8F1BA1738728A0044DEC9 /* EPStretchButton.h */,
 				07D8F1BB1738728A0044DEC9 /* EPStretchButton.m */,
+				0746FA86181A398E0056D3A5 /* EPPlayButton.h */,
+				0746FA87181A398E0056D3A5 /* EPPlayButton.m */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
@@ -677,6 +682,7 @@
 				078A3C3F172FA1E1009A8FF5 /* EPRoot.m in Sources */,
 				07D8F1BC1738728A0044DEC9 /* EPStretchButton.m in Sources */,
 				07D8F1BF173895D60044DEC9 /* EPGearTableController.m in Sources */,
+				0746FA88181A398E0056D3A5 /* EPPlayButton.m in Sources */,
 				07D8F1C21738CA650044DEC9 /* EPUpdateResultsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
