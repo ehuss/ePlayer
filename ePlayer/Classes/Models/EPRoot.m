@@ -28,42 +28,15 @@ static EPRoot *theSharedRoot;
 + (EPRoot *)sharedRoot
 {
     if (theSharedRoot == nil) {
-        theSharedRoot = [NSKeyedUnarchiver unarchiveObjectWithFile:[EPRoot dbPath]];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[EPRoot dbPath]]) {
+            theSharedRoot = [NSKeyedUnarchiver unarchiveObjectWithFile:[EPRoot dbPath]];
+        } else {
+            theSharedRoot = [EPRoot new];
+            [theSharedRoot reset];
+            theSharedRoot.dirty = YES;
+        }
     }
     return theSharedRoot;
-}
-
-+ (EPRoot *)initialSharedRoot
-{
-    theSharedRoot = [[EPRoot alloc] init];
-    theSharedRoot.playlists = [EPFolder folderWithName:@"Playlists"
-                                             sortOrder:EPSortOrderAlpha
-                                           releaseDate:[NSDate distantPast]
-                                               addDate:[NSDate date]
-                                              playDate:[NSDate distantPast]];
-    theSharedRoot.artists = [EPFolder folderWithName:@"Artists"
-                                           sortOrder:EPSortOrderAlpha
-                                         releaseDate:[NSDate distantPast]
-                                             addDate:[NSDate date]
-                                            playDate:[NSDate distantPast]];
-    theSharedRoot.albums = [EPFolder folderWithName:@"Albums"
-                                          sortOrder:EPSortOrderAlpha
-                                        releaseDate:[NSDate distantPast]
-                                            addDate:[NSDate date]
-                                           playDate:[NSDate distantPast]];
-    theSharedRoot.cut = [EPFolder folderWithName:@"Cut"
-                                       sortOrder:EPSortOrderManual
-                                     releaseDate:[NSDate distantPast]
-                                         addDate:[NSDate date]
-                                        playDate:[NSDate distantPast]];
-    theSharedRoot.queue = [EPFolder folderWithName:@"Queue"
-                                         sortOrder:EPSortOrderManual
-                                       releaseDate:[NSDate distantPast]
-                                           addDate:[NSDate date]
-                                          playDate:[NSDate distantPast]];
-    theSharedRoot.dirty = YES;
-    return theSharedRoot;
-
 }
 
 /*****************************************************************************/
@@ -80,6 +53,7 @@ static EPRoot *theSharedRoot;
         self.cut = [aDecoder decodeObjectForKey:@"cut"];
         self.queue = [aDecoder decodeObjectForKey:@"queue"];
         self.currentQueueIndex = [aDecoder decodeIntForKey:@"currentQueueIndex"];
+        self.dirty = NO;
     }
     return self;
 }
@@ -168,6 +142,37 @@ static EPRoot *theSharedRoot;
              self.albums,
              self.cut,
              self.queue];
+}
+
+- (void)reset
+{
+    _playlists = [EPFolder folderWithName:@"Playlists"
+                                sortOrder:EPSortOrderAlpha
+                              releaseDate:[NSDate distantPast]
+                                  addDate:[NSDate date]
+                                 playDate:[NSDate distantPast]];
+    _artists = [EPFolder folderWithName:@"Artists"
+                              sortOrder:EPSortOrderAlpha
+                            releaseDate:[NSDate distantPast]
+                                addDate:[NSDate date]
+                               playDate:[NSDate distantPast]];
+    _albums = [EPFolder folderWithName:@"Albums"
+                             sortOrder:EPSortOrderAlpha
+                           releaseDate:[NSDate distantPast]
+                               addDate:[NSDate date]
+                              playDate:[NSDate distantPast]];
+    _cut = [EPFolder folderWithName:@"Cut"
+                          sortOrder:EPSortOrderManual
+                        releaseDate:[NSDate distantPast]
+                            addDate:[NSDate date]
+                           playDate:[NSDate distantPast]];
+    _queue = [EPFolder folderWithName:@"Queue"
+                            sortOrder:EPSortOrderManual
+                          releaseDate:[NSDate distantPast]
+                              addDate:[NSDate date]
+                             playDate:[NSDate distantPast]];
+    _dirty = YES;
+    _currentQueueIndex = 0;
 }
 
 @end

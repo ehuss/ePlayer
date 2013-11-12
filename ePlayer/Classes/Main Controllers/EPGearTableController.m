@@ -18,13 +18,18 @@
 /*****************************************************************************/
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == 0) {
-        [self updateDatabaseQuery];
+    switch (indexPath.row) {
+        case 0:
+            [self updateDatabaseQuery];
+            break;
+        case 1:
+            [self resetDatabaseQuery];
+            break;
     }
 }
 
 /*****************************************************************************/
-#pragma mark - Actions
+#pragma mark - Update Database
 /*****************************************************************************/
 
 - (void)updateDatabaseQuery
@@ -33,16 +38,21 @@
                           initWithTitle:@"Update Database"
                           message:@"Update database now?"
                           delegate:self
-                          cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+                          cancelButtonTitle:@"Cancel" otherButtonTitles:@"Update", nil];
     [alert show];
 }
+
 
 - (void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 0) {
-        [self.tableView deselectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES];
+        [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
     } else if (buttonIndex == 1) {
-        [self updateDatabase];
+        if ([actionSheet.title isEqualToString:@"Update Database"]) {
+            [self updateDatabase];
+        } else if ([actionSheet.title isEqualToString:@"Reset Database"]) {
+            [self resetDatabase];
+        }
     }
 }
 
@@ -54,12 +64,41 @@
 
 - (void)dbUpdateDone:(NSString *)results
 {
-//    [self.tableView deselectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES];
+    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
     EPMainTabController *tabC = (EPMainTabController *)self.tabBarController;
     [tabC reloadBrowsers];
     EPUpdateResultsController *update = [[EPUpdateResultsController alloc] init];
     update.results = results;
     [self.navigationController pushViewController:update animated:YES];
+}
+
+/*****************************************************************************/
+#pragma mark - Reset Database
+/*****************************************************************************/
+
+- (void)resetDatabaseQuery
+{
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:@"Reset Database"
+                          message:@"Are you sure you want to RESET?  All changes will be lost!"
+                          delegate:self
+                          cancelButtonTitle:@"Cancel" otherButtonTitles:@"RESET", nil];
+    [alert show];
+
+}
+
+- (void)resetDatabase
+{
+    AppDelegate *appD = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    [appD resetDB];
+    [appD performSelectorInBackground:@selector(initDB:) withObject:self];
+}
+
+- (void)dbInitDone
+{
+    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+    EPMainTabController *tabC = (EPMainTabController *)self.tabBarController;
+    [tabC reloadBrowsers];
 }
 
 @end

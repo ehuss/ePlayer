@@ -37,6 +37,7 @@ Medium
 - del/cut/copy/paste do not update playCount/playDate/addDate/releaseDate
 - libraryChanged notification doesn't seem to show up.  Would be nice to pop
   up an alert or something.
+- SVProgressHUD is weird and buggy.
 
 Low
 ===

@@ -87,6 +87,8 @@
 		079B4153171F55F00036F0D4 /* EPTableSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4152171F55ED0036F0D4 /* EPTableSectionView.m */; };
 		079B4163171F5B5D0036F0D4 /* TableSectionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 079B4161171F5B5D0036F0D4 /* TableSectionView.xib */; };
 		079B4165171F5BBF0036F0D4 /* header-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079B4164171F5BBF0036F0D4 /* header-background@2x.png */; };
+		07C841521832232900AEBA07 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 07C8414F1832232900AEBA07 /* SVProgressHUD.bundle */; };
+		07C841531832232900AEBA07 /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 07C841511832232900AEBA07 /* SVProgressHUD.m */; };
 		07D8F1B4173868780044DEC9 /* gear@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07D8F1B3173868780044DEC9 /* gear@2x.png */; };
 		07D8F1B617386D430044DEC9 /* edit-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07D8F1B517386D430044DEC9 /* edit-button@2x.png */; };
 		07D8F1BC1738728A0044DEC9 /* EPStretchButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D8F1BB1738728A0044DEC9 /* EPStretchButton.m */; };
@@ -218,6 +220,9 @@
 		079B4152171F55ED0036F0D4 /* EPTableSectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPTableSectionView.m; sourceTree = "<group>"; };
 		079B4162171F5B5D0036F0D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = TableSectionView.xib; sourceTree = "<group>"; };
 		079B4164171F5BBF0036F0D4 /* header-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "header-background@2x.png"; sourceTree = "<group>"; };
+		07C8414F1832232900AEBA07 /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
+		07C841501832232900AEBA07 /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
+		07C841511832232900AEBA07 /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
 		07D8F1B3173868780044DEC9 /* gear@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gear@2x.png"; sourceTree = "<group>"; };
 		07D8F1B517386D430044DEC9 /* edit-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "edit-button@2x.png"; sourceTree = "<group>"; };
 		07D8F1BA1738728A0044DEC9 /* EPStretchButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPStretchButton.h; sourceTree = "<group>"; };
@@ -359,6 +364,7 @@
 		0755C2F71714BE0300AAF81F /* ePlayer */ = {
 			isa = PBXGroup;
 			children = (
+				07C8414E1832232900AEBA07 /* SVProgressHUD */,
 				079B4139171CF2550036F0D4 /* UI */,
 				07677A3F171924F200D1784D /* Images */,
 				0755C36F1715463600AAF81F /* NOTES.txt */,
@@ -505,6 +511,16 @@
 			path = en.lproj;
 			sourceTree = "<group>";
 		};
+		07C8414E1832232900AEBA07 /* SVProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				07C8414F1832232900AEBA07 /* SVProgressHUD.bundle */,
+				07C841501832232900AEBA07 /* SVProgressHUD.h */,
+				07C841511832232900AEBA07 /* SVProgressHUD.m */,
+			);
+			path = SVProgressHUD;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -619,6 +635,7 @@
 				07D8F1B4173868780044DEC9 /* gear@2x.png in Resources */,
 				07D8F1B617386D430044DEC9 /* edit-button@2x.png in Resources */,
 				07D8F1C4173995F20044DEC9 /* icon@2x.png in Resources */,
+				07C841521832232900AEBA07 /* SVProgressHUD.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -662,6 +679,7 @@
 				0755C38717164DFE00AAF81F /* EPEntry.m in Sources */,
 				076779E31718E11300D1784D /* EPPlayerController.m in Sources */,
 				07677A5E1719264E00D1784D /* EPScrubberView.m in Sources */,
+				07C841531832232900AEBA07 /* SVProgressHUD.m in Sources */,
 				07677A67171A006600D1784D /* EPGradientView.m in Sources */,
 				079B411C171A60340036F0D4 /* EPPlayerCellView.m in Sources */,
 				079B4121171B4F400036F0D4 /* EPBrowseTableController.m in Sources */,

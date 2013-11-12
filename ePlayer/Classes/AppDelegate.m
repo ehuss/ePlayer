@@ -17,10 +17,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.initializing = YES;
-//    [[NSFileManager defaultManager] removeItemAtPath:[EPRoot dbPath] error:nil];
 
     [application beginReceivingRemoteControlEvents];
-
 
     // Set up audio.
     AVAudioSession *session = [AVAudioSession sharedInstance];
@@ -42,11 +40,10 @@
                                  EPSettingArtistAlbumsSortOrder: [NSNumber numberWithInt:EPSortOrderReleaseDate]}];
     playlistPasteboard = [UIPasteboard pasteboardWithName:@"org.ehuss.ePlayer" create:YES];
     playlistPasteboard.persistent = YES;
-    
-    // Core data setup.
+
     self.mainTabController = (EPMainTabController *)self.window.rootViewController;
     [self.mainTabController mainInit];
-    
+
     if ([self loadData]) {
         // Database is ready.  Populate the view.
         // XXX restore state
@@ -133,47 +130,32 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
 - (BOOL)loadData
 {
     // First determine if there is anything in the database.
-    if ([[NSFileManager defaultManager] fileExistsAtPath:[EPRoot dbPath]]) {
-        EPRoot *root = [EPRoot sharedRoot];
-        if (root == nil) {
-            // This should not be possible.  Only returns nil on file-not-found.
-            // Otherwise raises an exception.
-            abort();
-        }
+    EPRoot *root = [EPRoot sharedRoot];
+    if (!root.dirty) {
+        // Was loaded from disk.
         return YES;
     }
     // Create the database.
     // Populate with defaults from the user's library.
-    [self showProgressAlert:@"Importing..." message:@"Performing first time import."];
-    [self performSelectorInBackground:@selector(initDB) withObject:nil];
+    [self performSelectorInBackground:@selector(initDB:) withObject:self];
     return NO;
 }
 
-- (void)showProgressAlert:(NSString *)title message:(NSString *)message
+- (void)resetDB
 {
-    // Display a progress indicator.
-    self.importAlertView = [[UIAlertView alloc] initWithTitle:title
-                                                      message:message
-                                                     delegate:self
-                                            cancelButtonTitle:nil
-                                            otherButtonTitles:nil];
-    [self.importAlertView show];
-    self.importProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
-    // This is rather hacky.  The alertView frame is an odd size (presumably
-    // for all the shadowing).  It's unfortunate that UIAlertView does not
-    // have a formal way to add accessory views.
-    // The Right Thing to do would be to make a custom view.
-    CGRect pvf = self.importProgressView.frame;
-    self.importProgressView.frame = CGRectMake(20, 96,
-                                               242, pvf.size.height);
-    
-    [self.importAlertView addSubview:self.importProgressView];
-    
+    [[NSFileManager defaultManager] removeItemAtPath:[EPRoot dbPath] error:nil];
+    // Reset the root object.
+    EPRoot *root = [EPRoot sharedRoot];
+    [root reset];
 }
 
-- (void)initDB
+- (void)initDB:(NSObject *)completionDelegate
 {
-    EPRoot *root = [EPRoot initialSharedRoot];
+    self.initCompleteDelegate = completionDelegate;
+    // NOTE: must delay showing SVProgressHUD until the tab controller has
+    // had a chance to display its views.
+    self.hudString = @"First time import...";
+    EPRoot *root = [EPRoot sharedRoot];
     // Determine the library size for the progress indicator.
     MPMediaQuery *allQuery = [MPMediaQuery songsQuery];
     NSUInteger libSize = allQuery.items.count;
@@ -277,9 +259,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
             }
             song.playCount = [wrapper.playCount integerValue];
             songsImported += 1;
-            [self performSelectorOnMainThread:@selector(importUpdateProgress:)
-                                   withObject:@((float)songsImported/(float)libSize)
-                                waitUntilDone:NO];
+            [self importUpdateProgress:@((float)songsImported/(float)libSize)];
         }
         [albumFolder propagatePlayCount:maxPlayCount];
         [playlistAlbum propagatePlayCount:maxPlayCount];
@@ -290,17 +270,32 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     NSLog(@"Committing data.");
     [root save];
     NSLog(@"Done importing...");
-    [self performSelectorOnMainThread:@selector(importDone) withObject:nil waitUntilDone:NO];
+    [SVProgressHUD performSelectorOnMainThread:@selector(showSuccessWithStatus:) withObject:@"Complete!" waitUntilDone:NO];
+    [self.initCompleteDelegate performSelectorOnMainThread:@selector(dbInitDone) withObject:nil waitUntilDone:NO];
 }
 
 - (void)importUpdateProgress:(NSNumber *)progress
 {
-    [self.importProgressView setProgress:progress.floatValue animated:YES];
+    if (self.lastHudUpdate == nil) {
+        self.lastHudUpdate = [NSDate date];
+    } else {
+        // Only update a few times a second.
+        if ([self.lastHudUpdate timeIntervalSinceNow] > -0.2) {
+            return;
+        }
+        self.lastHudUpdate = [NSDate date];
+    }
+    [self performSelectorOnMainThread:@selector(importUpdateProgress2:)
+                           withObject:progress
+                        waitUntilDone:NO];
+}
+- (void)importUpdateProgress2:(NSNumber *)progress
+{
+    [SVProgressHUD showProgress:progress.floatValue status:self.hudString maskType:SVProgressHUDMaskTypeGradient];
 }
 
-- (void)importDone
+- (void)dbInitDone
 {
-    [self.importAlertView dismissWithClickedButtonIndex:0 animated:YES];
     [self.mainTabController loadInitialFolders];
     self.initializing = NO;
 }
@@ -308,7 +303,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
 - (void)beginDBUpdate:(NSObject *)sender
 {
     self.dbSender = sender;
-    [self showProgressAlert:@"Scanning..." message:@"Updating database."];
+    self.hudString = @"Updating database...";
     [self performSelectorInBackground:@selector(updateDB) withObject:nil];
 }
 
@@ -341,9 +336,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     for (MPMediaItem *item in allQuery.items) {
         
         songsScanned += 1;
-        [self performSelectorOnMainThread:@selector(importUpdateProgress:)
-                               withObject:@((float)songsScanned/(float)libSize)
-                            waitUntilDone:NO];
+        [self importUpdateProgress:@((float)songsScanned/(float)libSize)];
 
         EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:item];
         [allItems setObject:wrapper forKey:wrapper.persistentID];
@@ -434,9 +427,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
             }
         }
         songsScanned += 1;
-        [self performSelectorOnMainThread:@selector(importUpdateProgress:)
-                               withObject:@((float)songsScanned/(float)libSize)
-                            waitUntilDone:NO];
+        [self importUpdateProgress:@((float)songsScanned/(float)libSize)];
     }
     
     NSLog(@"Committing data.");
@@ -485,7 +476,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
 
 - (void)updateDBDone:(NSString *)results
 {
-    [self.importAlertView dismissWithClickedButtonIndex:0 animated:YES];
+    [SVProgressHUD showSuccessWithStatus:@"Complete!"];
     [self.dbSender performSelector:@selector(dbUpdateDone:) withObject:results];
 }
 
