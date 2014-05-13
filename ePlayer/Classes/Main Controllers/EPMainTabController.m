@@ -64,10 +64,11 @@
             UINavigationController *navCont = (UINavigationController *)controller;
             for (EPBrowseTableController *browseCont in navCont.viewControllers) {
                 if ([browseCont.class isSubclassOfClass:[EPBrowseTableController class]]) {
-                    if (browseCont.sortOrder == EPSortOrderPlayDate) {
+                    // XXX Why did I have this?
+//                    if (browseCont.sortOrder == EPSortOrderPlayDate) {
                         [browseCont updateSections];
                         [browseCont.tableView reloadData];
-                    }
+//                    }
                 }
             }
         }

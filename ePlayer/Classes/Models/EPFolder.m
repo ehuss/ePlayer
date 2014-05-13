@@ -126,7 +126,18 @@
     // Date sorting.
     return [self.entries sortedArrayUsingComparator:^(EPEntry *obj1, EPEntry *obj2) {
         // Descending order.
-        return [[obj2 performSelector:s] compare:[obj1 performSelector:s]];
+        NSDate *obj1D = [obj1 performSelector:s];
+        NSDate *obj2D = [obj2 performSelector:s];
+        if (!obj1D) {
+            if (!obj2D) {
+                return NSOrderedSame;
+            } else {
+                return NSOrderedDescending;
+            }
+        } else if (!obj2D) {
+            return NSOrderedAscending;
+        }
+        return [obj2D compare:obj1D];
     }];
 }
 
@@ -136,7 +147,11 @@
     switch (self.sortOrder) {
         case EPSortOrderAlpha:
             // Return first character of name.
-            return [entry.name substringToIndex:1];
+            if (entry.name.length) {
+                return [entry.name substringToIndex:1];
+            } else {
+                return @"";
+            }
 
         case EPSortOrderAddDate:
             if ([entry.addDate compare:[NSDate distantPast]] == NSOrderedSame) {

@@ -686,7 +686,7 @@ sectionForSectionIndexTitle:(NSString *)title
 }
 
 /*****************************************************************************/
-#pragma mark - Editting Support
+#pragma mark - Editing Support
 /*****************************************************************************/
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
@@ -983,8 +983,8 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
         return;
     }
     // Display a confirmation.
-    NSString *title = [NSString stringWithFormat:@"Really delete %i items?",
-                       self.tableView.indexPathsForSelectedRows.count];
+    NSString *title = [NSString stringWithFormat:@"Really delete %lu items?",
+                       (unsigned long)self.tableView.indexPathsForSelectedRows.count];
     UIActionSheet *sheet = [[UIActionSheet alloc]
                             initWithTitle:title
                             delegate:self
@@ -1100,7 +1100,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     [self.tableView reloadData];
     // Display a little popup that indicates how many entries pasted.
     UILabel *pasteNote = [[UILabel alloc] init];
-    pasteNote.text = [NSString stringWithFormat:@"Pasted %u items.", count];
+    pasteNote.text = [NSString stringWithFormat:@"Pasted %lu items.", (unsigned long)count];
     pasteNote.textColor = [UIColor whiteColor];
     pasteNote.backgroundColor = [UIColor blackColor];
     pasteNote.layer.cornerRadius = 4;
@@ -1188,8 +1188,8 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
         }
     }
     // Display a confirmation.
-    NSString *title = [NSString stringWithFormat:@"Really collapse %i folders?",
-                       self.tableView.indexPathsForSelectedRows.count];
+    NSString *title = [NSString stringWithFormat:@"Really collapse %lu folders?",
+                       (unsigned long)self.tableView.indexPathsForSelectedRows.count];
     UIActionSheet *sheet = [[UIActionSheet alloc]
                             initWithTitle:title
                             delegate:self

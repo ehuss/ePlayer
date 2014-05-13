@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 Eric Huss. All rights reserved.
 //
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
-@interface ePlayerTests : SenTestCase
+@interface ePlayerTests : XCTestCase
 
 @end

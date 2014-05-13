@@ -39,7 +39,6 @@
 		0755C3061714BE0400AAF81F /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0755C3051714BE0400AAF81F /* Default@2x.png */; };
 		0755C3081714BE0400AAF81F /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0755C3071714BE0400AAF81F /* Default-568h@2x.png */; };
 		0755C30B1714BE0400AAF81F /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0755C3091714BE0400AAF81F /* MainStoryboard_iPhone.storyboard */; };
-		0755C3241714BE0400AAF81F /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C3231714BE0400AAF81F /* SenTestingKit.framework */; };
 		0755C3251714BE0400AAF81F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F11714BE0300AAF81F /* UIKit.framework */; };
 		0755C3261714BE0400AAF81F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F31714BE0300AAF81F /* Foundation.framework */; };
 		0755C32E1714BE0400AAF81F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0755C32C1714BE0400AAF81F /* InfoPlist.strings */; };
@@ -149,8 +148,7 @@
 		0755C3051714BE0400AAF81F /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		0755C3071714BE0400AAF81F /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		0755C30A1714BE0400AAF81F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
-		0755C3221714BE0400AAF81F /* ePlayerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ePlayerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		0755C3231714BE0400AAF81F /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		0755C3221714BE0400AAF81F /* ePlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ePlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0755C32B1714BE0400AAF81F /* ePlayerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ePlayerTests-Info.plist"; sourceTree = "<group>"; };
 		0755C32D1714BE0400AAF81F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0755C32F1714BE0400AAF81F /* ePlayerTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ePlayerTests.h; sourceTree = "<group>"; };
@@ -253,7 +251,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0755C3241714BE0400AAF81F /* SenTestingKit.framework in Frameworks */,
 				0755C3251714BE0400AAF81F /* UIKit.framework in Frameworks */,
 				0755C3261714BE0400AAF81F /* Foundation.framework in Frameworks */,
 			);
@@ -341,7 +338,7 @@
 			isa = PBXGroup;
 			children = (
 				0755C2EE1714BE0300AAF81F /* ePlayer.app */,
-				0755C3221714BE0400AAF81F /* ePlayerTests.octest */,
+				0755C3221714BE0400AAF81F /* ePlayerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -356,7 +353,6 @@
 				0755C2F11714BE0300AAF81F /* UIKit.framework */,
 				0755C2F31714BE0300AAF81F /* Foundation.framework */,
 				0755C2F51714BE0300AAF81F /* CoreGraphics.framework */,
-				0755C3231714BE0400AAF81F /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -557,8 +553,8 @@
 			);
 			name = ePlayerTests;
 			productName = ePlayerTests;
-			productReference = 0755C3221714BE0400AAF81F /* ePlayerTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productReference = 0755C3221714BE0400AAF81F /* ePlayerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -566,8 +562,14 @@
 		0755C2E61714BE0300AAF81F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastTestingUpgradeCheck = 0510;
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Eric Huss";
+				TargetAttributes = {
+					0755C2ED1714BE0300AAF81F = {
+						DevelopmentTeam = 565SN6CBUC;
+					};
+				};
 			};
 			buildConfigurationList = 0755C2E91714BE0300AAF81F /* Build configuration list for PBXProject "ePlayer" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -861,11 +863,14 @@
 		0755C3351714BE0400AAF81F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ePlayer/ePlayer-Prefix.pch";
 				INFOPLIST_FILE = "ePlayer/ePlayer-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -874,11 +879,14 @@
 		0755C3361714BE0400AAF81F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ePlayer/ePlayer-Prefix.pch";
 				INFOPLIST_FILE = "ePlayer/ePlayer-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -889,15 +897,15 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ePlayer.app/ePlayer";
 				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"\\\"$(SDKROOT)/Developer/Library/Frameworks\\\"",
+					"\\\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\\\"",
+					"$(inherited)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ePlayer/ePlayer-Prefix.pch";
 				INFOPLIST_FILE = "ePlayerTests/ePlayerTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
@@ -906,15 +914,15 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ePlayer.app/ePlayer";
 				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"\\\"$(SDKROOT)/Developer/Library/Frameworks\\\"",
+					"\\\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\\\"",
+					"$(inherited)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ePlayer/ePlayer-Prefix.pch";
 				INFOPLIST_FILE = "ePlayerTests/ePlayerTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
 		};

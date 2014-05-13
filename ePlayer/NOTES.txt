@@ -8,6 +8,34 @@ NOTES
 TODO
 ****
 
+- More explicit backup/restore of the database.
+
+- Not entirely comfortable with saving on entering background.  Ideas:
+    - Save in background thread.  Would require synchronization work.
+    - Save while idle?
+    - I've been bitten by this, losing changes (primarily while running in debug).
+      The best thing, I think, is to split up the database into files.  
+      The browser should preload 1 level deep?  Or build a cache or something.
+
+- Archive database update logs.
+- [MPMediaQuery songsQuery] seemed to have sorted Darksiders 2 almost randomly.  It's a 2 disc.  Does it always do this, or is there something weird about darksiders 2 metadata.
+
+- Copying a folder shouldn't make a copy to a *reference* but instead it should actually make a new folder.  Use case: select a folder, copy, paste, the new folder should *not* be tied to the original (try renaming it).  Not only is the reference the same, but then it starts acting really buggy (rename, only 1 shows the rename, but in reality they are both renamed.  Delete, they both get deleted.).  I think it should do this recursively (it should create new entries, think like a file system works).
+- Manual sort order for songs in the "Artist" section doesn't look right.
+
+- "Select all" in edit.
+- Fix ugly overlap with dates on right hand side (fast scroll).
+- Scroll titles that are too long to display (or something), otherwise it is impossible to see.
+- "Unknown" add/release date seems to sort in list randomly.
+- playlist/artists/albums icons.
+- Time bar at the top in Queue tab is all black.
+- After making modification (like "collapse"), the quick scroll time things on the right come back (they should be hidden).
+- undo would be nice to have.
+- edit buttons are horribly ugly.
+- Having to scroll up to access edit buttons sucks when editing things far down on the list.
+- Anno 2070 album is "invalid" when importing.
+- go back to playlist when queue done
+
 High
 ====
 - Remove a track in itunes, try playing that track will crash.
@@ -31,6 +59,7 @@ Medium
     - Resync at start?  Or manual?
 - When paused, change scrubber thumb to red.
 - Queue tab icon - change speaker icon to not have arcs when not playing.
+    Also, change to a continuous triangle?  Not really happy with the squares.
 - re-instate max 1-sec scrubber update rate.
 - Creating orphan folder from player does not update playlists table view.
     Would be best to have a dirty flag on a folder, and have viewwillappear check it.
@@ -54,9 +83,6 @@ Low
 - Deal with suffle and repeat.
 - Docs say that AVAudioPlayer automatically enables/disables audio session, but
   recommend that you manually enable/disable as well?
-- Not entirely comfortable with saving on entering background.  Ideas:
-    - Save in background thread.  Would require synchronization work.
-    - Save while idle?
 - Hitting paste while a cell is selected deselects the cell, but doesn't disable
   the delete/cut/copy buttons.
 
