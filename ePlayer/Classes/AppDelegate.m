@@ -323,93 +323,100 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     for (EPFolder *folder in root.topFolders) {
         [self addToAllSongs:allSongs folder:folder];
     }
-    
+
     // Create a dictionary of all items used to check for deleted songs.
-    MPMediaQuery *allQuery = [MPMediaQuery songsQuery];
     NSMutableDictionary *allItems = [[NSMutableDictionary alloc] init];
 
     // Determine the library size for the progress indicator.
+    // NOTE: This is not perfect.  It is possible for songsQuery to return
+    // more entries than albumsQuery (like songs without an album title).
+    // But it should be close enough.
+    MPMediaQuery *allQuery = [MPMediaQuery songsQuery];
     NSUInteger libSize = allQuery.items.count + allSongs.count;
     NSUInteger songsScanned = 0;
-    
+
     // For each song not already in the database, add it.
-    for (MPMediaItem *item in allQuery.items) {
-        
-        songsScanned += 1;
-        [self importUpdateProgress:@((float)songsScanned/(float)libSize)];
+    // Use albumsQuery because it sorts things nicely for us.
+    MPMediaQuery *albumsQuery = [MPMediaQuery albumsQuery];
+    for (MPMediaItemCollection *albumItem in albumsQuery.collections) {
+        for (MPMediaItem *item in albumItem.items) {
+            songsScanned += 1;
+            [self importUpdateProgress:@((float)songsScanned/(float)libSize)];
 
-        EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:item];
-        [allItems setObject:wrapper forKey:wrapper.persistentID];
-        if ([allSongs objectForKey:wrapper.persistentID] == nil) {
-            if (wrapper.genre == nil || wrapper.albumArtist == nil || wrapper.albumTitle == nil) {
-                [brokenItems addObject:wrapper];
-                continue;
-            }
-            EPSong *song = [EPSong songWithName:wrapper.title
-                                   persistentID:wrapper.persistentID];
-            [addedSongs addObject:wrapper];
-            // Add this song to the correct places, creating folders as necessary.
-            // Not going to bother propogating this (normally is zero anyways).
-            song.playCount = [wrapper.playCount integerValue];
+            EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:item];
+            [allItems setObject:wrapper forKey:wrapper.persistentID];
+            if ([allSongs objectForKey:wrapper.persistentID] == nil) {
+                // This song needs to be added to the database.
+                if (wrapper.genre == nil || wrapper.albumArtist == nil || wrapper.albumTitle == nil) {
+                    [brokenItems addObject:wrapper];
+                    continue;
+                }
+                EPSong *song = [EPSong songWithName:wrapper.title
+                                       persistentID:wrapper.persistentID];
+                [addedSongs addObject:wrapper];
+                // Add this song to the correct places, creating folders as necessary.
+                // Not going to bother propogating this (normally is zero anyways).
+                song.playCount = [wrapper.playCount integerValue];
 
-            // Determine where it should go in "playlists".
-            EPFolder *genreFolder = [root.playlists folderWithName:wrapper.genre];
-            if (genreFolder == nil) {
-                genreFolder = [EPFolder folderWithName:wrapper.genre
-                                             sortOrder:EPSortOrderAddDate
-                                           releaseDate:[NSDate distantPast]
-                                               addDate:[NSDate distantPast]
-                                              playDate:[NSDate distantPast]];
-                [root.playlists addEntriesObject:genreFolder];
-            }
-            EPFolder *genreArtist = [genreFolder folderWithName:wrapper.albumArtist];
-            if (genreArtist == nil) {
-                genreArtist = [EPFolder folderWithName:wrapper.albumArtist
-                                             sortOrder:EPSortOrderAddDate
-                                           releaseDate:[NSDate distantPast]
-                                               addDate:[NSDate distantPast]
-                                              playDate:[NSDate distantPast]];
-                [genreFolder addEntriesObject:genreArtist];
-            }
-            EPFolder *genreAlbum = [genreArtist folderWithName:wrapper.albumTitle];
-            if (genreAlbum == nil) {
-                genreAlbum = [EPFolder folderWithName:wrapper.albumTitle
-                                            sortOrder:EPSortOrderManual
-                                          releaseDate:[NSDate distantPast]
-                                              addDate:[NSDate distantPast]
-                                             playDate:[NSDate distantPast]];
-                [genreArtist addEntriesObject:genreAlbum];
-            }
-            [genreAlbum addEntriesObject:song];
+                // Determine where it should go in "playlists".
+                EPFolder *genreFolder = [root.playlists folderWithName:wrapper.genre];
+                if (genreFolder == nil) {
+                    genreFolder = [EPFolder folderWithName:wrapper.genre
+                                                 sortOrder:EPSortOrderAddDate
+                                               releaseDate:[NSDate distantPast]
+                                                   addDate:[NSDate distantPast]
+                                                  playDate:[NSDate distantPast]];
+                    [root.playlists addEntriesObject:genreFolder];
+                }
+                EPFolder *genreArtist = [genreFolder folderWithName:wrapper.albumArtist];
+                if (genreArtist == nil) {
+                    genreArtist = [EPFolder folderWithName:wrapper.albumArtist
+                                                 sortOrder:EPSortOrderAddDate
+                                               releaseDate:[NSDate distantPast]
+                                                   addDate:[NSDate distantPast]
+                                                  playDate:[NSDate distantPast]];
+                    [genreFolder addEntriesObject:genreArtist];
+                }
+                EPFolder *genreAlbum = [genreArtist folderWithName:wrapper.albumTitle];
+                if (genreAlbum == nil) {
+                    genreAlbum = [EPFolder folderWithName:wrapper.albumTitle
+                                                sortOrder:EPSortOrderManual
+                                              releaseDate:[NSDate distantPast]
+                                                  addDate:[NSDate distantPast]
+                                                 playDate:[NSDate distantPast]];
+                    [genreArtist addEntriesObject:genreAlbum];
+                }
+                [genreAlbum addEntriesObject:song];
 
-            // Determine where it should go in artists.
-            EPFolder *artistFolder = [root.artists folderWithName:wrapper.albumArtist];
-            if (artistFolder == nil) {
-                artistFolder = [EPFolder folderWithName:wrapper.albumArtist
-                                              sortOrder:EPSortOrderAddDate
-                                            releaseDate:[NSDate distantPast]
-                                                addDate:[NSDate distantPast]
-                                               playDate:[NSDate distantPast]];
-                [root.artists addEntriesObject:artistFolder];
+                // Determine where it should go in artists.
+                EPFolder *artistFolder = [root.artists folderWithName:wrapper.albumArtist];
+                if (artistFolder == nil) {
+                    artistFolder = [EPFolder folderWithName:wrapper.albumArtist
+                                                  sortOrder:EPSortOrderAddDate
+                                                releaseDate:[NSDate distantPast]
+                                                    addDate:[NSDate distantPast]
+                                                   playDate:[NSDate distantPast]];
+                    [root.artists addEntriesObject:artistFolder];
+                }
+                
+                // Determine where it should go in albums.
+                EPFolder *albumFolder = [root.albums folderWithName:wrapper.albumTitle];
+                if (albumFolder == nil) {
+                    albumFolder = [EPFolder folderWithName:wrapper.albumTitle
+                                                 sortOrder:EPSortOrderManual
+                                               releaseDate:[NSDate distantPast]
+                                                   addDate:[NSDate distantPast]
+                                                  playDate:[NSDate distantPast]];
+                    [root.albums addEntriesObject:albumFolder];
+                    // Assume album is missing in artist as well.
+                    [artistFolder addEntriesObject:albumFolder];
+                }
+                [albumFolder addEntriesObject:song];
+                
+                [song propagateAddDate:[NSDate date]];
+                [song propagateReleaseDate:wrapper.releaseDate];
+                song.playDate = [NSDate distantPast];
             }
-            
-            // Determine where it should go in albums.
-            EPFolder *albumFolder = [root.albums folderWithName:wrapper.albumTitle];
-            if (albumFolder == nil) {
-                albumFolder = [EPFolder folderWithName:wrapper.albumTitle
-                                             sortOrder:EPSortOrderManual
-                                           releaseDate:[NSDate distantPast]
-                                               addDate:[NSDate distantPast]
-                                              playDate:[NSDate distantPast]];
-                [root.albums addEntriesObject:albumFolder];
-                // Assume album is missing in artist as well.
-                [artistFolder addEntriesObject:albumFolder];
-            }
-            [albumFolder addEntriesObject:song];
-            
-            [song propagateAddDate:[NSDate date]];
-            [song propagateReleaseDate:wrapper.releaseDate];
-            song.playDate = [NSDate distantPast];
         }
     }
     

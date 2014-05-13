@@ -8,8 +8,13 @@ NOTES
 TODO
 ****
 
+- Check for songs without an album title in updateDB.  These do not show up in
+  the albumsquery.
 - More explicit backup/restore of the database.
-
+- When deleting from orphan folder, pop up warning that the songs will be
+  readded during next sync.
+  - Could add a hidden orphan folder where they would go.
+  - Option to "clear orphans" for debug purposes (allows you to reimport those songs).
 - Not entirely comfortable with saving on entering background.  Ideas:
     - Save in background thread.  Would require synchronization work.
     - Save while idle?
@@ -18,10 +23,8 @@ TODO
       The browser should preload 1 level deep?  Or build a cache or something.
 
 - Archive database update logs.
-- [MPMediaQuery songsQuery] seemed to have sorted Darksiders 2 almost randomly.  It's a 2 disc.  Does it always do this, or is there something weird about darksiders 2 metadata.
 
 - Copying a folder shouldn't make a copy to a *reference* but instead it should actually make a new folder.  Use case: select a folder, copy, paste, the new folder should *not* be tied to the original (try renaming it).  Not only is the reference the same, but then it starts acting really buggy (rename, only 1 shows the rename, but in reality they are both renamed.  Delete, they both get deleted.).  I think it should do this recursively (it should create new entries, think like a file system works).
-- Manual sort order for songs in the "Artist" section doesn't look right.
 
 - "Select all" in edit.
 - Fix ugly overlap with dates on right hand side (fast scroll).

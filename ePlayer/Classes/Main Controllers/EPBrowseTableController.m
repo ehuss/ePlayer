@@ -745,6 +745,11 @@ sectionForSectionIndexTitle:(NSString *)title
     }
 }
 
+/* Delete rows from the current view.
+
+   If doCheckOrphans is YES, then orphaned songs will be moved to the orphans
+   folder.
+ */
 - (void)deleteRows:(NSArray *)indexPaths checkOrphans:(BOOL)doCheckOrphans
 {
     // Determine the entries to delete.
@@ -945,6 +950,10 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 #pragma mark - Cut/Copy/Paste
 /*****************************************************************************/
 
+/* Prevents operations that would modify the orphan folder.
+ 
+ emptyDeleteOK = YES means to allow deleting the orphan folder if it is empty.
+*/
 - (BOOL)preventOrphanSelection:(NSString *)action emptyDeleteOK:(BOOL)emptyDeleteOK
 {
     if (self.folder.parents.count == 0) {
@@ -1003,7 +1012,13 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     } else if (buttonIndex == actionSheet.destructiveButtonIndex) {
         NSString *name = [actionSheet buttonTitleAtIndex:buttonIndex];
         if ([name compare:@"Delete"] == NSOrderedSame) {
-            [self deleteRows:[self.tableView indexPathsForSelectedRows] checkOrphans:YES];
+            BOOL checkOrphans = YES;
+            if ([self.folder.name compare:kEPOrphanFolderName] == NSOrderedSame) {
+                // Allow permanent deletion from the orphan folder.
+                checkOrphans = NO;
+            }
+            [self deleteRows:[self.tableView indexPathsForSelectedRows]
+                checkOrphans:checkOrphans];
         } else if ([name compare:@"Collapse"] == NSOrderedSame) {
             [self collapseRows:[self.tableView indexPathsForSelectedRows]];
         }
