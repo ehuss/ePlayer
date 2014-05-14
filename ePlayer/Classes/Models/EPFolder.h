@@ -27,7 +27,7 @@
                      addDate:(NSDate *)addDate
                     playDate:(NSDate *)palyDate;
 
-- (NSString *)sectionTitleForEntry:(EPEntry *)entry;
+- (NSString *)sectionTitleForEntry:(EPEntry *)entry forIndex:(BOOL)forIndex;
 - (NSArray *)sortedEntries;
 - (EPFolder *)folderWithUUID:(NSUUID *)uuid;
 - (EPSong *)songWithPersistentID:(NSNumber *)persistentID;

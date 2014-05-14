@@ -141,8 +141,21 @@
     }];
 }
 
+- (NSString *)sectionTitleDate:(NSDate *)date forIndex:(BOOL)forIndex
+                         title:(NSString *)title indexTitle:(NSString *)indexTitle
+{
+    if ([date compare:[NSDate distantPast]] == NSOrderedSame) {
+        if (forIndex) {
+            return indexTitle;
+        } else {
+            return title;
+        }
+    } else {
+        return yearFromDate(date);
+    }
+}
 
-- (NSString *)sectionTitleForEntry:(EPEntry *)entry;
+- (NSString *)sectionTitleForEntry:(EPEntry *)entry forIndex:(BOOL)forIndex
 {
     switch (self.sortOrder) {
         case EPSortOrderAlpha:
@@ -154,26 +167,18 @@
             }
 
         case EPSortOrderAddDate:
-            if ([entry.addDate compare:[NSDate distantPast]] == NSOrderedSame) {
-                return @"Unknown";
-            } else {
-                return yearFromDate(entry.addDate);
-            }
+            // The word "Unknown" is just too wide for the index.
+            return [self sectionTitleDate:entry.addDate forIndex:forIndex
+                                    title:@"Unknown" indexTitle:@"??"];
 
         case EPSortOrderPlayDate:
-            if ([entry.playDate compare:[NSDate distantPast]] == NSOrderedSame) {
-                return @"Never";
-            } else {
-                return yearFromDate(entry.playDate);
-            }
+            return [self sectionTitleDate:entry.playDate forIndex:forIndex
+                                    title:@"Never" indexTitle:@"Never"];
 
         case EPSortOrderReleaseDate:
-            if ([entry.releaseDate compare:[NSDate distantPast]] == NSOrderedSame) {
-                return @"Unknown";
-            } else {
-                return yearFromDate(entry.releaseDate);
-            }
-            
+            return [self sectionTitleDate:entry.releaseDate forIndex:forIndex
+                                    title:@"Unknown" indexTitle:@"??"];
+
         default:
             [NSException raise:@"UnknownSortOrder" format:@"Unknown sort order %i.", self.sortOrder];
     }

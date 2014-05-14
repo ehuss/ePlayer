@@ -172,7 +172,7 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
     }
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     if (useDateLabel) {
-        cell.dateLabel.text = [self.folder sectionTitleForEntry:entry];
+        cell.dateLabel.text = [self.folder sectionTitleForEntry:entry forIndex:NO];
     }
 }
 
@@ -357,12 +357,11 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
 {
     // No need to worry about showingControlCells, indexes are disabled.
     if (self.indexesEnabled) {
-        // Currently using same section titles for index titles.
         NSArray *data;
         if (tableView == self.searchDisplayController.searchResultsTableView) {
-            data = self.filteredSectionTitles;
+            data = self.filteredSectionIndexTitles;
         } else {
-            data = self.sectionTitles;
+            data = self.sectionIndexTitles;
         }
         if (data.count < 4) {
             return nil;
@@ -510,8 +509,10 @@ sectionForSectionIndexTitle:(NSString *)title
                                searchText];
     NSMutableArray *newSections = [NSMutableArray arrayWithCapacity:self.sections.count];
     NSMutableArray *newSectionTitles = nil;
+    NSMutableArray *newSectionIndexTitles = nil;
     if (self.sectionTitles != nil) {
         newSectionTitles = [NSMutableArray arrayWithCapacity:self.sectionTitles.count];
+        newSectionIndexTitles = [NSMutableArray arrayWithCapacity:self.sectionIndexTitles.count];
     }
     for (int i=0; i<self.sections.count; i++) {
         NSArray *section = self.sections[i];
@@ -520,11 +521,13 @@ sectionForSectionIndexTitle:(NSString *)title
             [newSections addObject:newSection];
             if (newSectionTitles) {
                 [newSectionTitles addObject:self.sectionTitles[i]];
+                [newSectionIndexTitles addObject:self.sectionIndexTitles[i]];
             }
         }
     }
     self.filteredSections = newSections;
     self.filteredSectionTitles = newSectionTitles;
+    self.filteredSectionIndexTitles = newSectionIndexTitles;
     
 }
 
@@ -541,6 +544,7 @@ sectionForSectionIndexTitle:(NSString *)title
 {
     self.filteredSections = nil;
     self.filteredSectionTitles = nil;
+    self.filteredSectionIndexTitles = nil;
 }
 
 /*****************************************************************************/
@@ -669,16 +673,19 @@ sectionForSectionIndexTitle:(NSString *)title
         NSMutableArray *sections = [[NSMutableArray alloc] init];
         self.sections = sections;
         self.sectionTitles = [[NSMutableArray alloc] init];
+        self.sectionIndexTitles = [[NSMutableArray alloc] init];
         NSMutableArray *currentSection = nil;
         NSString *currentSectionTitle = nil;
         for (EPEntry *entry in sortedEntries) {
-            NSString *sectionTitle = [self.folder sectionTitleForEntry:entry];
+            NSString *sectionTitle = [self.folder sectionTitleForEntry:entry forIndex:NO];
             // Is this entry a new section?
             if (currentSection == nil || [sectionTitle compare:currentSectionTitle]!=NSOrderedSame) {
                 currentSectionTitle = sectionTitle;
                 [self.sectionTitles addObject:sectionTitle];
                 currentSection = [[NSMutableArray alloc] init];
                 [sections addObject:currentSection];
+                NSString *indexTitle = [self.folder sectionTitleForEntry:entry forIndex:YES];
+                [self.sectionIndexTitles addObject:indexTitle];
             }
             [currentSection addObject:entry];
         }
@@ -687,6 +694,7 @@ sectionForSectionIndexTitle:(NSString *)title
         self.sections = [NSMutableArray arrayWithObject:
                          [NSMutableArray arrayWithArray:sortedEntries]];
         self.sectionTitles = [NSMutableArray arrayWithObject:@""];
+        self.sectionIndexTitles = self.sectionTitles;
         self.indexesEnabled = NO;
     }
 }

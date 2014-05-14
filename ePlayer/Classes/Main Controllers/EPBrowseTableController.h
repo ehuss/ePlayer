@@ -46,6 +46,7 @@ extern NSUInteger minEntriesForSections;
 @property (strong, nonatomic) NSMutableArray *sections;
 // sectionTitles is nil if there are no sections.
 @property (strong, nonatomic) NSMutableArray *sectionTitles;
+@property (nonatomic) NSMutableArray *sectionIndexTitles;
 @property (readonly, nonatomic) EPPlayerController *playerController;
 // Control cells are the ones at the top used for setting sort order,
 // inserting rows, etc.
@@ -57,6 +58,7 @@ extern NSUInteger minEntriesForSections;
 @property (strong, nonatomic) UISearchDisplayController *searchController;
 @property (strong, nonatomic) NSArray *filteredSections;
 @property (strong, nonatomic) NSArray *filteredSectionTitles;
+@property (nonatomic) NSArray *filteredSectionIndexTitles;
 // When searching, the property in self.sections to look at.
 @property (readonly, nonatomic) NSString *filterPropertyName;
 @property (assign, nonatomic) BOOL wantsSearch;
