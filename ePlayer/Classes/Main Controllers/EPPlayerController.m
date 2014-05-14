@@ -662,9 +662,7 @@ static NSTimeInterval seekAmount = 2.0;
 {
     NSLog(@"PLAYER Become active");
     self.isDisplayed = YES;
-    if (self.isPlaying) {
-        [self startTimer];
-    }
+    [self updateDisplay];
 }
 
 /****************************************************************************/
