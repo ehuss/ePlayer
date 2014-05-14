@@ -30,7 +30,6 @@ TODO
 - "Select all" in edit.
 - Scroll titles that are too long to display (or something), otherwise it is impossible to see.
 - playlist/artists/albums icons.
-- Time bar at the top in Queue tab is all black.
 - After making modification (like "collapse"), the quick scroll time things on the right come back (they should be hidden).
 - undo would be nice to have.
 - edit buttons are horribly ugly.

@@ -88,6 +88,17 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     [self updateVolumeImage];
 }
 
+-(UIStatusBarStyle)preferredStatusBarStyle
+{
+    // I think for the other tabs, the NavigationBar is forcing this
+    // (probably because of the settings in the app plist).  Not sure if there
+    // is a better, global way to set this
+    // (set UIViewControllerBasedStatusBarAppearance to NO?).  Well, regardless
+    // I need to redo the coloring anyways, this will fix the problem for now
+    // (was getting black text on a black background).
+    return UIStatusBarStyleBlackOpaque;
+}
+
 - (EPMainTabController *)mainTabController
 {
     return (EPMainTabController *)self.tabBarController;

@@ -207,7 +207,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="qjW-r9-KZf" firstAttribute="top" secondItem="JRq-RG-YMI" secondAttribute="bottom" id="0by-vG-H7a"/>
                             <constraint firstAttribute="bottom" secondItem="t2H-ra-lMT" secondAttribute="bottom" constant="50" id="CFM-Lo-adg"/>
@@ -222,6 +222,7 @@
                             <constraint firstItem="JRq-RG-YMI" firstAttribute="trailing" secondItem="qjW-r9-KZf" secondAttribute="trailing" id="z74-X6-3mB"/>
                         </constraints>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <tabBarItem key="tabBarItem" title="Queue" id="a9e-PK-GQ5"/>
                     <navigationItem key="navigationItem" title="Queue" id="Tx0-TY-2f3"/>
                     <nil key="simulatedTopBarMetrics"/>
