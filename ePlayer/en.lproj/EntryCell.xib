@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4510" systemVersion="12F45" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13C1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1536" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -14,9 +14,12 @@
                 <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="12" userLabel="Play Button" customClass="EPPlayButton">
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="12" userLabel="Play Button" customClass="EPPlayButton">
                         <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="44" id="4vT-db-2Z2"/>
+                        </constraints>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                         <state key="normal" image="play.png">
                             <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -29,23 +32,27 @@
                             <outlet property="browserCell" destination="2" id="Rtk-cp-yWc"/>
                         </connections>
                     </button>
-                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="2000" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="15" userLabel="Date Label">
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="2000" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="15" userLabel="Date Label">
                         <rect key="frame" x="258" y="24" width="42" height="21"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="pO6-zj-dnE"/>
+                            <constraint firstAttribute="width" constant="42" id="qGO-0d-bi9"/>
+                        </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="99:99" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="42" userLabel="Time Label">
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="99:99" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="42" userLabel="Time Label">
                         <rect key="frame" x="258" y="-1" width="42" height="21"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Really Long Title Goes H..." minimumFontSize="17" id="34">
-                        <rect key="frame" x="44" y="7" width="256" height="30"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Really Long Title Goes H..." minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="34">
+                        <rect key="frame" x="44" y="7" width="235" height="30"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
                         <connections>
@@ -53,6 +60,21 @@
                         </connections>
                     </textField>
                 </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="15" secondAttribute="trailing" constant="-13" id="3fK-xv-Tj3"/>
+                    <constraint firstItem="34" firstAttribute="centerY" secondItem="12" secondAttribute="centerY" id="7bN-74-VJM"/>
+                    <constraint firstItem="42" firstAttribute="trailing" secondItem="15" secondAttribute="trailing" id="EPi-nC-Iph"/>
+                    <constraint firstItem="12" firstAttribute="leading" secondItem="zCJ-hB-x6P" secondAttribute="leading" id="Fyi-iv-wds"/>
+                    <constraint firstItem="15" firstAttribute="top" secondItem="42" secondAttribute="bottom" constant="4" id="GrS-l2-gzu"/>
+                    <constraint firstAttribute="bottom" secondItem="12" secondAttribute="bottom" constant="-1" id="ROb-4v-Yds"/>
+                    <constraint firstAttribute="bottom" secondItem="15" secondAttribute="bottom" constant="-2" id="WKe-6U-yQD"/>
+                    <constraint firstItem="42" firstAttribute="leading" secondItem="15" secondAttribute="leading" id="XT3-pn-fXJ"/>
+                    <constraint firstItem="34" firstAttribute="top" secondItem="zCJ-hB-x6P" secondAttribute="top" constant="7" id="ZMc-ZJ-pz5"/>
+                    <constraint firstAttribute="trailing" secondItem="34" secondAttribute="trailing" constant="8" id="a63-Zs-r0z"/>
+                    <constraint firstItem="12" firstAttribute="top" secondItem="zCJ-hB-x6P" secondAttribute="top" id="lV2-yy-4BW"/>
+                    <constraint firstItem="42" firstAttribute="top" secondItem="zCJ-hB-x6P" secondAttribute="top" constant="-1" id="v7s-Lr-AVn"/>
+                    <constraint firstItem="34" firstAttribute="leading" secondItem="12" secondAttribute="trailing" id="zIM-Il-UoA"/>
+                </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="dateLabel" destination="15" id="16"/>
