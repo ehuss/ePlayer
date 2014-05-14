@@ -17,6 +17,7 @@
 #import "EPPlayButton.h"
 
 NSUInteger minEntriesForSections = 10;
+static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
 
 @interface EPBrowseTableController ()
 
@@ -35,7 +36,7 @@ NSUInteger minEntriesForSections = 10;
     self.wantsSearch = count > 10;
     // Misc setup.
     // This seems to be bugged in Interface Builder.
-    self.tableView.sectionIndexMinimumDisplayRowCount = 10;
+    self.tableView.sectionIndexMinimumDisplayRowCount = kSectionIndexMinimumDisplayRowCount;
     // Need this for a complex issue.  When bringing up the queue, the bottom
     // tab bar is hidden.  When returning to this table, it gets resized as
     // the tab bar is brought back.  This causes the contentOffset to get reset
@@ -404,6 +405,11 @@ sectionForSectionIndexTitle:(NSString *)title
                                                       owner:self
                                                     options:nil];
     EPTableSectionView *view = nibViews[0];
+    // I would really like to be able to adjust the Sort Description Label
+    // so that it is positioned right-flush.  However, it is extraordinarily
+    // difficult to determine if the section indexes are currently being
+    // displayed.  So for now, it is shifted over 35 pixels so it never
+    // overlaps with the section indexes.
     view.sectionLabel.text = data[section];
     if (section == 0) {
         NSString *text;

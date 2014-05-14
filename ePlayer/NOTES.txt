@@ -28,9 +28,7 @@ TODO
 - Copying a folder shouldn't make a copy to a *reference* but instead it should actually make a new folder.  Use case: select a folder, copy, paste, the new folder should *not* be tied to the original (try renaming it).  Not only is the reference the same, but then it starts acting really buggy (rename, only 1 shows the rename, but in reality they are both renamed.  Delete, they both get deleted.).  I think it should do this recursively (it should create new entries, think like a file system works).
 
 - "Select all" in edit.
-- Fix ugly overlap with dates on right hand side (fast scroll).
 - Scroll titles that are too long to display (or something), otherwise it is impossible to see.
-- "Unknown" add/release date seems to sort in list randomly.
 - playlist/artists/albums icons.
 - Time bar at the top in Queue tab is all black.
 - After making modification (like "collapse"), the quick scroll time things on the right come back (they should be hidden).
