@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "EPPlayerController.h"
 
-@interface EPMainTabController : UITabBarController
+@interface EPMainTabController : UITabBarController <UITabBarControllerDelegate>
 
 @property (strong, nonatomic) EPPlayerController *playerController;
+@property (nonatomic) UIViewController *previousController;
 
 - (void)mainInit;
 - (void)loadInitialFolders;

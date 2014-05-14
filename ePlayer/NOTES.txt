@@ -8,6 +8,7 @@ NOTES
 TODO
 ****
 
+- Weird white line in the queue player cell (under index numbers).
 
 - Check for songs without an album title in updateDB.  These do not show up in
   the albumsquery.
@@ -35,7 +36,6 @@ TODO
 - edit buttons are horribly ugly.
 - Having to scroll up to access edit buttons sucks when editing things far down on the list.
 - Anno 2070 album is "invalid" when importing.
-- go back to playlist when queue done
 
 High
 ====
@@ -86,6 +86,7 @@ Low
   recommend that you manually enable/disable as well?
 - Hitting paste while a cell is selected deselects the cell, but doesn't disable
   the delete/cut/copy buttons.
+- Ability to edit the queue?
 
 Ideas
 =====

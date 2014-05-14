@@ -12,6 +12,11 @@
 
 @implementation EPMainTabController
 
+- (void)awakeFromNib
+{
+    self.delegate = self;
+}
+
 - (void)mainInit
 {
     UIStoryboard *sboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:[NSBundle mainBundle]];
@@ -74,6 +79,38 @@
         }
     }
 }
+
+- (void)setSelectedViewController:(UIViewController *)selectedViewController
+{
+    // Don't set if you click on a tab twice.
+    if (self.selectedViewController != selectedViewController) {
+        self.previousController = self.selectedViewController;
+    }
+    [super setSelectedViewController:selectedViewController];
+}
+
+- (void)setSelectedIndex:(NSUInteger)selectedIndex
+{
+    // This does not work with "More" navigation.
+    UIViewController *selectedViewController = self.viewControllers[selectedIndex];
+    // Don't set if you click on a tab twice.
+    if (self.selectedViewController != selectedViewController) {
+        self.previousController = self.selectedViewController;
+    }
+    // I'm assuming that when you set the index, setSelectedViewController is
+    // not called, which seems to be the case.
+    [super setSelectedIndex:selectedIndex];
+}
+
+//- (BOOL)tabBarController:(UITabBarController *)tabBarController
+//shouldSelectViewController:(UIViewController *)viewController
+//{
+//    // Don't set if you click on a tab twice.
+//    if (self.selectedViewController != viewController) {
+//        self.previousController = self.selectedViewController;
+//    }
+//    return YES;
+//}
 
 
 @end

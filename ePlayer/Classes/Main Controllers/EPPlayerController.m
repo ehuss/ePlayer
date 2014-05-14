@@ -346,7 +346,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         self.lastScrubberUpdate = now;
         self.currentPlayer.currentTime = duration*self.scrubber.value;
         [self nextPlayerPrepare];
-        NSLog(@"updated to %f", self.currentPlayer.currentTime);
+//        NSLog(@"updated to %f", self.currentPlayer.currentTime);
         [self updateTimeLabels];
     }
   //  }
@@ -672,13 +672,26 @@ static NSTimeInterval seekAmount = 2.0;
 - (void)didBecomeActive:(UIApplication *)application
 {
     NSLog(@"PLAYER Become active");
-    self.isDisplayed = YES;
-    [self updateDisplay];
+    if (self.mainTabController.selectedViewController == self) {
+        self.isDisplayed = YES;
+        [self updateDisplay];
+    }
 }
 
 /****************************************************************************/
 #pragma mark - Display Update
 /****************************************************************************/
+
+- (void)switchToPreviousTab
+{
+    // Queue is currently displayed, and the previous tab was not the queue.
+    // (I don't think the check for previous==self is necessary.)
+    if (self.mainTabController.previousController &&
+        self.mainTabController.previousController != self &&
+        self.mainTabController.selectedViewController == self) {
+        self.mainTabController.selectedViewController = self.mainTabController.previousController;
+    }
+}
 
 - (void)updateNowPlayingInfoCenter
 {
@@ -875,6 +888,7 @@ static NSTimeInterval seekAmount = 2.0;
             self.currentPlayer = nil;
             self.nextPlayer = nil;  // Probably redundant.
             self.root.currentQueueIndex = 0;
+            [self switchToPreviousTab];
         }
         finishedSong.playCount += 1;
         finishedSong.playDate = [NSDate date];
