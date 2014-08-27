@@ -11,29 +11,39 @@
 
 @implementation EPBrowserCell
 
-static CGFloat textViewOffset = 4.0;
-
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
     [super setEditing:editing animated:animated];
     // Hide play button while editing.
-    NSTimeInterval duration = animated ? 0.2 : 0;
     if (editing) {
         if (!self.playButton.hidden) {
-            [UIView animateWithDuration:duration animations:^{
-                self.playButton.hidden = YES;
-                self.textView.center = CGPointMake(self.textView.center.x-self.playButton.frame.size.width+textViewOffset,
-                                                    self.textView.center.y);
-            }];
+            [self togglePlayVisibility];
         }
     } else {
         self.textView.enabled = NO;
         if (self.playButton.hidden) {
-            [UIView animateWithDuration:duration animations:^{
+            [self togglePlayVisibility];
+        }
+    }
+}
+
+- (void)togglePlayVisibility
+{
+    // Unfortunately I was unable to get the IBOutlet for this constraint to
+    // load (it was always nil).  Just iterate to find it.
+    //
+    // It would be nice if this could be animated, but just sticking it in an
+    // animation block doesn't do anything.
+    for (NSLayoutConstraint *constraint in self.playButton.constraints) {
+        if (constraint.firstAttribute == NSLayoutAttributeWidth) {
+            if (constraint.constant == 0) {
+                constraint.constant = 44;
                 self.playButton.hidden = NO;
-                self.textView.center = CGPointMake(self.textView.center.x+self.playButton.frame.size.width-textViewOffset,
-                                                    self.textView.center.y);
-            }];
+            } else {
+                constraint.constant = 0;
+                self.playButton.hidden = YES;
+            }
+            break;
         }
     }
 }

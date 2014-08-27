@@ -8,6 +8,12 @@ NOTES
 TODO
 ****
 
+
+- Maybe add "play all" button at top of list?  (such as inside an album)
+- Make cell elements a little taller.
+- Use clean, simple, flat icons (plus, play), particularly in list view.
+- Show queue length (total and remaining).
+- Removing a song, and adding it back in iTunes confuses the sync (it stays removed, doesn't get readded).
 - Weird white line in the queue player cell (under index numbers).
 
 - Check for songs without an album title in updateDB.  These do not show up in
