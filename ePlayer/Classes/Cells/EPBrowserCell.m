@@ -20,7 +20,7 @@
             [self togglePlayVisibility];
         }
     } else {
-        self.textView.enabled = NO;
+        self.textView.userInteractionEnabled = NO;
         if (self.playButton.hidden) {
             [self togglePlayVisibility];
         }
@@ -48,6 +48,18 @@
     }
 }
 
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView
+{
+    return self.parentController.renaming;
+}
+
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    [self.parentController rename:self to:textView.text];
+}
+
+/*
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
 	[textField resignFirstResponder];
@@ -64,5 +76,6 @@
 {
     [self.parentController rename:self to:textField.text];
 }
+ */
 
 @end

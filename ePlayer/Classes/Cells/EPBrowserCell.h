@@ -12,8 +12,8 @@
 
 @class EPBrowseTableController;
 
-@interface EPBrowserCell : UITableViewCell <UITextFieldDelegate>
-@property (weak, nonatomic) IBOutlet UITextField *textView;
+@interface EPBrowserCell : UITableViewCell <UITextViewDelegate>
+@property (weak, nonatomic) IBOutlet UITextView *textView;
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;

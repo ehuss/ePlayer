@@ -22,6 +22,8 @@
 		0719E3761726268E00D325B5 /* queue-volume-on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E3751726268E00D325B5 /* queue-volume-on@2x.png */; };
 		0719E37917262A7D00D325B5 /* UIImage+EPCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */; };
 		0719E37B1726356900D325B5 /* play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E37A1726356900D325B5 /* play@2x.png */; };
+		071C6CD319DE31C60080FE09 /* Test.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 071C6CD119DE31C60080FE09 /* Test.storyboard */; };
+		073E767219DE3E0C00DBDA78 /* Test2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 073E767019DE3E0C00DBDA78 /* Test2.xib */; };
 		0746FA88181A398E0056D3A5 /* EPPlayButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0746FA87181A398E0056D3A5 /* EPPlayButton.m */; };
 		07475EB017272053001BB7AA /* EPEditCell1.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EAF17272053001BB7AA /* EPEditCell1.m */; };
 		07475EB317272063001BB7AA /* EPEditCell2.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EB217272063001BB7AA /* EPEditCell2.m */; };
@@ -86,6 +88,7 @@
 		079B4153171F55F00036F0D4 /* EPTableSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4152171F55ED0036F0D4 /* EPTableSectionView.m */; };
 		079B4163171F5B5D0036F0D4 /* TableSectionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 079B4161171F5B5D0036F0D4 /* TableSectionView.xib */; };
 		079B4165171F5BBF0036F0D4 /* header-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079B4164171F5BBF0036F0D4 /* header-background@2x.png */; };
+		07BE575519CD025800D45EC0 /* NSMutableDictionary+EP.m in Sources */ = {isa = PBXBuildFile; fileRef = 07BE575419CD025800D45EC0 /* NSMutableDictionary+EP.m */; };
 		07C841521832232900AEBA07 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 07C8414F1832232900AEBA07 /* SVProgressHUD.bundle */; };
 		07C841531832232900AEBA07 /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 07C841511832232900AEBA07 /* SVProgressHUD.m */; };
 		07D8F1B4173868780044DEC9 /* gear@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07D8F1B3173868780044DEC9 /* gear@2x.png */; };
@@ -124,6 +127,8 @@
 		0719E37717262A7B00D325B5 /* UIImage+EPCrop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+EPCrop.h"; sourceTree = "<group>"; };
 		0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+EPCrop.m"; sourceTree = "<group>"; };
 		0719E37A1726356900D325B5 /* play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play@2x.png"; sourceTree = "<group>"; };
+		071C6CD219DE31C60080FE09 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = Test.storyboard; sourceTree = "<group>"; };
+		073E767119DE3E0C00DBDA78 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Test2.xib; sourceTree = "<group>"; };
 		0746FA86181A398E0056D3A5 /* EPPlayButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayButton.h; sourceTree = "<group>"; };
 		0746FA87181A398E0056D3A5 /* EPPlayButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayButton.m; sourceTree = "<group>"; };
 		07475EAE17272053001BB7AA /* EPEditCell1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPEditCell1.h; sourceTree = "<group>"; };
@@ -218,6 +223,8 @@
 		079B4152171F55ED0036F0D4 /* EPTableSectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPTableSectionView.m; sourceTree = "<group>"; };
 		079B4162171F5B5D0036F0D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = TableSectionView.xib; sourceTree = "<group>"; };
 		079B4164171F5BBF0036F0D4 /* header-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "header-background@2x.png"; sourceTree = "<group>"; };
+		07BE575319CD025800D45EC0 /* NSMutableDictionary+EP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+EP.h"; sourceTree = "<group>"; };
+		07BE575419CD025800D45EC0 /* NSMutableDictionary+EP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+EP.m"; sourceTree = "<group>"; };
 		07C8414F1832232900AEBA07 /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
 		07C841501832232900AEBA07 /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
 		07C841511832232900AEBA07 /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
@@ -262,6 +269,8 @@
 		07475EB41727240B001BB7AA /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				07BE575319CD025800D45EC0 /* NSMutableDictionary+EP.h */,
+				07BE575419CD025800D45EC0 /* NSMutableDictionary+EP.m */,
 				079B4142171E139A0036F0D4 /* NSArray+EPMap.h */,
 				079B4143171E139C0036F0D4 /* NSArray+EPMap.m */,
 				0719E37717262A7B00D325B5 /* UIImage+EPCrop.h */,
@@ -498,6 +507,8 @@
 				0719E2E51723AEE700D325B5 /* EntryCell.xib */,
 				079B4161171F5B5D0036F0D4 /* TableSectionView.xib */,
 				0755C3091714BE0400AAF81F /* MainStoryboard_iPhone.storyboard */,
+				071C6CD119DE31C60080FE09 /* Test.storyboard */,
+				073E767019DE3E0C00DBDA78 /* Test2.xib */,
 				0719E2EB1724C76400D325B5 /* EditCell.xib */,
 				07475EC0172780A4001BB7AA /* Test.xib */,
 				078A3BEC172B5A18009A8FF5 /* PlayerCell.xib */,
@@ -618,6 +629,7 @@
 				0718E63E1721068A00301D0E /* segmented-divider-selected@2x.png in Resources */,
 				0718E63F1721068A00301D0E /* segmented-left-normal@2x.png in Resources */,
 				0718E6401721068A00301D0E /* segmented-left-selected@2x.png in Resources */,
+				071C6CD319DE31C60080FE09 /* Test.storyboard in Resources */,
 				0718E6411721068A00301D0E /* segmented-middle-normal@2x.png in Resources */,
 				0718E6421721068A00301D0E /* segmented-middle-selected@2x.png in Resources */,
 				0718E6431721068A00301D0E /* segmented-right-normal@2x.png in Resources */,
@@ -627,6 +639,7 @@
 				0719E3741726248100D325B5 /* queue-volume-off@2x.png in Resources */,
 				0719E3761726268E00D325B5 /* queue-volume-on@2x.png in Resources */,
 				0719E37B1726356900D325B5 /* play@2x.png in Resources */,
+				073E767219DE3E0C00DBDA78 /* Test2.xib in Resources */,
 				07475EBC172761BD001BB7AA /* append-popout@2x.png in Resources */,
 				07475EC2172780A4001BB7AA /* Test.xib in Resources */,
 				078A3BEE172B5A18009A8FF5 /* PlayerCell.xib in Resources */,
@@ -694,6 +707,7 @@
 				0719E37917262A7D00D325B5 /* UIImage+EPCrop.m in Sources */,
 				07475EB017272053001BB7AA /* EPEditCell1.m in Sources */,
 				07475EB317272063001BB7AA /* EPEditCell2.m in Sources */,
+				07BE575519CD025800D45EC0 /* NSMutableDictionary+EP.m in Sources */,
 				07475EBF17278023001BB7AA /* EPAppendButton.m in Sources */,
 				078A3BEB1729EE8A009A8FF5 /* EPMainTabController.m in Sources */,
 				078A3BF9172BC059009A8FF5 /* EPTrackSummaryView.m in Sources */,
@@ -740,6 +754,22 @@
 				0719E2EC1724C76400D325B5 /* en */,
 			);
 			name = EditCell.xib;
+			sourceTree = "<group>";
+		};
+		071C6CD119DE31C60080FE09 /* Test.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				071C6CD219DE31C60080FE09 /* en */,
+			);
+			name = Test.storyboard;
+			sourceTree = "<group>";
+		};
+		073E767019DE3E0C00DBDA78 /* Test2.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				073E767119DE3E0C00DBDA78 /* en */,
+			);
+			name = Test2.xib;
 			sourceTree = "<group>";
 		};
 		07475EC0172780A4001BB7AA /* Test.xib */ = {

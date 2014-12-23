@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6249" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6243"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="ZlW-4c-k1z">
+            <objects>
+                <viewController id="dNe-VL-hsE" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="SNM-Rd-D4u"/>
+                        <viewControllerLayoutGuide type="bottom" id="Vji-SQ-KB8"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="WHi-gF-qSD">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WSI-Z6-iGw">
+                                <rect key="frame" x="0.0" y="20" width="414" height="110"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                            </view>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QA4-fi-63h">
+                                <rect key="frame" x="0.0" y="130" width="414" height="258"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3HC-va-TEm">
+                                <color key="backgroundColor" red="1" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="G0e-eQ-AWM">
+                                <color key="backgroundColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="WSI-Z6-iGw" firstAttribute="leading" secondItem="SNM-Rd-D4u" secondAttribute="leading" id="0G9-NP-Tsi"/>
+                            <constraint firstItem="G0e-eQ-AWM" firstAttribute="trailing" secondItem="3HC-va-TEm" secondAttribute="trailing" id="0un-OG-w3X"/>
+                            <constraint firstItem="3HC-va-TEm" firstAttribute="top" secondItem="WHi-gF-qSD" secondAttribute="top" constant="643" id="CN0-1K-irG"/>
+                            <constraint firstItem="G0e-eQ-AWM" firstAttribute="leading" secondItem="3HC-va-TEm" secondAttribute="leading" id="Ek0-Cp-0nU"/>
+                            <constraint firstItem="3HC-va-TEm" firstAttribute="trailing" secondItem="Vji-SQ-KB8" secondAttribute="trailing" id="F0H-9M-9Qd"/>
+                            <constraint firstItem="WSI-Z6-iGw" firstAttribute="trailing" secondItem="SNM-Rd-D4u" secondAttribute="trailing" id="Gfc-nI-ovx"/>
+                            <constraint firstItem="3HC-va-TEm" firstAttribute="bottom" secondItem="Vji-SQ-KB8" secondAttribute="top" id="U9k-2M-BGr"/>
+                            <constraint firstItem="G0e-eQ-AWM" firstAttribute="top" secondItem="WHi-gF-qSD" secondAttribute="top" constant="599" id="Yjh-v0-Jfz"/>
+                            <constraint firstItem="QA4-fi-63h" firstAttribute="top" secondItem="WSI-Z6-iGw" secondAttribute="bottom" id="bih-DW-mWn"/>
+                            <constraint firstItem="G0e-eQ-AWM" firstAttribute="leading" secondItem="QA4-fi-63h" secondAttribute="leading" id="g26-fA-C7D"/>
+                            <constraint firstItem="3HC-va-TEm" firstAttribute="top" secondItem="QA4-fi-63h" secondAttribute="bottom" constant="43" id="ofT-U7-C5W"/>
+                            <constraint firstItem="QA4-fi-63h" firstAttribute="top" secondItem="WHi-gF-qSD" secondAttribute="top" constant="130" id="oqD-mi-q9C"/>
+                            <constraint firstItem="QA4-fi-63h" firstAttribute="trailing" secondItem="G0e-eQ-AWM" secondAttribute="trailing" id="pMU-Yb-BZA"/>
+                            <constraint firstItem="WSI-Z6-iGw" firstAttribute="top" secondItem="SNM-Rd-D4u" secondAttribute="bottom" id="sV2-dT-ZT3"/>
+                            <constraint firstItem="3HC-va-TEm" firstAttribute="leading" secondItem="Vji-SQ-KB8" secondAttribute="leading" id="snm-mk-lcw"/>
+                            <constraint firstItem="3HC-va-TEm" firstAttribute="top" secondItem="G0e-eQ-AWM" secondAttribute="bottom" id="tzr-ZU-P0x"/>
+                        </constraints>
+                    </view>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mHL-Hw-5oD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="149" y="494"/>
+        </scene>
+    </scenes>
+</document>

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="4">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6249" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="4">
     <dependencies>
-        <deployment defaultVersion="1536" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6243"/>
     </dependencies>
     <scenes>
-        <!--Browse Table Controller - Playlists-->
+        <!--Playlists-->
         <scene sceneID="um1-QD-Ktj">
             <objects>
                 <tableViewController id="2QG-Yq-3qK" customClass="EPBrowseTableController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelectionDuringEditing="YES" allowsMultipleSelectionDuringEditing="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="0QM-Uv-vTS">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <sections/>
@@ -22,7 +22,7 @@
             </objects>
             <point key="canvasLocation" x="985" y="24"/>
         </scene>
-        <!--Navigation Controller - Playlists-->
+        <!--Playlists-->
         <scene sceneID="JvA-oW-7Ep">
             <objects>
                 <navigationController storyboardIdentifier="PlaylistNavController" definesPresentationContext="YES" id="FRv-XO-hdh" sceneMemberID="viewController">
@@ -39,7 +39,7 @@
             </objects>
             <point key="canvasLocation" x="530" y="24"/>
         </scene>
-        <!--Player Controller - Queue-->
+        <!--Queue-->
         <scene sceneID="t9q-fJ-ZFM">
             <objects>
                 <viewController storyboardIdentifier="PlayerScene" hidesBottomBarWhenPushed="YES" id="K2B-5d-QvQ" customClass="EPPlayerController" sceneMemberID="viewController">
@@ -48,19 +48,18 @@
                         <viewControllerLayoutGuide type="bottom" id="dR6-AY-8vM"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Rfu-Na-pdg">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xhk-0A-x1R" customClass="EPTrackSummaryView">
-                                <rect key="frame" x="0.0" y="20" width="320" height="110"/>
+                                <rect key="frame" x="0.0" y="20" width="414" height="110"/>
                                 <color key="backgroundColor" white="0.20000000000000001" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="110" id="MA0-zX-V39"/>
-                                    <constraint firstAttribute="width" constant="320" id="Y3v-N3-aYq"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qjW-r9-KZf" userLabel="Buttons View">
-                                <rect key="frame" x="0.0" y="430" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="598" width="414" height="44"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yot-eP-KLF" userLabel="Prev Button">
                                         <rect key="frame" x="0.0" y="0.0" width="106" height="44"/>
@@ -83,7 +82,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cpe-id-Aeg" userLabel="Play Button">
-                                        <rect key="frame" x="107" y="0.0" width="106" height="44"/>
+                                        <rect key="frame" x="154" y="0.0" width="106" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="NIG-fC-0f6"/>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="106" id="RDX-Rr-BXA"/>
@@ -101,7 +100,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R2m-7X-CRd" userLabel="Next Button">
-                                        <rect key="frame" x="214" y="0.0" width="106" height="44"/>
+                                        <rect key="frame" x="308" y="0.0" width="106" height="44"/>
                                         <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="hyl-Sd-zNN"/>
@@ -129,15 +128,14 @@
                                     <constraint firstItem="Yot-eP-KLF" firstAttribute="top" secondItem="qjW-r9-KZf" secondAttribute="top" id="R9D-U5-0e1"/>
                                     <constraint firstItem="R2m-7X-CRd" firstAttribute="trailing" secondItem="qjW-r9-KZf" secondAttribute="trailing" id="bFl-cj-opY"/>
                                     <constraint firstItem="cpe-id-Aeg" firstAttribute="top" secondItem="qjW-r9-KZf" secondAttribute="top" id="kS2-7o-iOk"/>
-                                    <constraint firstAttribute="width" constant="320" id="l2d-0n-eWb"/>
                                     <constraint firstItem="cpe-id-Aeg" firstAttribute="centerX" secondItem="qjW-r9-KZf" secondAttribute="centerX" id="qfx-sn-c3s"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t2H-ra-lMT" userLabel="Scrubber Container View">
-                                <rect key="frame" x="0.0" y="474" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="642" width="414" height="44"/>
                                 <subviews>
-                                    <slider opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="XWg-yK-iLy" userLabel="Scrubber" customClass="EPScrubberView">
-                                        <rect key="frame" x="59" y="12" width="202" height="34"/>
+                                    <slider opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="XWg-yK-iLy" userLabel="Scrubber" customClass="EPScrubberView">
+                                        <rect key="frame" x="59" y="12" width="202" height="31"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="198" id="xRt-Au-LwP"/>
                                         </constraints>
@@ -148,14 +146,14 @@
                                             <action selector="scrubberTouchUp:" destination="K2B-5d-QvQ" eventType="touchUpInside" id="nHh-BN-cmc"/>
                                         </connections>
                                     </slider>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="99:99" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DyI-K9-rZa" userLabel="CurrentTime">
-                                        <rect key="frame" x="10" y="12" width="43" height="21"/>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" ambiguous="YES" misplaced="YES" text="99:99" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DyI-K9-rZa" userLabel="CurrentTime">
+                                        <rect key="frame" x="10" y="12" width="43" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="99:99" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mgg-Yf-CpX">
-                                        <rect key="frame" x="267" y="12" width="43" height="21"/>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" ambiguous="YES" misplaced="YES" text="99:99" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mgg-Yf-CpX">
+                                        <rect key="frame" x="267" y="12" width="137" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -174,10 +172,10 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JRq-RG-YMI" userLabel="Central View">
-                                <rect key="frame" x="0.0" y="130" width="320" height="300"/>
+                                <rect key="frame" x="0.0" y="130" width="414" height="468"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="xNe-dI-Yd5" propertyAccessControl="none">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="300"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="468"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         <color key="separatorColor" white="0.29999999999999999" alpha="1" colorSpace="calibratedWhite"/>
                                         <connections>
@@ -186,7 +184,7 @@
                                         </connections>
                                     </tableView>
                                     <textView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="cEG-PI-CMA" customClass="EPLyricView">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="300"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="468"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -212,14 +210,18 @@
                             <constraint firstItem="qjW-r9-KZf" firstAttribute="top" secondItem="JRq-RG-YMI" secondAttribute="bottom" id="0by-vG-H7a"/>
                             <constraint firstAttribute="bottom" secondItem="t2H-ra-lMT" secondAttribute="bottom" constant="50" id="CFM-Lo-adg"/>
                             <constraint firstItem="t2H-ra-lMT" firstAttribute="leading" secondItem="qjW-r9-KZf" secondAttribute="leading" id="LTJ-Zm-Zt8"/>
+                            <constraint firstItem="qjW-r9-KZf" firstAttribute="leading" secondItem="Rfu-Na-pdg" secondAttribute="leading" id="NwU-IJ-Xzm"/>
                             <constraint firstItem="t2H-ra-lMT" firstAttribute="trailing" secondItem="qjW-r9-KZf" secondAttribute="trailing" id="PUj-Lu-AK1"/>
+                            <constraint firstAttribute="trailing" secondItem="qjW-r9-KZf" secondAttribute="trailing" id="Qqd-bw-tC5"/>
+                            <constraint firstItem="Xhk-0A-x1R" firstAttribute="leading" secondItem="Rfu-Na-pdg" secondAttribute="leading" id="SOw-vL-g8z"/>
                             <constraint firstItem="JRq-RG-YMI" firstAttribute="leading" secondItem="Xhk-0A-x1R" secondAttribute="leading" id="YiR-wL-AHi"/>
+                            <constraint firstAttribute="trailing" secondItem="Xhk-0A-x1R" secondAttribute="trailing" id="aJn-hJ-sLV"/>
                             <constraint firstItem="JRq-RG-YMI" firstAttribute="leading" secondItem="Rfu-Na-pdg" secondAttribute="leading" id="b5Z-qy-EHE"/>
                             <constraint firstItem="JRq-RG-YMI" firstAttribute="top" secondItem="Xhk-0A-x1R" secondAttribute="bottom" id="igK-mF-3RP"/>
                             <constraint firstItem="Xhk-0A-x1R" firstAttribute="top" secondItem="Rfu-Na-pdg" secondAttribute="top" constant="20" id="kGX-Ee-if1"/>
                             <constraint firstItem="t2H-ra-lMT" firstAttribute="top" secondItem="qjW-r9-KZf" secondAttribute="bottom" id="ngZ-y3-sh2"/>
                             <constraint firstItem="qjW-r9-KZf" firstAttribute="leading" secondItem="JRq-RG-YMI" secondAttribute="leading" id="rqg-vO-YfB"/>
-                            <constraint firstItem="JRq-RG-YMI" firstAttribute="trailing" secondItem="qjW-r9-KZf" secondAttribute="trailing" id="z74-X6-3mB"/>
+                            <constraint firstAttribute="trailing" secondItem="JRq-RG-YMI" secondAttribute="trailing" id="wOi-d9-QUR"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
@@ -257,7 +259,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="GearTableController" id="pKF-s7-wP3" customClass="EPGearTableController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="5rG-m5-i7w">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
@@ -272,7 +274,6 @@
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Update Database" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xce-6u-6yz">
                                                     <rect key="frame" x="20" y="11" width="138" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -288,7 +289,6 @@
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Reset Database" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h1J-XS-Y3s">
                                                     <rect key="frame" x="20" y="11" width="203" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -319,11 +319,11 @@
                         <viewControllerLayoutGuide type="bottom" id="oDm-O6-cjg"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="wxB-qY-B4O">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="64" width="414" height="672"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="10u-w0-jDH" customClass="EPLyricView">
-                                <rect key="frame" x="0.0" y="110" width="320" height="394"/>
+                                <rect key="frame" x="0.0" y="110" width="414" height="562"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -331,7 +331,7 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qqm-Oe-66M" customClass="EPTrackSummaryView">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="110"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="110"/>
                                 <color key="backgroundColor" white="0.20000000000000001" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="110" id="4ki-nC-etO"/>
@@ -386,6 +386,6 @@
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4"/>
+        <simulatedScreenMetrics key="destination" type="retina55"/>
     </simulatedMetricsContainer>
 </document>

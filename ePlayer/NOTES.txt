@@ -8,13 +8,19 @@ NOTES
 TODO
 ****
 
-
+- While playing, browser cell should default to "append" to queue, instead of play/replace.
+- Track time is getting cut off.
+- Stop using "special" cels during editing.
+- "Done" on keyboard in rename acts as return.
+- Why is Lorde showing up when rebuilding db?
+- Resetting database seems to not let list views update (seem to still be accessing old data), until you restart.
 - Maybe add "play all" button at top of list?  (such as inside an album)
 - Make cell elements a little taller.
 - Use clean, simple, flat icons (plus, play), particularly in list view.
 - Show queue length (total and remaining).
 - Removing a song, and adding it back in iTunes confuses the sync (it stays removed, doesn't get readded).
 - Weird white line in the queue player cell (under index numbers).
+- Rename Button does not revert from "Done" state when you exit editing mode.
 
 - Check for songs without an album title in updateDB.  These do not show up in
   the albumsquery.
@@ -41,6 +47,7 @@ TODO
 - undo would be nice to have.
 - edit buttons are horribly ugly.
 - Having to scroll up to access edit buttons sucks when editing things far down on the list.
+  Make the edit controls outside of the UITable, above (pushes UITable down).
 - Anno 2070 album is "invalid" when importing.
 
 High

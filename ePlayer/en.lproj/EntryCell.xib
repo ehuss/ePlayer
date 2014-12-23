@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6205" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6249" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6198"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6243"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -46,38 +48,38 @@
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Really Long Title Goes H..." minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="34">
-                        <rect key="frame" x="44" y="7" width="235" height="30"/>
-                        <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                        <textInputTraits key="textInputTraits" returnKeyType="done"/>
-                        <connections>
-                            <outlet property="delegate" destination="2" id="38"/>
-                        </connections>
-                    </textField>
+                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HF1-Tc-zUU">
+                        <rect key="frame" x="44" y="0.0" width="235" height="44"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <mutableString key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</mutableString>
+                        <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done"/>
+                    </textView>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="15" secondAttribute="trailing" constant="-13" id="3fK-xv-Tj3"/>
-                    <constraint firstItem="34" firstAttribute="centerY" secondItem="12" secondAttribute="centerY" id="7bN-74-VJM"/>
+                    <constraint firstAttribute="bottom" secondItem="HF1-Tc-zUU" secondAttribute="bottom" constant="-0.5" id="6DC-n2-gJ9"/>
+                    <constraint firstItem="HF1-Tc-zUU" firstAttribute="trailing" secondItem="zCJ-hB-x6P" secondAttribute="trailingMargin" id="BYw-Mo-Vwk"/>
                     <constraint firstItem="42" firstAttribute="trailing" secondItem="15" secondAttribute="trailing" id="EPi-nC-Iph"/>
                     <constraint firstItem="12" firstAttribute="leading" secondItem="zCJ-hB-x6P" secondAttribute="leading" id="Fyi-iv-wds"/>
                     <constraint firstItem="15" firstAttribute="top" secondItem="42" secondAttribute="bottom" constant="4" id="GrS-l2-gzu"/>
                     <constraint firstAttribute="bottom" secondItem="12" secondAttribute="bottom" constant="-1" id="ROb-4v-Yds"/>
                     <constraint firstAttribute="bottom" secondItem="15" secondAttribute="bottom" constant="-2" id="WKe-6U-yQD"/>
                     <constraint firstItem="42" firstAttribute="leading" secondItem="15" secondAttribute="leading" id="XT3-pn-fXJ"/>
-                    <constraint firstItem="34" firstAttribute="top" secondItem="zCJ-hB-x6P" secondAttribute="top" constant="7" id="ZMc-ZJ-pz5"/>
-                    <constraint firstAttribute="trailing" secondItem="34" secondAttribute="trailing" constant="8" id="a63-Zs-r0z"/>
+                    <constraint firstItem="HF1-Tc-zUU" firstAttribute="top" secondItem="zCJ-hB-x6P" secondAttribute="topMargin" constant="-8" id="aHN-fD-J7Y"/>
                     <constraint firstItem="12" firstAttribute="top" secondItem="zCJ-hB-x6P" secondAttribute="top" id="lV2-yy-4BW"/>
+                    <constraint firstItem="HF1-Tc-zUU" firstAttribute="leading" secondItem="12" secondAttribute="trailing" id="q8U-g7-TU1"/>
                     <constraint firstItem="42" firstAttribute="top" secondItem="zCJ-hB-x6P" secondAttribute="top" constant="-1" id="v7s-Lr-AVn"/>
-                    <constraint firstItem="34" firstAttribute="leading" secondItem="12" secondAttribute="trailing" id="zIM-Il-UoA"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="dateLabel" destination="15" id="16"/>
                 <outlet property="playButton" destination="12" id="14"/>
-                <outlet property="playButtonWidth" destination="4vT-db-2Z2" id="GoJ-II-a3X"/>
-                <outlet property="textView" destination="34" id="36"/>
+                <outlet property="textView" destination="HF1-Tc-zUU" id="B2V-Bj-szQ"/>
                 <outlet property="timeLabel" destination="42" id="43"/>
             </connections>
+            <point key="canvasLocation" x="260" y="387.5"/>
         </tableViewCell>
     </objects>
     <resources>
@@ -86,9 +88,6 @@
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4">
-            <size key="portraitSize" width="320" height="568"/>
-            <size key="landscapeSize" width="568" height="320"/>
-        </simulatedScreenMetrics>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
 </document>

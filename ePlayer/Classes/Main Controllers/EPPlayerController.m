@@ -10,6 +10,7 @@
 #import "EPPlayerController.h"
 #import "EPPlayerCellView.h"
 #import "UIImage+EPCrop.h"
+#import "NSMutableDictionary+EP.h"
 #import "EPMediaItemWrapper.h"
 #import "EPMainTabController.h"
 #import "EPRoot.h"
@@ -697,16 +698,16 @@ static NSTimeInterval seekAmount = 2.0;
 {
     if (self.isPlaying) {
         EPSong *song = self.root.queue.entries[self.root.currentQueueIndex];
-        NSDictionary *info = @{MPMediaItemPropertyAlbumTitle: song.mediaWrapper.albumTitle,
-                               MPMediaItemPropertyArtist: song.mediaWrapper.artist,
-                               MPMediaItemPropertyArtwork: song.mediaWrapper.artwork,
-                               MPMediaItemPropertyPersistentID: song.persistentID,
-                               MPMediaItemPropertyPlaybackDuration: [song.mediaItem valueForProperty:MPMediaItemPropertyPlaybackDuration],
-                               MPMediaItemPropertyTitle: song.name,
-                               MPNowPlayingInfoPropertyElapsedPlaybackTime: @(self.currentPlayer.currentTime),
-                               MPNowPlayingInfoPropertyPlaybackQueueIndex: @(self.root.currentQueueIndex),
-                               MPNowPlayingInfoPropertyPlaybackQueueCount: @(self.root.queue.entries.count),
-                               };
+        NSMutableDictionary *info = [[NSMutableDictionary alloc] init];
+        [info ep_setOptObject:song.mediaWrapper.albumTitle forKey:MPMediaItemPropertyAlbumTitle];
+        [info ep_setOptObject:song.mediaWrapper.artist forKey:MPMediaItemPropertyArtist];
+        [info ep_setOptObject:song.mediaWrapper.artwork forKey:MPMediaItemPropertyArtwork];
+        [info ep_setOptObject:song.persistentID forKey:MPMediaItemPropertyPersistentID];
+        [info ep_setOptObject:[song.mediaItem valueForProperty:MPMediaItemPropertyPlaybackDuration] forKey:MPMediaItemPropertyPlaybackDuration];
+        [info ep_setOptObject:song.name forKey:MPMediaItemPropertyTitle];
+        [info ep_setOptObject:@(self.currentPlayer.currentTime) forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+        [info ep_setOptObject:@(self.root.currentQueueIndex) forKey:MPNowPlayingInfoPropertyPlaybackQueueIndex];
+        [info ep_setOptObject:@(self.root.queue.entries.count) forKey:MPNowPlayingInfoPropertyPlaybackQueueCount];
         [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo = info;
     } else {
         [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo = nil;

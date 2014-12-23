@@ -126,8 +126,8 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
     if (self.focusAddFolder && cell && indexPath.section==1 && indexPath.row==0) {
         // Force the keyboard to show for a new folder.
         EPBrowserCell *bcell = (EPBrowserCell *)cell;
-        bcell.textView.enabled = YES;
-        // Unfortunately, becomreFirstResponder won't work until the view is actually up.
+        bcell.textView.editable = YES;
+        // Unfortunately, becomeFirstResponder won't work until the view is actually up.
         // UITableView does not provide a callback *after* a cell has been added/displayed.
         [bcell.textView performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.2];
     }
@@ -144,9 +144,23 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
     }
     [self updateCell:cell forIndexPath:indexPath withSections:data withDateLabel:useDateLabel];
     cell.parentController = self;
-    cell.textView.enabled = self.renaming;
+    // Unfortnately, XCode seems to have hate me, and won't allow setting the
+    // delegate to the object itself anymore.  It used to work.
+    // File's Owner does not work.
+    cell.textView.delegate = cell;
+    cell.textView.userInteractionEnabled = self.renaming;
 
     return cell;
+}
+
+- (CGFloat)heightForEntry:(EPEntry *)entry
+{
+    // Compute the height needed to display this text.
+    UIFont *font = [UIFont systemFontOfSize:20];
+    CGSize textSize = [entry.name sizeWithFont:font
+                             constrainedToSize:CGSizeMake(235, 1000)
+                                 lineBreakMode:NSLineBreakByWordWrapping];
+    return textSize.height;
 }
 
 // Populates the labels for a cell with the values for an entry.
@@ -174,6 +188,7 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
     if (useDateLabel) {
         cell.dateLabel.text = [self.folder sectionTitleForEntry:entry forIndex:NO];
     }
+
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -192,16 +207,6 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
     }
     self.sortOrder = [[[self supportedSortOrders] objectAtIndex:sender.selectedSegmentIndex] intValue];
 }
-
-//- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    if (self.hasInsertCell && indexPath.section==0 && indexPath.row==0) {
-//        return 30;
-//    } else {
-//        return 44;
-//    }
-//    
-//}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -656,6 +661,17 @@ sectionForSectionIndexTitle:(NSString *)title
     }
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.editing) {
+        // Do not allow selecting the special edit cells.
+        if (indexPath.section == 0) {
+            return nil;
+        }
+    }
+    return indexPath;
+}
+
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.editing) {
@@ -720,6 +736,7 @@ sectionForSectionIndexTitle:(NSString *)title
             // Clean up.
             self.showingControlCells = NO;
             self.indexesEnabled = YES;
+            [self setRenaming:false];
             // Would like to have this animated, but a bulk reload of the data
             // prevents that.  Something like NSFetchedResultsController would
             // probably work better.
@@ -941,7 +958,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     for (UITableViewCell *cell in self.tableView.visibleCells) {
         if ([cell.class isSubclassOfClass:EPBrowserCell.class]) {
             EPBrowserCell *bcell = (EPBrowserCell *)cell;
-            bcell.textView.enabled = renaming;
+            bcell.textView.userInteractionEnabled = renaming;
         }
     }
     
