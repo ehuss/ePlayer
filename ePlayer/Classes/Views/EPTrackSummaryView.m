@@ -13,8 +13,8 @@
 
 - (void)awakeFromNib
 {
-    [[NSBundle mainBundle] loadNibNamed:@"TrackSummary" owner:self options:nil];
-    [self addSubview:self.contentView];
+    NSArray *ts = [[NSBundle mainBundle] loadNibNamed:@"TrackSummary2" owner:self options:nil];
+    [self addSubview:ts[0]];
 }
 
 - (void)loadSong:(EPSong *)song

@@ -17,7 +17,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *albumName;
 @property (weak, nonatomic) IBOutlet UILabel *trackName;
 @property (weak, nonatomic) IBOutlet UILabel *releasedDate;
-@property (weak, nonatomic) IBOutlet UIView *contentView;
 @property (weak, nonatomic) IBOutlet UIButton *infoButton;
 @property (weak, nonatomic) IBOutlet UIButton *listButton;
 @property (weak, nonatomic) IBOutlet UIView *flipButtonView;

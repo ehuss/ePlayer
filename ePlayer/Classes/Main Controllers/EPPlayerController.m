@@ -111,13 +111,13 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     // Register the class for creating cells.
     UINib *entryNib = [UINib nibWithNibName:@"PlayerCell" bundle:nil];
     [self.tableView registerNib:entryNib forCellReuseIdentifier:@"PlayerCell"];
-    // There might be a way to do this from IB, but heck if I know.
-    [self.trackSummary.infoButton addTarget:self
-                                     action:@selector(tappedInfo:)
-                           forControlEvents:UIControlEventTouchUpInside];
-    [self.trackSummary.listButton addTarget:self
-                                     action:@selector(tappedInfo:)
-                           forControlEvents:UIControlEventTouchUpInside];
+    // The gesture recognizers for the notification center seems to prevent
+    // recognizing touches near the top of the screen.  Instead of catching
+    // touch events on the info button, this has been changed so the entire
+    // track summary can be tapped.
+    UIGestureRecognizer *r = [[UITapGestureRecognizer alloc]
+                              initWithTarget:self action:@selector(tappedInfo:)];
+    [self.trackSummary addGestureRecognizer:r];
 }
 
 - (void)viewWillAppear:(BOOL)animated

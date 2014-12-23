@@ -22,6 +22,7 @@
 		0719E3761726268E00D325B5 /* queue-volume-on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E3751726268E00D325B5 /* queue-volume-on@2x.png */; };
 		0719E37917262A7D00D325B5 /* UIImage+EPCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */; };
 		0719E37B1726356900D325B5 /* play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E37A1726356900D325B5 /* play@2x.png */; };
+		0737FE261A49FFBF008E5D86 /* TrackSummary2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0737FE241A49FFBF008E5D86 /* TrackSummary2.xib */; };
 		073E767219DE3E0C00DBDA78 /* Test2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 073E767019DE3E0C00DBDA78 /* Test2.xib */; };
 		0746FA88181A398E0056D3A5 /* EPPlayButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0746FA87181A398E0056D3A5 /* EPPlayButton.m */; };
 		07475EB017272053001BB7AA /* EPEditCell1.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EAF17272053001BB7AA /* EPEditCell1.m */; };
@@ -69,7 +70,6 @@
 		078A3BEE172B5A18009A8FF5 /* PlayerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BEC172B5A18009A8FF5 /* PlayerCell.xib */; };
 		078A3BF1172B5CB1009A8FF5 /* player-cell-dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BEF172B5CB1009A8FF5 /* player-cell-dark@2x.png */; };
 		078A3BF2172B5CB1009A8FF5 /* player-cell-light@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BF0172B5CB1009A8FF5 /* player-cell-light@2x.png */; };
-		078A3BF5172BBF0F009A8FF5 /* TrackSummary.xib in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BF3172BBF0F009A8FF5 /* TrackSummary.xib */; };
 		078A3BF9172BC059009A8FF5 /* EPTrackSummaryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 078A3BF8172BC059009A8FF5 /* EPTrackSummaryView.m */; };
 		078A3BFC172CA779009A8FF5 /* EPLyricView.m in Sources */ = {isa = PBXBuildFile; fileRef = 078A3BFB172CA779009A8FF5 /* EPLyricView.m */; };
 		078A3BFE172CB37E009A8FF5 /* list-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BFD172CB37E009A8FF5 /* list-button@2x.png */; };
@@ -126,6 +126,7 @@
 		0719E37717262A7B00D325B5 /* UIImage+EPCrop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+EPCrop.h"; sourceTree = "<group>"; };
 		0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+EPCrop.m"; sourceTree = "<group>"; };
 		0719E37A1726356900D325B5 /* play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play@2x.png"; sourceTree = "<group>"; };
+		0737FE251A49FFBF008E5D86 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = TrackSummary2.xib; sourceTree = "<group>"; };
 		073E767119DE3E0C00DBDA78 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Test2.xib; sourceTree = "<group>"; };
 		0746FA86181A398E0056D3A5 /* EPPlayButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayButton.h; sourceTree = "<group>"; };
 		0746FA87181A398E0056D3A5 /* EPPlayButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayButton.m; sourceTree = "<group>"; };
@@ -192,7 +193,6 @@
 		078A3BED172B5A18009A8FF5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = PlayerCell.xib; sourceTree = "<group>"; };
 		078A3BEF172B5CB1009A8FF5 /* player-cell-dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "player-cell-dark@2x.png"; sourceTree = "<group>"; };
 		078A3BF0172B5CB1009A8FF5 /* player-cell-light@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "player-cell-light@2x.png"; sourceTree = "<group>"; };
-		078A3BF4172BBF0F009A8FF5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = TrackSummary.xib; sourceTree = "<group>"; };
 		078A3BF7172BC059009A8FF5 /* EPTrackSummaryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPTrackSummaryView.h; sourceTree = "<group>"; };
 		078A3BF8172BC059009A8FF5 /* EPTrackSummaryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPTrackSummaryView.m; sourceTree = "<group>"; };
 		078A3BFA172CA779009A8FF5 /* EPLyricView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPLyricView.h; sourceTree = "<group>"; };
@@ -509,7 +509,7 @@
 				0719E2EB1724C76400D325B5 /* EditCell.xib */,
 				07475EC0172780A4001BB7AA /* Test.xib */,
 				078A3BEC172B5A18009A8FF5 /* PlayerCell.xib */,
-				078A3BF3172BBF0F009A8FF5 /* TrackSummary.xib */,
+				0737FE241A49FFBF008E5D86 /* TrackSummary2.xib */,
 			);
 			name = UI;
 			path = en.lproj;
@@ -641,7 +641,7 @@
 				078A3BEE172B5A18009A8FF5 /* PlayerCell.xib in Resources */,
 				078A3BF1172B5CB1009A8FF5 /* player-cell-dark@2x.png in Resources */,
 				078A3BF2172B5CB1009A8FF5 /* player-cell-light@2x.png in Resources */,
-				078A3BF5172BBF0F009A8FF5 /* TrackSummary.xib in Resources */,
+				0737FE261A49FFBF008E5D86 /* TrackSummary2.xib in Resources */,
 				078A3BFE172CB37E009A8FF5 /* list-button@2x.png in Resources */,
 				07D8F1B4173868780044DEC9 /* gear@2x.png in Resources */,
 				07D8F1B617386D430044DEC9 /* edit-button@2x.png in Resources */,
@@ -752,6 +752,14 @@
 			name = EditCell.xib;
 			sourceTree = "<group>";
 		};
+		0737FE241A49FFBF008E5D86 /* TrackSummary2.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0737FE251A49FFBF008E5D86 /* en */,
+			);
+			name = TrackSummary2.xib;
+			sourceTree = "<group>";
+		};
 		073E767019DE3E0C00DBDA78 /* Test2.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -799,14 +807,6 @@
 				078A3BED172B5A18009A8FF5 /* en */,
 			);
 			name = PlayerCell.xib;
-			sourceTree = "<group>";
-		};
-		078A3BF3172BBF0F009A8FF5 /* TrackSummary.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				078A3BF4172BBF0F009A8FF5 /* en */,
-			);
-			name = TrackSummary.xib;
 			sourceTree = "<group>";
 		};
 		079B4161171F5B5D0036F0D4 /* TableSectionView.xib */ = {
@@ -915,8 +915,8 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ePlayer.app/ePlayer";
 				FRAMEWORK_SEARCH_PATHS = (
-					"\\\"$(SDKROOT)/Developer/Library/Frameworks\\\"",
-					"\\\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\\\"",
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
 					"$(inherited)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
