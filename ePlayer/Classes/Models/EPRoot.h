@@ -22,7 +22,7 @@ extern NSString *kEPOrphanFolderName;
 @property (strong, nonatomic) EPFolder *orphans;
 @property (assign, nonatomic) BOOL dirty;
 // This is the index of the song that is currently playing in _queue.
-@property (assign, nonatomic) int currentQueueIndex;
+@property (assign, nonatomic) NSInteger currentQueueIndex;
 
 // Return the shared root.  If it has not been loaded from disk, it will be
 // loaded.  If it doesn't exist, an empty root will be returned (marked dirty).

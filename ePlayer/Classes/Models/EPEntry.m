@@ -24,7 +24,7 @@
         _addDate = [aDecoder decodeObjectForKey:@"addDate"];
         _playDate = [aDecoder decodeObjectForKey:@"playDate"];
         _releaseDate = [aDecoder decodeObjectForKey:@"releaseDate"];
-        _playCount = [aDecoder decodeIntForKey:@"playCount"];
+        _playCount = [aDecoder decodeIntegerForKey:@"playCount"];
         _parents = [aDecoder decodeObjectForKey:@"parents"];
     }
     return self;
@@ -36,7 +36,7 @@
     [aCoder encodeObject:_addDate forKey:@"addDate"];
     [aCoder encodeObject:_playDate forKey:@"playDate"];
     [aCoder encodeObject:_releaseDate forKey:@"releaseDate"];
-    [aCoder encodeInt:_playCount forKey:@"playCount"];
+    [aCoder encodeInteger:_playCount forKey:@"playCount"];
     [aCoder encodeObject:_parents forKey:@"parents"];
 }
 
@@ -113,7 +113,7 @@
 /*****************************************************************************/
 #pragma mark - Propagate Methods
 /*****************************************************************************/
-- (void)propagatePlayCount:(int)count
+- (void)propagatePlayCount:(NSInteger)count
 {
     self.playCount += count;
     for (EPEntry *folder in self.parents) {

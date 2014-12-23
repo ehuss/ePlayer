@@ -31,7 +31,7 @@
 - (void)pause;
 - (void)clearQueue;
 // This will stop play, switch to this index.  Play remains stopped.
-- (void)switchToQueueIndex:(int)index;
+- (void)switchToQueueIndex:(NSInteger)index;
 
 - (void)playEntry:(EPEntry *)entry;
 - (void)appendEntry:(EPEntry *)entry;

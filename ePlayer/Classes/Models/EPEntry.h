@@ -14,7 +14,7 @@
 @property (strong, nonatomic) NSDate * addDate;
 @property (strong, nonatomic) NSDate * playDate;
 @property (strong, nonatomic) NSDate * releaseDate;
-@property (assign, nonatomic) int playCount;
+@property (assign, nonatomic) NSInteger playCount;
 // Set of Folders that are parents.
 @property (strong, nonatomic) NSMutableSet *parents;
 
@@ -22,7 +22,7 @@
 - (NSTimeInterval)duration;
 - (NSArray *)pathNames;
 
-- (void)propagatePlayCount:(int)count;
+- (void)propagatePlayCount:(NSInteger)count;
 - (void)propagatePlayDate:(NSDate *)date;
 - (void)propagateAddDate:(NSDate *)date;
 - (void)propagateReleaseDate:(NSDate *)date;

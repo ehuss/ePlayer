@@ -35,7 +35,7 @@
     }
     [text appendString:[NSString stringWithFormat:@"Last Play Date: %@\n", playDate]];
     // Play Count
-    [text appendString:[NSString stringWithFormat:@"Play Count: %d\n", song.playCount]];
+    [text appendString:[NSString stringWithFormat:@"Play Count: %ld\n", (long)song.playCount]];
     // Added Date
     NSString *addDate = [NSDateFormatter localizedStringFromDate:song.addDate
                                                        dateStyle:NSDateFormatterMediumStyle

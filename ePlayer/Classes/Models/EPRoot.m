@@ -52,7 +52,7 @@ static EPRoot *theSharedRoot;
         self.albums = [aDecoder decodeObjectForKey:@"albums"];
         self.cut = [aDecoder decodeObjectForKey:@"cut"];
         self.queue = [aDecoder decodeObjectForKey:@"queue"];
-        self.currentQueueIndex = [aDecoder decodeIntForKey:@"currentQueueIndex"];
+        self.currentQueueIndex = [aDecoder decodeIntegerForKey:@"currentQueueIndex"];
         self.dirty = NO;
     }
     return self;
@@ -65,13 +65,13 @@ static EPRoot *theSharedRoot;
     [aCoder encodeObject:self.albums forKey:@"albums"];
     [aCoder encodeObject:self.cut forKey:@"cut"];
     [aCoder encodeObject:self.queue forKey:@"queue"];
-    [aCoder encodeInt:self.currentQueueIndex forKey:@"currentQueueIndex"];
+    [aCoder encodeInteger:self.currentQueueIndex forKey:@"currentQueueIndex"];
 }
 
 /*****************************************************************************/
 #pragma mark - Accessors
 /*****************************************************************************/
-- (void)setCurrentQueueIndex:(int)currentQueueIndex
+- (void)setCurrentQueueIndex:(NSInteger)currentQueueIndex
 {
     _currentQueueIndex = currentQueueIndex;
     _dirty = YES;

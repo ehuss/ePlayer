@@ -174,7 +174,7 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     static NSString *CellIdentifier = @"PlayerCell";
     EPPlayerCellView *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     EPSong *song = self.root.queue.entries[indexPath.row];
-    cell.queueNumLabel.text = [NSString stringWithFormat:@"%i.", indexPath.row+1];
+    cell.queueNumLabel.text = [NSString stringWithFormat:@"%li.", indexPath.row+1];
     cell.trackNameLabel.text = song.name;
     cell.albumNameLabel.text = [NSString stringWithFormat:@"%@ - %@",
                                 song.mediaWrapper.albumTitle,
@@ -397,7 +397,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     }
 }
 
-- (AVAudioPlayer *)playerForIndex:(int)index
+- (AVAudioPlayer *)playerForIndex:(NSInteger)index
 {
     EPSong *song = self.root.queue.entries[index];
     NSURL *url = [song.mediaItem valueForProperty:MPMediaItemPropertyAssetURL];
@@ -569,7 +569,7 @@ static NSTimeInterval seekAmount = 2.0;
     [self updateDisplay];
 }
 
-- (void)switchToQueueIndex:(int)index
+- (void)switchToQueueIndex:(NSInteger)index
 {
     [self stop];
     [self softUpdateCurrentQueueIndex:index];
@@ -578,7 +578,7 @@ static NSTimeInterval seekAmount = 2.0;
 }
 
 // Update the index without affecting the player.
-- (void)softUpdateCurrentQueueIndex:(int)index
+- (void)softUpdateCurrentQueueIndex:(NSInteger)index
 {
     self.root.currentQueueIndex = index;
     [self updateDisplay];
@@ -857,7 +857,7 @@ static NSTimeInterval seekAmount = 2.0;
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
 {
-    NSLog(@"%@ Did finish: %hhd", player, flag);
+    NSLog(@"%@ Did finish: %i", player, (int)flag);
     self.isPlaying = NO;
     if (flag) {
         EPSong *finishedSong = self.root.queue.entries[self.root.currentQueueIndex];

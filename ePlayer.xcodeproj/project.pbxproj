@@ -22,7 +22,6 @@
 		0719E3761726268E00D325B5 /* queue-volume-on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E3751726268E00D325B5 /* queue-volume-on@2x.png */; };
 		0719E37917262A7D00D325B5 /* UIImage+EPCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */; };
 		0719E37B1726356900D325B5 /* play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E37A1726356900D325B5 /* play@2x.png */; };
-		071C6CD319DE31C60080FE09 /* Test.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 071C6CD119DE31C60080FE09 /* Test.storyboard */; };
 		073E767219DE3E0C00DBDA78 /* Test2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 073E767019DE3E0C00DBDA78 /* Test2.xib */; };
 		0746FA88181A398E0056D3A5 /* EPPlayButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0746FA87181A398E0056D3A5 /* EPPlayButton.m */; };
 		07475EB017272053001BB7AA /* EPEditCell1.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EAF17272053001BB7AA /* EPEditCell1.m */; };
@@ -127,7 +126,6 @@
 		0719E37717262A7B00D325B5 /* UIImage+EPCrop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+EPCrop.h"; sourceTree = "<group>"; };
 		0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+EPCrop.m"; sourceTree = "<group>"; };
 		0719E37A1726356900D325B5 /* play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play@2x.png"; sourceTree = "<group>"; };
-		071C6CD219DE31C60080FE09 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = Test.storyboard; sourceTree = "<group>"; };
 		073E767119DE3E0C00DBDA78 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Test2.xib; sourceTree = "<group>"; };
 		0746FA86181A398E0056D3A5 /* EPPlayButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayButton.h; sourceTree = "<group>"; };
 		0746FA87181A398E0056D3A5 /* EPPlayButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayButton.m; sourceTree = "<group>"; };
@@ -507,7 +505,6 @@
 				0719E2E51723AEE700D325B5 /* EntryCell.xib */,
 				079B4161171F5B5D0036F0D4 /* TableSectionView.xib */,
 				0755C3091714BE0400AAF81F /* MainStoryboard_iPhone.storyboard */,
-				071C6CD119DE31C60080FE09 /* Test.storyboard */,
 				073E767019DE3E0C00DBDA78 /* Test2.xib */,
 				0719E2EB1724C76400D325B5 /* EditCell.xib */,
 				07475EC0172780A4001BB7AA /* Test.xib */,
@@ -629,7 +626,6 @@
 				0718E63E1721068A00301D0E /* segmented-divider-selected@2x.png in Resources */,
 				0718E63F1721068A00301D0E /* segmented-left-normal@2x.png in Resources */,
 				0718E6401721068A00301D0E /* segmented-left-selected@2x.png in Resources */,
-				071C6CD319DE31C60080FE09 /* Test.storyboard in Resources */,
 				0718E6411721068A00301D0E /* segmented-middle-normal@2x.png in Resources */,
 				0718E6421721068A00301D0E /* segmented-middle-selected@2x.png in Resources */,
 				0718E6431721068A00301D0E /* segmented-right-normal@2x.png in Resources */,
@@ -754,14 +750,6 @@
 				0719E2EC1724C76400D325B5 /* en */,
 			);
 			name = EditCell.xib;
-			sourceTree = "<group>";
-		};
-		071C6CD119DE31C60080FE09 /* Test.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				071C6CD219DE31C60080FE09 /* en */,
-			);
-			name = Test.storyboard;
 			sourceTree = "<group>";
 		};
 		073E767019DE3E0C00DBDA78 /* Test2.xib */ = {

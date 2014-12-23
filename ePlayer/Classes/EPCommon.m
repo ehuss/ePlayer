@@ -40,7 +40,7 @@ NSString *yearFromDate(NSDate *date)
         return @"UNKNOWN";
     }
     NSDateComponents *comp = [gregorianCalendar components:NSYearCalendarUnit fromDate:date];
-    return [NSString stringWithFormat:@"%i", comp.year];
+    return [NSString stringWithFormat:@"%li", (long)comp.year];
 }
 
 void createGregorianCalendar()

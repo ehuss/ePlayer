@@ -237,7 +237,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
         NSLog(@"Create album %@", albumFolder.name);
         
         // Add songs to album folder.
-        NSUInteger maxPlayCount = 0;
+        NSInteger maxPlayCount = 0;
         for (MPMediaItem *songItem in albumItem.items) {
             EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:songItem];
             EPSong *song = [EPSong songWithName:wrapper.title
@@ -444,7 +444,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     // Prepare a view of what's added and removed.
     NSMutableString *results = [[NSMutableString alloc] init];
     if (addedSongs.count) {
-        [results appendFormat:@"Added %i songs:\n", addedSongs.count];
+        [results appendFormat:@"Added %lu songs:\n", (unsigned long)addedSongs.count];
         for (EPMediaItemWrapper *wrapper in addedSongs) {
             [results appendFormat:@"\t%@ - %@ - %@\n", wrapper.artist, wrapper.albumTitle, wrapper.title];
         }
@@ -452,7 +452,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
         [results appendString:@"No songs added.\n"];
     }
     if (removedSongCount) {
-        [results appendFormat:@"Removed %i songs:\n", removedSongCount];
+        [results appendFormat:@"Removed %li songs:\n", (long)removedSongCount];
         for (NSString *path in removedSongs) {
             [results appendFormat:@"\t%@\n", path];
         }
@@ -460,7 +460,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
         [results appendString:@"No songs removed.\n"];
     }
     if (brokenItems.count) {
-        [results appendFormat:@"Found %i invalid songs:\n", brokenItems.count];
+        [results appendFormat:@"Found %lu invalid songs:\n", (unsigned long)brokenItems.count];
         for (EPMediaItemWrapper *wrapper in brokenItems) {
             [results appendFormat:@"\t%@ - %@ - %@\n", wrapper.artist, wrapper.albumTitle, wrapper.title];
         }
