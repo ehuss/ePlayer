@@ -8,7 +8,6 @@ NOTES
 TODO
 ****
 
-- Track time is getting cut off.
 - Stop using "special" cels during editing.
 - "Done" on keyboard in rename acts as return.
 - Why is Lorde showing up when rebuilding db?
