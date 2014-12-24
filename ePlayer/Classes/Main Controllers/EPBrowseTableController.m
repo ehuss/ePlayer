@@ -72,6 +72,14 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
 
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playStatusUpdate:)
+                                                 name:kEPPlayNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playStatusUpdate:)
+                                                 name:kEPStopNotification
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -92,6 +100,11 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+}
+
+- (void)playStatusUpdate:(NSNotification *)notification
+{
+    [self updatePlayButtons];
 }
 
 /*****************************************************************************/
@@ -153,16 +166,6 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
     return cell;
 }
 
-- (CGFloat)heightForEntry:(EPEntry *)entry
-{
-    // Compute the height needed to display this text.
-    UIFont *font = [UIFont systemFontOfSize:20];
-    CGSize textSize = [entry.name sizeWithFont:font
-                             constrainedToSize:CGSizeMake(235, 1000)
-                                 lineBreakMode:NSLineBreakByWordWrapping];
-    return textSize.height;
-}
-
 // Populates the labels for a cell with the values for an entry.
 - (void)updateCell:(EPBrowserCell *)cell
       forIndexPath:(NSIndexPath *)indexPath
@@ -188,7 +191,25 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
     if (useDateLabel) {
         cell.dateLabel.text = [self.folder sectionTitleForEntry:entry forIndex:NO];
     }
+    [self updateCellButton:cell];
+}
 
+- (void)updateCellButton:(EPBrowserCell *)cell
+{
+    UIImage *playImage;
+    if ([self.playerController shouldAppend]) {
+        playImage = [UIImage imageNamed:@"add"];
+    } else {
+        playImage = [UIImage imageNamed:@"play2"];
+    }
+    [cell.playButton setImage:playImage forState:UIControlStateNormal];
+}
+
+- (void)updatePlayButtons
+{
+    for (EPBrowserCell *cell in self.tableView.visibleCells) {
+        [self updateCellButton:cell];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -558,25 +579,31 @@ sectionForSectionIndexTitle:(NSString *)title
 - (void)playHeld:(UILongPressGestureRecognizer *)gesture
 {
     if (gesture.state == UIGestureRecognizerStateBegan) {
-        if (self.appendButton != nil) {
-            [self.appendButton removeFromSuperview];
-            self.appendButton = nil;
+        if (self.popupButton != nil) {
+            [self.popupButton removeFromSuperview];
+            self.popupButton = nil;
         }
         CGPoint pos = [self.view convertPoint:gesture.view.center fromView:gesture.view];
         CGFloat height = 65;
         CGRect frame = CGRectMake(pos.x+80, pos.y-height/2.0f, 100, height);
-        EPAppendButton *button = [[EPAppendButton alloc] initWithFrame:frame];
-        [button addTarget:self action:@selector(playAppendEvent:) forControlEvents:UIControlEventTouchDown];
+        EPPopupButton *button = [[EPPopupButton alloc] initWithFrame:frame];
+        if ([self.playerController shouldAppend]) {
+            [button setTitle:@"Play" forState:UIControlStateNormal];
+            [button addTarget:self action:@selector(popupPlay:) forControlEvents:UIControlEventTouchDown];
+        } else {
+            [button setTitle:@"Append" forState:UIControlStateNormal];
+            [button addTarget:self action:@selector(popupAppend:) forControlEvents:UIControlEventTouchDown];
+        }
         // Keep track of which cell was clicked.
         EPPlayButton *playButton = (EPPlayButton *)gesture.view;
         button.cell = playButton.browserCell;
         [self.view addSubview:button];
-        self.appendButton = button;
+        self.popupButton = button;
     } else if (gesture.state == UIGestureRecognizerStateEnded ||
                gesture.state == UIGestureRecognizerStateCancelled ||
                gesture.state == UIGestureRecognizerStateFailed) {
         // Make a local variable so that we remove the correct one.
-        EPAppendButton *button = self.appendButton;
+        EPPopupButton *button = self.popupButton;
         [UIView animateWithDuration:4.0 delay:0
                             options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionAllowUserInteraction
                          animations:^{
@@ -585,8 +612,8 @@ sectionForSectionIndexTitle:(NSString *)title
                          } completion:^(BOOL finished) {
                              if (finished) {
                                  [button removeFromSuperview];
-                                 if (self.appendButton == button) {
-                                     self.appendButton = nil;
+                                 if (self.popupButton == button) {
+                                     self.popupButton = nil;
                                  }
                              }
                          }];
@@ -594,9 +621,23 @@ sectionForSectionIndexTitle:(NSString *)title
 }
 
 // User tapped the "Append" button popup.
-- (void)playAppendEvent:(id)sender
+- (void)popupAppend:(id)sender
 {
-    EPAppendButton *button = self.appendButton;
+    [self popupDone:^(EPEntry *entry) {
+        [self.playerController appendEntry:entry];
+    }];
+}
+
+- (void)popupPlay:(id)sender
+{
+    [self popupDone:^(EPEntry *entry) {
+        [self.playerController playEntry:entry];
+    }];
+}
+
+- (void)popupDone:(void (^)(EPEntry *))completion
+{
+    EPPopupButton *button = self.popupButton;
     button.alpha = 1.0;
     // Make it pulse before going away to give feedback that it did something.
     [UIView animateWithDuration:0.1 delay:0 options:0
@@ -606,16 +647,16 @@ sectionForSectionIndexTitle:(NSString *)title
                          [UIView animateWithDuration:0.1 animations:^{
                              button.transform = CGAffineTransformMakeScale(0, 0);
                          } completion:^(BOOL finished) {
-                             NSIndexPath *tappedIndexPath = [self.tableView indexPathForCell:button.cell];
+                             NSIndexPath *path = [self.tableView indexPathForCell:button.cell];
+                             EPEntry *entry = self.sections[path.section][path.row];
                              [button removeFromSuperview];
-                             if (self.appendButton == button) {
-                                 self.appendButton = nil;
+                             if (self.popupButton == button) {
+                                 self.popupButton = nil;
                              }
-                             [self playAppend:tappedIndexPath];
+                             completion(entry);
                          }];
                      }];
 }
-
 
 - (void)playTapped:(UITapGestureRecognizer *)gesture
 {
@@ -623,12 +664,6 @@ sectionForSectionIndexTitle:(NSString *)title
     EPPlayButton *playButton = (EPPlayButton *)gesture.view;
     [self.playerController playEntry:playButton.browserCell.entry];
     self.tabBarController.selectedIndex = 3;
-}
-
-- (void)playAppend:(NSIndexPath *)path
-{
-    EPEntry *entry = self.sections[path.section][path.row];
-    [self.playerController appendEntry:entry];
 }
 
 /*****************************************************************************/

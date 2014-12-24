@@ -7,6 +7,7 @@
 //
 
 #import <AudioToolbox/AudioToolbox.h>
+#import "NSNotificationCenter+MainThread.h"
 #import "EPPlayerController.h"
 #import "EPPlayerCellView.h"
 #import "UIImage+EPCrop.h"
@@ -17,6 +18,8 @@
 
 //static NSTimeInterval scrubberUpdateTime = 0.300;
 
+NSString *kEPPlayNotification = @"EPPlayNotification";
+NSString *kEPStopNotification = @"EPStopNotification";
 
 /****************************************************************************/
 #pragma mark - Audio Callback
@@ -372,6 +375,24 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 /****************************************************************************/
 #pragma mark - Player Methods
 /****************************************************************************/
+- (void)setPlayingIsStopped
+{
+    self.isPlaying = NO;
+    [[NSNotificationCenter defaultCenter] postNotificationName:kEPStopNotification object:nil];
+}
+
+- (BOOL)shouldAppend
+{
+    // Was considering handling the situation where you are in the middle of
+    // the queue, and you pause.  Perhaps it should return YES in that case?
+    // It would require a "finishedPlaying" bool that is triggered when the
+    // queue hits the end.  Alternatively, just check if at the very beginning
+    // of the queue (and assume that only happens when the queue finishes,
+    // which is not true in the case of appending to an empty queue).
+    return self.isPlaying;
+}
+
+
 - (void)play
 {
     NSLog(@"Play");
@@ -384,6 +405,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         self.isPlaying = YES;
         [self updateDisplay];
         [self updateNowPlayingInfoCenter];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kEPPlayNotification object:nil];
+        
     }
 }
 
@@ -430,7 +453,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         if (self.nextPlayer) {
             [self.nextPlayer pause];
         }
-        self.isPlaying = NO;
+        [self setPlayingIsStopped];
         [self updateDisplay];
     }
 }
@@ -443,7 +466,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         if (self.nextPlayer) {
             [self.nextPlayer stop];
         }
-        self.isPlaying = NO;
+        [self setPlayingIsStopped];
     }
 }
 
@@ -858,7 +881,6 @@ static NSTimeInterval seekAmount = 2.0;
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
 {
     NSLog(@"%@ Did finish: %i", player, (int)flag);
-    self.isPlaying = NO;
     if (flag) {
         EPSong *finishedSong = self.root.queue.entries[self.root.currentQueueIndex];
         if (self.root.currentQueueIndex < self.root.queue.entries.count-1) {
@@ -875,12 +897,11 @@ static NSTimeInterval seekAmount = 2.0;
                     // No next track.
                     self.nextPlayer = nil;
                 }
-                self.isPlaying = YES;
             } else {
                 // This can happen if entries are added to the queue while playing
                 // the last entry.  Could fix the queue commands, but that's a
                 // rare case.
-                self.isPlaying = NO;
+                self.isPlaying = NO;  // setCurrentPlayer requires this.
                 [self setCurrentPlayer];
                 [self play];
             }
@@ -890,6 +911,7 @@ static NSTimeInterval seekAmount = 2.0;
             self.nextPlayer = nil;  // Probably redundant.
             self.root.currentQueueIndex = 0;
             [self switchToPreviousTab];
+            [self setPlayingIsStopped];
         }
         finishedSong.playCount += 1;
         finishedSong.playDate = [NSDate date];
@@ -900,6 +922,7 @@ static NSTimeInterval seekAmount = 2.0;
             [self.nextPlayer stop];
             self.nextPlayer = nil;
         }
+        [self setPlayingIsStopped];
     }
     [self updateDisplay];
     [self updateNowPlayingInfoCenter];
@@ -916,7 +939,7 @@ static NSTimeInterval seekAmount = 2.0;
     // Automatically paused.
     if (self.isPlaying) {
         self.interruptedWhilePlaying = YES;
-        self.isPlaying = NO;
+        [self setPlayingIsStopped];
     }
 }
 

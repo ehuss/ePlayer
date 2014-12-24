@@ -8,7 +8,6 @@ NOTES
 TODO
 ****
 
-- While playing, browser cell should default to "append" to queue, instead of play/replace.
 - Track time is getting cut off.
 - Stop using "special" cels during editing.
 - "Done" on keyboard in rename acts as return.

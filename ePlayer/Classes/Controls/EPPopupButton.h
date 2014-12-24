@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface EPAppendButton : UIButton
+@interface EPPopupButton : UIButton
 
 @property (nonatomic, strong) UITableViewCell *cell;
 @end

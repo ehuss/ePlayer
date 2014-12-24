@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Eric Huss. All rights reserved.
 //
 
-#import "EPAppendButton.h"
+#import "EPPopupButton.h"
 
-@implementation EPAppendButton
+@implementation EPPopupButton
 
 - (id)initWithFrame:(CGRect)frame
 {

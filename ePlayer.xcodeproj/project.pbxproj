@@ -28,7 +28,7 @@
 		07475EB017272053001BB7AA /* EPEditCell1.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EAF17272053001BB7AA /* EPEditCell1.m */; };
 		07475EB317272063001BB7AA /* EPEditCell2.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EB217272063001BB7AA /* EPEditCell2.m */; };
 		07475EBC172761BD001BB7AA /* append-popout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07475EBB172761BD001BB7AA /* append-popout@2x.png */; };
-		07475EBF17278023001BB7AA /* EPAppendButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EBE17278023001BB7AA /* EPAppendButton.m */; };
+		07475EBF17278023001BB7AA /* EPPopupButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 07475EBE17278023001BB7AA /* EPPopupButton.m */; };
 		07475EC2172780A4001BB7AA /* Test.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07475EC0172780A4001BB7AA /* Test.xib */; };
 		07475EC417289654001BB7AA /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07475EC317289653001BB7AA /* AVFoundation.framework */; };
 		07475EC81728FF9E001BB7AA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07475EC71728FF9E001BB7AA /* AudioToolbox.framework */; };
@@ -96,6 +96,9 @@
 		07D8F1BF173895D60044DEC9 /* EPGearTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D8F1BE173895D60044DEC9 /* EPGearTableController.m */; };
 		07D8F1C21738CA650044DEC9 /* EPUpdateResultsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D8F1C11738CA640044DEC9 /* EPUpdateResultsController.m */; };
 		07D8F1C4173995F20044DEC9 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07D8F1C3173995F00044DEC9 /* icon@2x.png */; };
+		07E3F4741A4A21C6000B390E /* add@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07E3F4721A4A21C6000B390E /* add@2x.png */; };
+		07E3F4751A4A21C6000B390E /* play2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07E3F4731A4A21C6000B390E /* play2@2x.png */; };
+		07E3F4781A4A5577000B390E /* NSNotificationCenter+MainThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E3F4771A4A5577000B390E /* NSNotificationCenter+MainThread.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -135,8 +138,8 @@
 		07475EB117272063001BB7AA /* EPEditCell2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPEditCell2.h; sourceTree = "<group>"; };
 		07475EB217272063001BB7AA /* EPEditCell2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPEditCell2.m; sourceTree = "<group>"; };
 		07475EBB172761BD001BB7AA /* append-popout@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "append-popout@2x.png"; sourceTree = "<group>"; };
-		07475EBD17278023001BB7AA /* EPAppendButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPAppendButton.h; sourceTree = "<group>"; };
-		07475EBE17278023001BB7AA /* EPAppendButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPAppendButton.m; sourceTree = "<group>"; };
+		07475EBD17278023001BB7AA /* EPPopupButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPopupButton.h; sourceTree = "<group>"; };
+		07475EBE17278023001BB7AA /* EPPopupButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPopupButton.m; sourceTree = "<group>"; };
 		07475EC1172780A4001BB7AA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Test.xib; sourceTree = "<group>"; };
 		07475EC317289653001BB7AA /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		07475EC71728FF9E001BB7AA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -235,6 +238,10 @@
 		07D8F1C01738CA640044DEC9 /* EPUpdateResultsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPUpdateResultsController.h; sourceTree = "<group>"; };
 		07D8F1C11738CA640044DEC9 /* EPUpdateResultsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPUpdateResultsController.m; sourceTree = "<group>"; };
 		07D8F1C3173995F00044DEC9 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
+		07E3F4721A4A21C6000B390E /* add@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add@2x.png"; sourceTree = "<group>"; };
+		07E3F4731A4A21C6000B390E /* play2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play2@2x.png"; sourceTree = "<group>"; };
+		07E3F4761A4A5577000B390E /* NSNotificationCenter+MainThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotificationCenter+MainThread.h"; sourceTree = "<group>"; };
+		07E3F4771A4A5577000B390E /* NSNotificationCenter+MainThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNotificationCenter+MainThread.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -267,6 +274,8 @@
 		07475EB41727240B001BB7AA /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				07E3F4761A4A5577000B390E /* NSNotificationCenter+MainThread.h */,
+				07E3F4771A4A5577000B390E /* NSNotificationCenter+MainThread.m */,
 				07BE575319CD025800D45EC0 /* NSMutableDictionary+EP.h */,
 				07BE575419CD025800D45EC0 /* NSMutableDictionary+EP.m */,
 				079B4142171E139A0036F0D4 /* NSArray+EPMap.h */,
@@ -297,8 +306,8 @@
 		07475EB6172725DF001BB7AA /* Controls */ = {
 			isa = PBXGroup;
 			children = (
-				07475EBD17278023001BB7AA /* EPAppendButton.h */,
-				07475EBE17278023001BB7AA /* EPAppendButton.m */,
+				07475EBD17278023001BB7AA /* EPPopupButton.h */,
+				07475EBE17278023001BB7AA /* EPPopupButton.m */,
 				07677A5C1719264E00D1784D /* EPScrubberView.h */,
 				07677A5D1719264E00D1784D /* EPScrubberView.m */,
 				0718E6321720E11C00301D0E /* EPSegmentedControl.h */,
@@ -452,6 +461,8 @@
 		07677A3F171924F200D1784D /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				07E3F4721A4A21C6000B390E /* add@2x.png */,
+				07E3F4731A4A21C6000B390E /* play2@2x.png */,
 				07D8F1C3173995F00044DEC9 /* icon@2x.png */,
 				07D8F1B517386D430044DEC9 /* edit-button@2x.png */,
 				07D8F1B3173868780044DEC9 /* gear@2x.png */,
@@ -610,6 +621,7 @@
 				07677A4E171924F200D1784D /* pause.png in Resources */,
 				07677A4F171924F200D1784D /* play.png in Resources */,
 				07677A52171924F200D1784D /* queue-next@2x.png in Resources */,
+				07E3F4741A4A21C6000B390E /* add@2x.png in Resources */,
 				07677A55171924F200D1784D /* queue-play@2x.png in Resources */,
 				07677A57171924F200D1784D /* queue-prev@2x.png in Resources */,
 				07677A5A171924F200D1784D /* scrubber-thumb@2x.png in Resources */,
@@ -645,6 +657,7 @@
 				078A3BFE172CB37E009A8FF5 /* list-button@2x.png in Resources */,
 				07D8F1B4173868780044DEC9 /* gear@2x.png in Resources */,
 				07D8F1B617386D430044DEC9 /* edit-button@2x.png in Resources */,
+				07E3F4751A4A21C6000B390E /* play2@2x.png in Resources */,
 				07D8F1C4173995F20044DEC9 /* icon@2x.png in Resources */,
 				07C841521832232900AEBA07 /* SVProgressHUD.bundle in Resources */,
 			);
@@ -684,6 +697,7 @@
 				0755C2FE1714BE0400AAF81F /* main.m in Sources */,
 				0755C34B1714EC6300AAF81F /* MusicModel.xcdatamodeld in Sources */,
 				0755C3631714F12200AAF81F /* AppDelegate.m in Sources */,
+				07E3F4781A4A5577000B390E /* NSNotificationCenter+MainThread.m in Sources */,
 				0755C36B1715244A00AAF81F /* EPSong.m in Sources */,
 				0755C36E1715335800AAF81F /* EPMemoryDebug.m in Sources */,
 				0755C3841716442600AAF81F /* EPFolder.m in Sources */,
@@ -704,7 +718,7 @@
 				07475EB017272053001BB7AA /* EPEditCell1.m in Sources */,
 				07475EB317272063001BB7AA /* EPEditCell2.m in Sources */,
 				07BE575519CD025800D45EC0 /* NSMutableDictionary+EP.m in Sources */,
-				07475EBF17278023001BB7AA /* EPAppendButton.m in Sources */,
+				07475EBF17278023001BB7AA /* EPPopupButton.m in Sources */,
 				078A3BEB1729EE8A009A8FF5 /* EPMainTabController.m in Sources */,
 				078A3BF9172BC059009A8FF5 /* EPTrackSummaryView.m in Sources */,
 				078A3BFC172CA779009A8FF5 /* EPLyricView.m in Sources */,

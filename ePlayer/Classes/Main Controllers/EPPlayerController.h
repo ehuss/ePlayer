@@ -16,6 +16,9 @@
 #import "EPFolder.h"
 #import "EPRoot.h"
 
+extern NSString *kEPPlayNotification;
+extern NSString *kEPStopNotification;
+
 @class EPMainTabController;
 
 @interface EPPlayerController : UIViewController <UITableViewDelegate,
@@ -35,6 +38,8 @@
 
 - (void)playEntry:(EPEntry *)entry;
 - (void)appendEntry:(EPEntry *)entry;
+
+- (BOOL)shouldAppend;
 
 // Actions
 - (IBAction)tappedPrev:(id)sender;

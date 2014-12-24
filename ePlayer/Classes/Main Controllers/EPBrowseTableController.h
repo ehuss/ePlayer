@@ -11,7 +11,7 @@
 #import "EPBrowserCell.h"
 #import "EPPlayerController.h"
 #import "EPSegmentedControl.h"
-#import "EPAppendButton.h"
+#import "EPPopupButton.h"
 #import "EPEditCell1.h"
 #import "EPEditCell2.h"
 #import "EPRoot.h"
@@ -32,7 +32,6 @@ extern NSUInteger minEntriesForSections;
 - (NSArray *)supportedSortOrders;
 - (UITableViewCell *)createSortOrderCell;
 - (void)rename:(EPBrowserCell *)cell to:(NSString *)newText;
-- (void)playAppend:(NSIndexPath *)path;
 
 @property (strong, nonatomic) EPFolder *folder;
 @property (readonly, nonatomic) EPRoot *root;
@@ -63,5 +62,5 @@ extern NSUInteger minEntriesForSections;
 @property (readonly, nonatomic) NSString *filterPropertyName;
 @property (assign, nonatomic) BOOL wantsSearch;
 @property (assign, nonatomic) BOOL indexesEnabled;
-@property (strong, nonatomic) EPAppendButton *appendButton;
+@property (strong, nonatomic) EPPopupButton *popupButton;
 @end
