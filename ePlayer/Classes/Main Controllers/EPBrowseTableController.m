@@ -15,6 +15,7 @@
 #import "EPTrackController.h"
 #import "EPGearTableController.h"
 #import "EPPlayButton.h"
+#import "EPMainTabController.h"
 
 NSUInteger minEntriesForSections = 10;
 static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
@@ -94,6 +95,7 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
         // Hit the back button while editing.  It won't turn editing off, so
         // do anything that needs to be done.
         [self reloadParents];
+        [self hideEditToolbar];
     }
 }
 
@@ -113,10 +115,6 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.showingControlCells && indexPath.section==0) {
-        return self.controlCells[indexPath.row];
-    }
-    
     EPBrowserCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EntryCell"];
     assert (cell != nil);
     if (!cell.playButton.gestureRecognizers.count) {
@@ -150,10 +148,6 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
         data = self.filteredSections;
     } else {
         data = self.sections;
-    }
-    if (self.showingControlCells) {
-        // Adjust for added cells.
-        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
     }
     [self updateCell:cell forIndexPath:indexPath withSections:data withDateLabel:useDateLabel];
     cell.parentController = self;
@@ -214,9 +208,6 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.showingControlCells && indexPath.section==0) {
-        cell.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
-    }
 }
 
 
@@ -239,11 +230,7 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
         data = self.sectionTitles;
     }
     if (data != nil) {
-        NSInteger count = [data count];
-        if (self.showingControlCells) {
-            count += 1;
-        }
-        return count;
+        return [data count];
     } else {
         return 1;
     }
@@ -252,13 +239,6 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    if (self.showingControlCells) {
-        if (section == 0) {
-            return self.controlCells.count;
-        } else {
-            section -= 1;
-        }
-    }
     NSArray *data;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         data = self.filteredSections;
@@ -314,39 +294,6 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
     return cell;
 }
 
-- (NSArray *)controlCells
-{
-    if (_controlCells == nil) {
-        NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"EditCell"
-                                                          owner:self
-                                                        options:nil];
-        self.editCell1 = nibViews[0];
-        self.editCell2 = nibViews[1];
-        [self.editCell1.gearButton addTarget:self action:@selector(gear:)
-                            forControlEvents:UIControlEventTouchUpInside];
-        [self.editCell1.deleteButton addTarget:self action:@selector(delete:)
-                              forControlEvents:UIControlEventTouchUpInside];
-        [self.editCell1.cutButton addTarget:self action:@selector(cut:)
-                           forControlEvents:UIControlEventTouchUpInside];
-        [self.editCell1.cpyButton addTarget:self action:@selector(copy:)
-                           forControlEvents:UIControlEventTouchUpInside];
-        [self.editCell1.pasteButton addTarget:self action:@selector(paste:)
-                             forControlEvents:UIControlEventTouchUpInside];
-        
-        [self.editCell2.renameButton addTarget:self action:@selector(rename:)
-                              forControlEvents:UIControlEventTouchUpInside];
-        [self.editCell2.addFolderButton addTarget:self action:@selector(addFolder:)
-                                 forControlEvents:UIControlEventTouchUpInside];
-        [self.editCell2.collapseButton addTarget:self action:@selector(collapse:)
-                                forControlEvents:UIControlEventTouchUpInside];
-        
-        _controlCells = @[[self createSortOrderCell],
-                          self.editCell1,
-                          self.editCell2];
-    }
-    return _controlCells;
-}
-
 - (NSArray *)supportedSortOrders
 {
     return @[@(EPSortOrderAlpha),
@@ -362,13 +309,6 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    if (self.showingControlCells) {
-        if (section == 0) {
-            return nil;
-        } else {
-            section -= 1;
-        }
-    }
     NSArray *data;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         data = self.filteredSectionTitles;
@@ -381,7 +321,6 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
 
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
-    // No need to worry about showingControlCells, indexes are disabled.
     if (self.indexesEnabled) {
         NSArray *data;
         if (tableView == self.searchDisplayController.searchResultsTableView) {
@@ -410,13 +349,6 @@ sectionForSectionIndexTitle:(NSString *)title
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if (self.showingControlCells) {
-        if (section == 0) {
-            return nil;
-        } else {
-            section -= 1;
-        }
-    }
     NSArray *data;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         data = self.filteredSectionTitles;
@@ -456,19 +388,22 @@ sectionForSectionIndexTitle:(NSString *)title
                 break;
         }
         view.sortDescriptionLabel.text = text;
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]
+                                       initWithTarget:self action:@selector(sortTap:)];
+        [view.sortDescriptionLabel addGestureRecognizer:tap];
     } else {
         view.sortDescriptionLabel.text = nil;
     }
     return view;
 }
 
+- (void)sortTap:(UIGestureRecognizer *)recognizer
+{
+    NSLog(@"TAP!");
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if (self.showingControlCells) {
-        if (section == 0) {
-            return 0;
-        }
-    }
     NSArray *data;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         data = self.filteredSectionTitles;
@@ -662,8 +597,14 @@ sectionForSectionIndexTitle:(NSString *)title
 {
     // Determine which entry was tapped.
     EPPlayButton *playButton = (EPPlayButton *)gesture.view;
-    [self.playerController playEntry:playButton.browserCell.entry];
-    self.tabBarController.selectedIndex = 3;
+    if ([self.playerController shouldAppend]) {
+        [self.playerController appendEntry:playButton.browserCell.entry];
+    } else {
+        [self.playerController playEntry:playButton.browserCell.entry];
+    }
+    // I decided that showing when hitting play isn't useful.
+    // TODO: Show some kind of pop-up notification of what was added.
+//    self.tabBarController.selectedIndex = 3;
 }
 
 /*****************************************************************************/
@@ -673,7 +614,7 @@ sectionForSectionIndexTitle:(NSString *)title
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.editing) {
-        [self updateEditCellStatus];
+        [self updateEditToolbarStatus];
         return;
     }
     NSArray *data;
@@ -696,21 +637,15 @@ sectionForSectionIndexTitle:(NSString *)title
     }
 }
 
-- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (self.editing) {
-        // Do not allow selecting the special edit cells.
-        if (indexPath.section == 0) {
-            return nil;
-        }
-    }
-    return indexPath;
-}
+//- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return indexPath;
+//}
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.editing) {
-        [self updateEditCellStatus];
+        [self updateEditToolbarStatus];
     }
 }
 
@@ -755,46 +690,75 @@ sectionForSectionIndexTitle:(NSString *)title
 /*****************************************************************************/
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
+    NSLog(@"Set Editing %s", editing ? "YES" : "NO");
     [super setEditing:editing animated:animated];
     if (editing) {
-        self.showingControlCells = YES;
+        [self showEditToolbar];
         self.indexesEnabled = NO;
-        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0]
-                      withRowAnimation:UITableViewRowAnimationAutomatic];
         // Make sure enabled status on buttons is correct.
-        [self updateEditCellStatus];
+        [self updateEditToolbarStatus];
     } else {
+        [self hideEditToolbar];
         // Commit editing changes.
-        if (self.showingControlCells) {
-            // Save any changes made.
-            self.root.dirty = YES;
-            // Clean up.
-            self.showingControlCells = NO;
-            self.indexesEnabled = YES;
-            [self setRenaming:false];
-            // Would like to have this animated, but a bulk reload of the data
-            // prevents that.  Something like NSFetchedResultsController would
-            // probably work better.
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:0]
-                          withRowAnimation:UITableViewRowAnimationAutomatic];
-            // Re-sort in case anything was added.
-            [self updateSections];
-            [self.tableView reloadData];
-            // Update previous tables.
-            [self reloadParents];
-        }
+        // Save any changes made.
+        self.root.dirty = YES;
+        // Clean up.
+        self.indexesEnabled = YES;
+        [self setRenaming:false];
+        // Re-sort in case anything was added.
+        [self updateSections];
+        [self.tableView reloadData];
+        // Update previous tables.
+        [self reloadParents];
     }
 }
 
-- (void)updateEditCellStatus
+- (void)showEditToolbar
+{
+    NSArray *nibViews = [[NSBundle mainBundle] loadNibNamed:@"EditToolbar"
+                                                      owner:self
+                                                    options:nil];
+    self.editToolbar = nibViews[0];
+    EPEditToolbar *toolbar = self.editToolbar;
+    [self.navigationController.view addSubview:toolbar];
+    EPMainTabController *tabC = (EPMainTabController *)self.tabBarController;
+    CGSize navSize = self.navigationController.view.frame.size;
+    toolbar.frame = CGRectMake(0,
+                               navSize.height - toolbar.frame.size.height - tabC.tabBar.frame.size.height,
+                               navSize.width,
+                               toolbar.frame.size.height);
+    [toolbar.settingsButton addTarget:self action:@selector(settings:)
+                     forControlEvents:UIControlEventTouchUpInside];
+    [toolbar.deleteButton addTarget:self action:@selector(delete:)
+                          forControlEvents:UIControlEventTouchUpInside];
+    [toolbar.cutButton addTarget:self action:@selector(cut:)
+                       forControlEvents:UIControlEventTouchUpInside];
+    [toolbar.cpyButton addTarget:self action:@selector(copy:)
+                       forControlEvents:UIControlEventTouchUpInside];
+    [toolbar.pasteButton addTarget:self action:@selector(paste:)
+                         forControlEvents:UIControlEventTouchUpInside];
+    [toolbar.renameButton addTarget:self action:@selector(rename:)
+                          forControlEvents:UIControlEventTouchUpInside];
+    [toolbar.addFolderButton addTarget:self action:@selector(addFolder:)
+                             forControlEvents:UIControlEventTouchUpInside];
+    [toolbar.collapseButton addTarget:self action:@selector(collapse:)
+                            forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)hideEditToolbar
+{
+    [self.editToolbar removeFromSuperview];
+}
+
+- (void)updateEditToolbarStatus
 {
     BOOL haveSelections = self.tableView.indexPathsForSelectedRows.count != 0;
-    self.editCell1.deleteButton.enabled = haveSelections;
-    self.editCell1.cutButton.enabled = haveSelections;
-    self.editCell1.cpyButton.enabled = haveSelections;
-    self.editCell2.collapseButton.enabled = haveSelections;
+    self.editToolbar.deleteButton.enabled = haveSelections;
+    self.editToolbar.cutButton.enabled = haveSelections;
+    self.editToolbar.cpyButton.enabled = haveSelections;
+    self.editToolbar.collapseButton.enabled = haveSelections;
     BOOL havePasteItems = playlistPasteboard.URLs.count != 0;
-    self.editCell1.pasteButton.enabled = havePasteItems;
+    self.editToolbar.pasteButton.enabled = havePasteItems;
 }
 
 - (void)reloadParents
@@ -826,7 +790,7 @@ sectionForSectionIndexTitle:(NSString *)title
     NSMutableDictionary *sectionsToDelete = [NSMutableDictionary dictionaryWithCapacity:indexPaths.count];
     for (NSIndexPath *path in indexPaths) {
         // Adjust index for the 2 special rows if necessary.
-        NSIndexPath *realIndexPath = [NSIndexPath indexPathForRow:path.row inSection:path.section-1];
+        NSIndexPath *realIndexPath = [NSIndexPath indexPathForRow:path.row inSection:path.section];
         // Figure out the entry being removed.
         EPEntry *entry = self.sections[realIndexPath.section][realIndexPath.row];
         NSLog(@"Deleting %@", entry.name);
@@ -864,22 +828,13 @@ sectionForSectionIndexTitle:(NSString *)title
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.showingControlCells && indexPath.section==0) {
-        return NO;
-    } else {
-        return YES;
-    }
+    return YES;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.sortOrder == EPSortOrderManual) {
-        if (self.showingControlCells && indexPath.section == 0) {
-            // Control cells cannot be moved.
-            return NO;
-        } else {
-            return YES;
-        }
+        return YES;
     } else {
         return NO;
     }
@@ -890,8 +845,8 @@ sectionForSectionIndexTitle:(NSString *)title
     // Adjust index for the 2 special rows if necessary.  (Manual only has 1 section.)
     assert(fromIndexPath.section!=0);
     assert(toIndexPath.section!=0);
-    fromIndexPath = [NSIndexPath indexPathForRow:fromIndexPath.row inSection:fromIndexPath.section-1];
-    toIndexPath = [NSIndexPath indexPathForRow:toIndexPath.row inSection:toIndexPath.section-1];
+    fromIndexPath = [NSIndexPath indexPathForRow:fromIndexPath.row inSection:fromIndexPath.section];
+    toIndexPath = [NSIndexPath indexPathForRow:toIndexPath.row inSection:toIndexPath.section];
     // Figure out the entry being moved.
     EPEntry *entry = self.sections[fromIndexPath.section][fromIndexPath.row];
     [self.folder removeObjectFromEntriesAtIndex:fromIndexPath.row];
@@ -961,7 +916,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     
     [self.tableView beginUpdates];
     // Insert the newly created folder.
-    [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:1]]
+    [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]
                           withRowAnimation:UITableViewRowAnimationAutomatic];
     [self.tableView endUpdates];
 }
@@ -1002,7 +957,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 - (void)rename:(EPBrowserCell *)cell to:(NSString *)newText
 {
     NSIndexPath *path = [self.tableView indexPathForCell:cell];
-    EPEntry *entry = self.sections[path.section-1][path.row];
+    EPEntry *entry = self.sections[path.section][path.row];
     entry.name = newText;
     // Will save when editing done.
     if (self.focusAddFolder) {
@@ -1035,7 +990,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
                 return NO;
             }
             for (NSIndexPath *path in [self.tableView indexPathsForSelectedRows]) {
-                EPEntry *entry = self.sections[path.section-1][path.row];
+                EPEntry *entry = self.sections[path.section][path.row];
                 if (entry == orphanFolder) {
                     NSString *message = [NSString stringWithFormat:@"Cannot %@ the orphaned songs folder.", action];
                     UIAlertView *alert = [[UIAlertView alloc]
@@ -1128,7 +1083,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     NSMutableArray *copyItems = [NSMutableArray arrayWithCapacity:self.tableView.indexPathsForSelectedRows.count];
     for (NSIndexPath *path in self.tableView.indexPathsForSelectedRows) {
         // Figure out the entry being copied.
-        EPEntry *entry = self.sections[path.section-1][path.row];
+        EPEntry *entry = self.sections[path.section][path.row];
         [copyItems addObject:entry.url];
         // Clear the current selection.
         [self.tableView deselectRowAtIndexPath:path animated:YES];
@@ -1138,7 +1093,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
         }
     }
     playlistPasteboard.URLs = copyItems;
-    [self updateEditCellStatus];
+    [self updateEditToolbarStatus];
 }
 
 - (void)paste:(id)sender
@@ -1257,7 +1212,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     }
     // Verify that all selections are folders.
     for (NSIndexPath *path in self.tableView.indexPathsForSelectedRows) {
-        EPEntry *entry = self.sections[path.section-1][path.row];
+        EPEntry *entry = self.sections[path.section][path.row];
         if (![entry.class isSubclassOfClass:[EPFolder class]]) {
             UIAlertView *alert = [[UIAlertView alloc]
                                   initWithTitle:@"Operation Not Permitted"
@@ -1284,7 +1239,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 - (void)collapseRows:(NSArray *)indexPaths
 {
     for (NSIndexPath *path in indexPaths) {
-        EPFolder *folder = self.sections[path.section-1][path.row];
+        EPFolder *folder = self.sections[path.section][path.row];
         [self.folder addEntries:folder.entries];
         [self.folder removeEntriesObject:folder];
         if (folder.parents.count == 0) {
@@ -1299,7 +1254,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 /*****************************************************************************/
 #pragma mark - Gear
 /*****************************************************************************/
-- (void)gear:(id)sender
+- (void)settings:(id)sender
 {
     EPGearTableController *controller = [self.tabBarController.storyboard instantiateViewControllerWithIdentifier:@"GearTableController"];
     [self.navigationController pushViewController:controller animated:YES];

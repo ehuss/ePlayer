@@ -30,9 +30,9 @@
 - (void)setEvenOdd:(BOOL)odd
 {
     if (odd) {
-        self.evenOddBackgroundView.image = [UIImage imageNamed:@"player-cell-light"];
+        self.backgroundColor = [UIColor colorWithRed:0.16 green:0.16 blue:0.16 alpha:1.0];
     } else {
-        self.evenOddBackgroundView.image = [UIImage imageNamed:@"player-cell-dark"];
+        self.backgroundColor = [UIColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:1.0];
     }
 }
 

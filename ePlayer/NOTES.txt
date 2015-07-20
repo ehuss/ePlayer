@@ -7,8 +7,21 @@ NOTES
 ****
 TODO
 ****
+- Animate the edit toolbar coming in/out.
 
-- Stop using "special" cels during editing.
+- Bug:
+  1 Play alubm A
+  2 Play album B
+  3 scrub to 0
+  4 continues playing
+  5 pause
+  6 scrub to 0
+  XXX After timer expires, track 2 starts unexpectedly.
+
+- If popup is showing, navigating will cause it to "stick" (click on entry, then click back).
+- When clicking play on an entry, it should show some kind of pop-up notification that it was added to the queue.
+
+- Resize now-playing green icon to match constraints (10pt width).
 - "Done" on keyboard in rename acts as return.
 - Why is Lorde showing up when rebuilding db?
 - Resetting database seems to not let list views update (seem to still be accessing old data), until you restart.

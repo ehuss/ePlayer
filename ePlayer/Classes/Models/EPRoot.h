@@ -36,5 +36,8 @@ extern NSString *kEPOrphanFolderName;
 - (NSArray *)topFolders;
 // Erases all in-memory information.
 - (void)reset;
+#ifdef TARGET_IPHONE_SIMULATOR
+- (void)createSimulatedData;
+#endif
 
 @end

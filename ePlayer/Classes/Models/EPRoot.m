@@ -175,4 +175,64 @@ static EPRoot *theSharedRoot;
     _currentQueueIndex = 0;
 }
 
+#ifdef TARGET_IPHONE_SIMULATOR
+- (void)createSimulatedData
+{
+    // Add some general playlist categories.
+    NSArray *categories = @[@"General", @"Classical", @"Soundtracks"];
+    for (NSString *name in categories) {
+        EPFolder *folder = [EPFolder folderWithName:name
+                                          sortOrder:EPSortOrderAlpha
+                                        releaseDate:[NSDate distantPast]
+                                            addDate:[NSDate date]
+                                           playDate:[NSDate distantPast]];
+        [self.playlists addEntriesObject:folder];
+    }
+    // Create a bunch of artists.
+    // Some letters to use for the first character.
+    // TODO: Consider trying lowercase and tricky Unicode characters here.
+    NSString *firstChars = @"1ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (NSUInteger i=0; i<firstChars.length; i++) {
+        unichar c = [firstChars characterAtIndex:i];
+        NSString *artistName = [NSString stringWithCharacters:&c length:1];
+        artistName = [NSString stringWithFormat:@"%@ Artist Name", artistName];
+        // Artist folder.
+        EPFolder *artistFolder = [EPFolder folderWithName:artistName
+                                                sortOrder:EPSortOrderAddDate releaseDate:[NSDate distantPast]
+                                                  addDate:[NSDate distantPast]
+                                                 playDate:[NSDate distantPast]];
+        [self.artists addEntriesObject:artistFolder];
+        // Playlist artist folder.
+        EPFolder *playlistArtist = [artistFolder copy];
+        // XXX Spread across the genres.
+        EPFolder *genFolder = self.playlists.entries[0];
+        [genFolder addEntriesObject:playlistArtist];
+        // Album folder (both genre and artist).
+        for (NSUInteger albumIndex=0; albumIndex<3; albumIndex++) {
+            NSString *albumName = [NSString stringWithFormat:@"Artist %@'s %lu Album", artistName, (unsigned long)albumIndex+1];
+            EPFolder *albumFolder = [EPFolder folderWithName:albumName
+                                                   sortOrder:EPSortOrderManual
+                                                 releaseDate:[NSDate distantPast]
+                                                     addDate:[NSDate distantPast]
+                                                    playDate:[NSDate distantPast]];
+            EPFolder *playlistAlbum = [albumFolder copy];
+            [artistFolder addEntriesObject:albumFolder];
+            [playlistArtist addEntriesObject:playlistAlbum];
+            [self.albums addEntriesObject:albumFolder];
+
+            // Songs.
+            for (NSUInteger songIndex=0; songIndex<12; songIndex++) {
+                NSString *songName = [NSString stringWithFormat:@"Song Name %lu", (unsigned long)songIndex+1];
+                EPSong *song = [EPSong songWithName:songName
+                                       persistentID:[NSNumber numberWithLongLong:0]];
+                [albumFolder addEntriesObject:song];
+                [playlistAlbum addEntriesObject:song];
+                // XXX Set date and propogate.
+            }
+        }
+    }
+    [self save];
+}
+#endif
+
 @end

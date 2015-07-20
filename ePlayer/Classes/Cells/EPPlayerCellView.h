@@ -19,6 +19,5 @@
 @property (weak, nonatomic) IBOutlet UILabel *trackNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *albumNameLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *currentItemView;
-@property (weak, nonatomic) IBOutlet UIImageView *evenOddBackgroundView;
 
 @end

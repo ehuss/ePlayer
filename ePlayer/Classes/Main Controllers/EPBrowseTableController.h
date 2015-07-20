@@ -12,16 +12,14 @@
 #import "EPPlayerController.h"
 #import "EPSegmentedControl.h"
 #import "EPPopupButton.h"
-#import "EPEditCell1.h"
-#import "EPEditCell2.h"
 #import "EPRoot.h"
+#import "EPEditToolbar.h"
 
 extern NSUInteger minEntriesForSections;
 
 @interface EPBrowseTableController : UITableViewController
     <UISearchBarDelegate, UISearchDisplayDelegate, UITextFieldDelegate, UIActionSheetDelegate>
 {
-    NSArray *_controlCells;
     BOOL _renaming;
     EPRoot *_root;
 }
@@ -36,8 +34,6 @@ extern NSUInteger minEntriesForSections;
 @property (strong, nonatomic) EPFolder *folder;
 @property (readonly, nonatomic) EPRoot *root;
 @property (assign, nonatomic) BOOL focusAddFolder;
-@property (strong, nonatomic) EPEditCell1 *editCell1;
-@property (strong, nonatomic) EPEditCell2 *editCell2;
 
 @property (assign, nonatomic)EPSortOrder sortOrder;
 // Array of arrays.  The types of items depends on the subclass.
@@ -47,11 +43,8 @@ extern NSUInteger minEntriesForSections;
 @property (strong, nonatomic) NSMutableArray *sectionTitles;
 @property (nonatomic) NSMutableArray *sectionIndexTitles;
 @property (readonly, nonatomic) EPPlayerController *playerController;
-// Control cells are the ones at the top used for setting sort order,
-// inserting rows, etc.
-@property (readonly, nonatomic) NSArray *controlCells;
-@property (assign, nonatomic) BOOL showingControlCells;
 @property (assign, nonatomic) BOOL renaming;
+@property (nonatomic) EPEditToolbar *editToolbar;
 
 // Searching.
 @property (strong, nonatomic) UISearchDisplayController *searchController;

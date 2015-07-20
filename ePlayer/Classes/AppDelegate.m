@@ -129,6 +129,12 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
 
 - (BOOL)loadData
 {
+#ifdef TARGET_IPHONE_SIMULATOR
+    EPRoot *root = [EPRoot sharedRoot];
+    [root reset];
+    [root createSimulatedData];
+    return YES;
+#else
     // First determine if there is anything in the database.
     EPRoot *root = [EPRoot sharedRoot];
     if (!root.dirty) {
@@ -139,6 +145,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     // Populate with defaults from the user's library.
     [self performSelectorInBackground:@selector(initDB:) withObject:self];
     return NO;
+#endif
 }
 
 - (void)resetDB

@@ -111,9 +111,6 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Register the class for creating cells.
-    UINib *entryNib = [UINib nibWithNibName:@"PlayerCell" bundle:nil];
-    [self.tableView registerNib:entryNib forCellReuseIdentifier:@"PlayerCell"];
     // The gesture recognizers for the notification center seems to prevent
     // recognizing touches near the top of the screen.  Instead of catching
     // touch events on the info button, this has been changed so the entire
@@ -121,6 +118,10 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     UIGestureRecognizer *r = [[UITapGestureRecognizer alloc]
                               initWithTarget:self action:@selector(tappedInfo:)];
     [self.trackSummary addGestureRecognizer:r];
+
+    // TODO: This is not working.
+    self.trackSummary.bounds = CGRectMake(0, 0,
+                    self.view.frame.size.width, self.trackSummary.bounds.size.height);
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -192,6 +193,16 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     }
     [cell setEvenOdd:indexPath.row%2];
     return cell;
+}
+
+// This helps with performance.  iOS 8 introduced dynamic cell height.  It needs
+// to know the height of all cells in order to draw the scroll bar.  However, by
+// returning an estimated value, it only computes the exact height for visible
+// cells, and uses this estimate for the rest (if it is not exact, that's OK,
+// it's just a scroll bar).
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 44;
 }
 
 /*
