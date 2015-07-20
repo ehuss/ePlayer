@@ -129,7 +129,8 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
 
 - (BOOL)loadData
 {
-#ifdef TARGET_IPHONE_SIMULATOR
+#if TARGET_IPHONE_SIMULATOR
+    NSLog(@"in the simulater");
     EPRoot *root = [EPRoot sharedRoot];
     [root reset];
     [root createSimulatedData];

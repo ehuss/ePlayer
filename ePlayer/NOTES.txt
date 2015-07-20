@@ -7,16 +7,8 @@ NOTES
 ****
 TODO
 ****
+- After reset database, table views are not updated (must restart app).
 - Animate the edit toolbar coming in/out.
-
-- Bug:
-  1 Play alubm A
-  2 Play album B
-  3 scrub to 0
-  4 continues playing
-  5 pause
-  6 scrub to 0
-  XXX After timer expires, track 2 starts unexpectedly.
 
 - If popup is showing, navigating will cause it to "stick" (click on entry, then click back).
 - When clicking play on an entry, it should show some kind of pop-up notification that it was added to the queue.

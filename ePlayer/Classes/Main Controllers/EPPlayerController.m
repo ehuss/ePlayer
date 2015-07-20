@@ -402,14 +402,13 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)play
 {
-    NSLog(@"Play");
     if (!self.isPlaying && self.root.queue.entries.count) {
         if (self.currentPlayer == nil) {
             [self setCurrentPlayer];
         }
         [self.currentPlayer play];
-        [self nextPlayerPrepare];
         self.isPlaying = YES;
+        [self nextPlayerPrepare];
         [self updateDisplay];
         [self updateNowPlayingInfoCenter];
         [[NSNotificationCenter defaultCenter] postNotificationName:kEPPlayNotification object:nil];
@@ -419,7 +418,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)nextPlayerPrepare
 {
-    if (self.nextPlayer) {
+    if (self.nextPlayer && self.isPlaying) {
         [self.nextPlayer stop];
         NSTimeInterval now = self.currentPlayer.deviceCurrentTime;
         NSTimeInterval diff = self.currentPlayer.duration - self.currentPlayer.currentTime;
