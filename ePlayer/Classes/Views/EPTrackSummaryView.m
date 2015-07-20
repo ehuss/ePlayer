@@ -13,8 +13,13 @@
 
 - (void)awakeFromNib
 {
+    [super awakeFromNib];
     NSArray *ts = [[NSBundle mainBundle] loadNibNamed:@"TrackSummary2" owner:self options:nil];
-    [self addSubview:ts[0]];
+    UIView *v = ts[0];
+    [self addSubview:v];
+    // I don't know why, but this is very important.  Otherwise, the autolayout
+    // just does random shit.
+    v.frame = self.bounds;
 }
 
 - (void)loadSong:(EPSong *)song

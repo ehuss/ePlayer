@@ -118,10 +118,6 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     UIGestureRecognizer *r = [[UITapGestureRecognizer alloc]
                               initWithTarget:self action:@selector(tappedInfo:)];
     [self.trackSummary addGestureRecognizer:r];
-
-    // TODO: This is not working.
-    self.trackSummary.bounds = CGRectMake(0, 0,
-                    self.view.frame.size.width, self.trackSummary.bounds.size.height);
 }
 
 - (void)viewWillAppear:(BOOL)animated

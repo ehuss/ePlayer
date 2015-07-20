@@ -60,6 +60,7 @@ TODO
 - Having to scroll up to access edit buttons sucks when editing things far down on the list.
   Make the edit controls outside of the UITable, above (pushes UITable down).
 - Anno 2070 album is "invalid" when importing.
+- Tap "Info" in Queue view when queue is empty crashes.  Probably should just hide the info button when empty.
 
 High
 ====
