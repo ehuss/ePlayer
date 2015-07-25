@@ -175,7 +175,7 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     static NSString *CellIdentifier = @"PlayerCell";
     EPPlayerCellView *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     EPSong *song = self.root.queue.entries[indexPath.row];
-    cell.queueNumLabel.text = [NSString stringWithFormat:@"%li.", indexPath.row+1];
+    cell.queueNumLabel.text = [NSString stringWithFormat:@"%i.", indexPath.row+1];
     cell.trackNameLabel.text = song.name;
     cell.albumNameLabel.text = [NSString stringWithFormat:@"%@ - %@",
                                 song.mediaWrapper.albumTitle,
@@ -192,15 +192,15 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     return cell;
 }
 
-// This helps with performance.  iOS 8 introduced dynamic cell height.  It needs
+// This helps with performance.  iOS 8 (or 7?) introduced dynamic cell height.  It needs
 // to know the height of all cells in order to draw the scroll bar.  However, by
 // returning an estimated value, it only computes the exact height for visible
 // cells, and uses this estimate for the rest (if it is not exact, that's OK,
 // it's just a scroll bar).
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 44;
-}
+//- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return 44;
+//}
 
 /*
  // Override to support conditional editing of the table view.
