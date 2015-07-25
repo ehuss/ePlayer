@@ -68,6 +68,9 @@ Test Notes
   - scrubber and time labels stop updating.
 
 
+TODO
+====
+- Holding Prev/Next buttons.
 - Route changes, unplugging headphones, etc.
 - Tapping entry in queue.
 - Scrubbing.

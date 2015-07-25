@@ -202,8 +202,9 @@
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="468"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         <color key="separatorColor" white="0.29999999999999999" alpha="1" colorSpace="calibratedWhite"/>
+                                        <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         <prototypes>
-                                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="PlayerCell" id="2mC-nS-hlC" customClass="EPPlayerCellView">
+                                            <tableViewCell opaque="NO" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="PlayerCell" id="2mC-nS-hlC" customClass="EPPlayerCellView">
                                                 <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2mC-nS-hlC" id="Fm4-ye-6vu">
@@ -292,7 +293,6 @@
                                                         <constraint firstAttribute="centerY" secondItem="vuM-Gd-MSs" secondAttribute="centerY" constant="-0.75" id="z4L-pj-XeB"/>
                                                     </constraints>
                                                 </tableViewCellContentView>
-                                                <color key="backgroundColor" red="1" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <connections>
                                                     <outlet property="albumNameLabel" destination="bIG-0p-2Fs" id="Eza-5I-snf"/>
                                                     <outlet property="currentItemView" destination="sfe-qq-mwI" id="hBa-y4-YOK"/>

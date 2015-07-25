@@ -20,7 +20,6 @@ TODO
 
 - Resize now-playing green icon to match constraints (10pt width).
 - "Done" on keyboard in rename acts as return.
-- Why is Lorde showing up when rebuilding db?
 - Maybe add "play all" button at top of list?  (such as inside an album)
 - Make cell elements a little taller.
 - Use clean, simple, flat icons (plus, play), particularly in list view.

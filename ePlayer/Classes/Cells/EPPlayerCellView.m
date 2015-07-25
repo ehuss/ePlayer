@@ -30,10 +30,17 @@
 - (void)setEvenOdd:(BOOL)odd
 {
     if (odd) {
-        self.backgroundColor = [UIColor colorWithRed:0.16 green:0.16 blue:0.16 alpha:1.0];
+        self.contentView.backgroundColor = [UIColor colorWithRed:0.16 green:0.16 blue:0.16 alpha:1.0];
     } else {
-        self.backgroundColor = [UIColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:1.0];
+        self.contentView.backgroundColor = [UIColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:1.0];
     }
+}
+
+// Introduced in iOS 8, this was interfering with the separatorInset value
+// (I think the inset is essentially this plus separatorInset).
+- (UIEdgeInsets)layoutMargins
+{
+    return UIEdgeInsetsZero;
 }
 
 @end
