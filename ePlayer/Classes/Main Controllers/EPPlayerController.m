@@ -175,7 +175,8 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     static NSString *CellIdentifier = @"PlayerCell";
     EPPlayerCellView *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     EPSong *song = self.root.queue.entries[indexPath.row];
-    cell.queueNumLabel.text = [NSString stringWithFormat:@"%i.", indexPath.row+1];
+    // Dunno why Xcode flip-flops the warning here, just force it with a cast.
+    cell.queueNumLabel.text = [NSString stringWithFormat:@"%i.", (int)(indexPath.row+1)];
     cell.trackNameLabel.text = song.name;
     cell.albumNameLabel.text = [NSString stringWithFormat:@"%@ - %@",
                                 song.mediaWrapper.albumTitle,

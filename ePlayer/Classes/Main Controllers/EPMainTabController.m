@@ -80,6 +80,31 @@
     }
 }
 
+- (void)resetBrowsers
+{
+    EPBrowseTableController *browseCont;
+    EPRoot *root = [EPRoot sharedRoot];
+    UINavigationController *navCont;
+
+    navCont = self.viewControllers[0];
+    [navCont popToRootViewControllerAnimated:NO];
+    browseCont = (EPBrowseTableController *)navCont.topViewController;
+    browseCont.folder = root.playlists;
+    [browseCont.tableView reloadData];
+
+    navCont = self.viewControllers[1];
+    [navCont popToRootViewControllerAnimated:NO];
+    browseCont = (EPBrowseTableController *)navCont.topViewController;
+    browseCont.folder = root.artists;
+    [browseCont.tableView reloadData];
+
+    navCont = self.viewControllers[2];
+    [navCont popToRootViewControllerAnimated:NO];
+    browseCont = (EPBrowseTableController *)navCont.topViewController;
+    browseCont.folder = root.albums;
+    [browseCont.tableView reloadData];
+}
+
 - (void)setSelectedViewController:(UIViewController *)selectedViewController
 {
     // Don't set if you click on a tab twice.

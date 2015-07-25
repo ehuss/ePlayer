@@ -7,13 +7,13 @@ NOTES
 ****
 TODO
 ****
+- Instead of using tabs, put the artist and album views in the main playlist table.  The "queue" view is a button in the upper-right corner (just like Apple Music).
 - Bug: Info button in queue is kinda bugged.  Tapping it just glows.  Tapping now playing view does the right thing.
 - Bug: MPMusic backend: After queue is finished, pressing "play" again starts with the second track.  Not obvious why, when "play" is called, the current index is 0.
 - Bug: (MPMusic backend?) pause playback, then go back to "playlists", the play/append button does not update properly.
 - Queue repeat support.
 - Exiting "Settings" view should disable editing mode.
 - EPEntry methods (like EPFolder addEntries) should set dirty flag.  Then, remove manual calls to setting dirty (like in player).
-- After reset database, table views are not updated (must restart app).
 - Animate the edit toolbar coming in/out.
 
 - If popup is showing, navigating will cause it to "stick" (click on entry, then click back).
@@ -22,7 +22,6 @@ TODO
 - Resize now-playing green icon to match constraints (10pt width).
 - "Done" on keyboard in rename acts as return.
 - Why is Lorde showing up when rebuilding db?
-- Resetting database seems to not let list views update (seem to still be accessing old data), until you restart.
 - Maybe add "play all" button at top of list?  (such as inside an album)
 - Make cell elements a little taller.
 - Use clean, simple, flat icons (plus, play), particularly in list view.
@@ -59,6 +58,7 @@ TODO
   Make the edit controls outside of the UITable, above (pushes UITable down).
 - Anno 2070 album is "invalid" when importing.
 - Tap "Info" in Queue view when queue is empty crashes.  Probably should just hide the info button when empty.
+- U2 album won't play.  Presumably due to DRM?
 
 High
 ====

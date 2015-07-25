@@ -93,7 +93,7 @@
 {
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
     EPMainTabController *tabC = (EPMainTabController *)self.tabBarController;
-    [tabC reloadBrowsers];
+    [tabC resetBrowsers];
     EPUpdateResultsController *update = [[EPUpdateResultsController alloc] init];
     update.results = results;
     [self.navigationController pushViewController:update animated:YES];
@@ -125,7 +125,7 @@
 {
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
     EPMainTabController *tabC = (EPMainTabController *)self.tabBarController;
-    [tabC reloadBrowsers];
+    [tabC resetBrowsers];
 }
 
 @end

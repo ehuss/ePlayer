@@ -17,5 +17,6 @@
 - (void)mainInit;
 - (void)loadInitialFolders;
 - (void)reloadBrowsers;
+- (void)resetBrowsers;
 
 @end
