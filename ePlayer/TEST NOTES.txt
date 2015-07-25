@@ -1,0 +1,74 @@
+**********
+Test Notes
+**********
+- Play start:
+  - Playing starts
+  - Scrubber moves
+  - Now Playing view updated
+  - Current cell is correct
+    - table view scrolls to current playing.
+  - Time labels are correct.
+  - Play/pause button shows "pause".
+
+- Play starts next track.
+  - Next track starts playing
+  - Scrubber updates, time labels updated.
+  - Now Playing view updated.
+  - Current playing cell is updated.
+    - table view scrolls to current playing.
+  - Play/pause button shows "pause".
+
+- Play finishes last track in queue.
+  - Playing stops.
+  - Now Playing view updates to first track.
+  - Current playing cell moved to 1st track, and turned red.
+    - table scrolls to top.
+  - Play/pause button in "play" state.
+  - Time labels in scrubber set to first track values.
+  - scrubber reset to 0.
+  - Switches to last tab in use (if Queue is visible).
+  - Possible to start playing the queue again.
+
+- Prev Track
+    - If first track, starts playing at beginning.
+    - Else, moves to previous track.
+    - Now Playing view updated.
+    - Current playing cell updated.
+       - table scrolls to current playing.
+    - Play/pause button shows "pause".
+    - Scrubber updates, time labels updated.
+
+- Next Track
+    - If last track,
+        - play stops, current index is 0,
+        - now playing updated, current playing cell is 1st track, truns red.
+        - table scrolls to top
+        - play/pause in "play" state.
+        - time labels updated, scrubber set to 0.
+        - Possible to start playing the queue again.
+    - Else, moves to next track.
+    - Now Playing view updated.
+    - Current playing cell updated.
+    - table scrolls to current playing.
+    - Play/pause button shows "pause".
+    - Scrubber updates, time labels updated.
+
+
+- Pressing "play"
+  - Starts playing the current track at the current time index.
+  - current playing cell turns green.
+     - table scrolls
+  - Switches to "pause".
+  - scrubber starts updated, time labels start updating.
+
+- Pressing "pause"
+  - Stops playing.
+  - current playing cell turns red.
+  - Switches to "play".
+  - scrubber and time labels stop updating.
+
+
+- Route changes, unplugging headphones, etc.
+- Tapping entry in queue.
+- Scrubbing.
+- Queue: Now Playing info.

@@ -10,8 +10,35 @@
 #import "AppDelegate.h"
 #import "EPMainTabController.h"
 #import "EPUpdateResultsController.h"
+#import "EPSettings.h"
 
 @implementation EPGearTableController
+
+- (void)iPodSwitchChanged:(id)sender
+{
+    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+    if (self.iPodSwitch.on) {
+        [settings setObject:kEPAudioBackendMPMusic forKey:kEPSettingAudioBackend];
+    } else {
+        [settings setObject:kEPAudioBackendAVAudio forKey:kEPSettingAudioBackend];
+    }
+    EPMainTabController *tabC = (EPMainTabController *)self.tabBarController;
+    [tabC.playerController changeAudioBackend];
+}
+
+/*****************************************************************************/
+#pragma mark - View Controller
+/*****************************************************************************/
+- (void)viewWillAppear:(BOOL)animated
+{
+    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+    NSString *backend = [settings stringForKey:kEPSettingAudioBackend];
+    if (backend && [backend compare:kEPAudioBackendMPMusic]==NSOrderedSame) {
+        self.iPodSwitch.on = YES;
+    } else {
+        self.iPodSwitch.on = NO;
+    }
+}
 
 /*****************************************************************************/
 #pragma mark - Table view delegate

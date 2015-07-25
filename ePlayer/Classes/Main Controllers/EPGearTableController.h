@@ -10,4 +10,7 @@
 
 @interface EPGearTableController : UITableViewController
 
+@property (weak, nonatomic) IBOutlet UISwitch *iPodSwitch;
+- (IBAction)iPodSwitchChanged:(id)sender;
+
 @end

@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Playlists-->
@@ -395,12 +396,17 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Update Database" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xce-6u-6yz">
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Update Database" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xce-6u-6yz">
                                                     <rect key="frame" x="20" y="11" width="138" height="21"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Xce-6u-6yz" firstAttribute="centerY" secondItem="CVs-qh-EYT" secondAttribute="centerY" id="4v0-HN-HDl"/>
+                                                <constraint firstItem="Xce-6u-6yz" firstAttribute="top" secondItem="CVs-qh-EYT" secondAttribute="topMargin" constant="3" id="Q31-Re-zAQ"/>
+                                                <constraint firstItem="Xce-6u-6yz" firstAttribute="leading" secondItem="CVs-qh-EYT" secondAttribute="leadingMargin" constant="12" id="Q9y-xT-Ywb"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="cVL-db-tzP">
@@ -410,12 +416,51 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Reset Database" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h1J-XS-Y3s">
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reset Database" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h1J-XS-Y3s">
                                                     <rect key="frame" x="20" y="11" width="203" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="203" id="JIW-nc-ftb"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="h1J-XS-Y3s" firstAttribute="top" secondItem="Qh1-MB-E1t" secondAttribute="topMargin" constant="3" id="Cd7-mJ-ukl"/>
+                                                <constraint firstItem="h1J-XS-Y3s" firstAttribute="centerY" secondItem="Qh1-MB-E1t" secondAttribute="centerY" id="fW8-62-3LK"/>
+                                                <constraint firstItem="h1J-XS-Y3s" firstAttribute="leading" secondItem="Qh1-MB-E1t" secondAttribute="leadingMargin" constant="12" id="pao-cL-Mc4"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="pTP-UT-lNe">
+                                        <rect key="frame" x="0.0" y="143" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pTP-UT-lNe" id="8rY-km-iX3">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="iPod Mode" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dAe-eb-Gef">
+                                                    <rect key="frame" x="20" y="11" width="203" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="203" id="SfW-Yk-wla"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LzO-U3-Ycw">
+                                                    <rect key="frame" x="357" y="6" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="iPodSwitchChanged:" destination="pKF-s7-wP3" eventType="valueChanged" id="FWW-N6-lbN"/>
+                                                    </connections>
+                                                </switch>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="LzO-U3-Ycw" firstAttribute="centerY" secondItem="8rY-km-iX3" secondAttribute="centerY" id="7Ch-Nd-T07"/>
+                                                <constraint firstItem="dAe-eb-Gef" firstAttribute="leading" secondItem="8rY-km-iX3" secondAttribute="leadingMargin" constant="12" id="Ffl-Vt-969"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="LzO-U3-Ycw" secondAttribute="trailing" id="Fpy-tp-laE"/>
+                                                <constraint firstItem="dAe-eb-Gef" firstAttribute="top" secondItem="8rY-km-iX3" secondAttribute="topMargin" constant="3" id="gUc-uv-AWj"/>
+                                                <constraint firstItem="LzO-U3-Ycw" firstAttribute="centerY" secondItem="dAe-eb-Gef" secondAttribute="centerY" id="hOY-TI-VJX"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </cells>
@@ -428,6 +473,9 @@
                     </tableView>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="iPodSwitch" destination="LzO-U3-Ycw" id="0z7-PL-2de"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AIq-AS-Nnw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

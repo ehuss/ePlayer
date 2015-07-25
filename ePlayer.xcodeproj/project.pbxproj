@@ -96,6 +96,10 @@
 		07E3F47E1A4F395D000B390E /* EPEditToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E3F47D1A4F395D000B390E /* EPEditToolbar.m */; };
 		07E3F4811A4F5B0E000B390E /* EditToolbar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07E3F47F1A4F5B0E000B390E /* EditToolbar.xib */; };
 		07E3F4831A4F6475000B390E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07E3F4821A4F6475000B390E /* Images.xcassets */; };
+		07E6FF9F1B5EE23D00970FBB /* EPPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E6FF9E1B5EE23D00970FBB /* EPPlayer.m */; };
+		07E6FFA21B5EE24E00970FBB /* EPPlayerAVAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E6FFA11B5EE24E00970FBB /* EPPlayerAVAudio.m */; };
+		07E6FFA51B61E1B600970FBB /* EPPlayerMPMusic.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E6FFA41B61E1B600970FBB /* EPPlayerMPMusic.m */; };
+		07E6FFA91B61FBD400970FBB /* EPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E6FFA81B61FBD400970FBB /* EPSettings.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -235,6 +239,15 @@
 		07E3F47D1A4F395D000B390E /* EPEditToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPEditToolbar.m; sourceTree = "<group>"; };
 		07E3F4801A4F5B0E000B390E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = EditToolbar.xib; sourceTree = "<group>"; };
 		07E3F4821A4F6475000B390E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		07E6FF9D1B5EE23D00970FBB /* EPPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayer.h; sourceTree = "<group>"; };
+		07E6FF9E1B5EE23D00970FBB /* EPPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayer.m; sourceTree = "<group>"; };
+		07E6FFA01B5EE24E00970FBB /* EPPlayerAVAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayerAVAudio.h; sourceTree = "<group>"; };
+		07E6FFA11B5EE24E00970FBB /* EPPlayerAVAudio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayerAVAudio.m; sourceTree = "<group>"; };
+		07E6FFA31B61E1B600970FBB /* EPPlayerMPMusic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayerMPMusic.h; sourceTree = "<group>"; };
+		07E6FFA41B61E1B600970FBB /* EPPlayerMPMusic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayerMPMusic.m; sourceTree = "<group>"; };
+		07E6FFA71B61FBD400970FBB /* EPSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPSettings.h; sourceTree = "<group>"; };
+		07E6FFA81B61FBD400970FBB /* EPSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPSettings.m; sourceTree = "<group>"; };
+		07E6FFAA1B62E80100970FBB /* TEST NOTES.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = "TEST NOTES.txt"; path = "ePlayer/TEST NOTES.txt"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -369,6 +382,7 @@
 				079B4139171CF2550036F0D4 /* UI */,
 				07677A3F171924F200D1784D /* Images */,
 				0755C36F1715463600AAF81F /* NOTES.txt */,
+				07E6FFAA1B62E80100970FBB /* TEST NOTES.txt */,
 				0755C3491714EC6300AAF81F /* MusicModel.xcdatamodeld */,
 				0755C33A1714BFC900AAF81F /* Classes */,
 				07E3F4821A4F6475000B390E /* Images.xcassets */,
@@ -417,6 +431,7 @@
 				07475EB517272505001BB7AA /* Cells */,
 				07475EB6172725DF001BB7AA /* Controls */,
 				078A3BF6172BC019009A8FF5 /* Views */,
+				07E6FF9C1B5EE1B300970FBB /* Audio Controllers */,
 				07475EB7172726A9001BB7AA /* Main Controllers */,
 				0755C3711716215400AAF81F /* Models */,
 				0755C3611714F12200AAF81F /* AppDelegate.h */,
@@ -429,6 +444,8 @@
 				079B412E171CCA6E0036F0D4 /* EPMediaItemWrapper.m */,
 				0755C36C1715335800AAF81F /* EPMemoryDebug.h */,
 				0755C36D1715335800AAF81F /* EPMemoryDebug.m */,
+				07E6FFA71B61FBD400970FBB /* EPSettings.h */,
+				07E6FFA81B61FBD400970FBB /* EPSettings.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -523,6 +540,19 @@
 				07C841511832232900AEBA07 /* SVProgressHUD.m */,
 			);
 			path = SVProgressHUD;
+			sourceTree = "<group>";
+		};
+		07E6FF9C1B5EE1B300970FBB /* Audio Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				07E6FF9D1B5EE23D00970FBB /* EPPlayer.h */,
+				07E6FF9E1B5EE23D00970FBB /* EPPlayer.m */,
+				07E6FFA01B5EE24E00970FBB /* EPPlayerAVAudio.h */,
+				07E6FFA11B5EE24E00970FBB /* EPPlayerAVAudio.m */,
+				07E6FFA31B61E1B600970FBB /* EPPlayerMPMusic.h */,
+				07E6FFA41B61E1B600970FBB /* EPPlayerMPMusic.m */,
+			);
+			path = "Audio Controllers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -689,6 +719,7 @@
 				0755C36E1715335800AAF81F /* EPMemoryDebug.m in Sources */,
 				0755C3841716442600AAF81F /* EPFolder.m in Sources */,
 				0755C38717164DFE00AAF81F /* EPEntry.m in Sources */,
+				07E6FFA51B61E1B600970FBB /* EPPlayerMPMusic.m in Sources */,
 				076779E31718E11300D1784D /* EPPlayerController.m in Sources */,
 				07677A5E1719264E00D1784D /* EPScrubberView.m in Sources */,
 				07C841531832232900AEBA07 /* SVProgressHUD.m in Sources */,
@@ -700,8 +731,10 @@
 				079B4147171E309B0036F0D4 /* EPCommon.m in Sources */,
 				07E3F47E1A4F395D000B390E /* EPEditToolbar.m in Sources */,
 				079B4150171E9F980036F0D4 /* EPBrowserCell.m in Sources */,
+				07E6FF9F1B5EE23D00970FBB /* EPPlayer.m in Sources */,
 				079B4153171F55F00036F0D4 /* EPTableSectionView.m in Sources */,
 				0718E6341720E11C00301D0E /* EPSegmentedControl.m in Sources */,
+				07E6FFA21B5EE24E00970FBB /* EPPlayerAVAudio.m in Sources */,
 				0719E37917262A7D00D325B5 /* UIImage+EPCrop.m in Sources */,
 				07BE575519CD025800D45EC0 /* NSMutableDictionary+EP.m in Sources */,
 				07475EBF17278023001BB7AA /* EPPopupButton.m in Sources */,
@@ -713,6 +746,7 @@
 				07D8F1BC1738728A0044DEC9 /* EPStretchButton.m in Sources */,
 				07D8F1BF173895D60044DEC9 /* EPGearTableController.m in Sources */,
 				0746FA88181A398E0056D3A5 /* EPPlayButton.m in Sources */,
+				07E6FFA91B61FBD400970FBB /* EPSettings.m in Sources */,
 				07D8F1C21738CA650044DEC9 /* EPUpdateResultsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 Eric Huss. All rights reserved.
 //
 
-#import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import <UIKit/UIKit.h>
 #import "EPScrubberView.h"
@@ -14,16 +13,13 @@
 #import "EPTrackSummaryView.h"
 #import "EPLyricView.h"
 #import "EPFolder.h"
-#import "EPRoot.h"
+#import "EPPlayer.h"
 
-extern NSString *kEPPlayNotification;
-extern NSString *kEPStopNotification;
 
 @class EPMainTabController;
 
 @interface EPPlayerController : UIViewController <UITableViewDelegate,
-                                                  UITableViewDataSource,
-                                                  AVAudioPlayerDelegate>
+                                                  UITableViewDataSource>
 
 // Called after object context is set.
 - (void)mainInit;
@@ -32,14 +28,15 @@ extern NSString *kEPStopNotification;
 // Player commands.
 - (void)play;
 - (void)pause;
-- (void)clearQueue;
-// This will stop play, switch to this index.  Play remains stopped.
-- (void)switchToQueueIndex:(NSInteger)index;
 
+// This will stop playback, replace the queue with the given entry, and start playback.
 - (void)playEntry:(EPEntry *)entry;
 - (void)appendEntry:(EPEntry *)entry;
 
 - (BOOL)shouldAppend;
+
+// Called when the backend setting is changed.
+- (void)changeAudioBackend;
 
 // Actions
 - (IBAction)tappedPrev:(id)sender;
@@ -62,18 +59,12 @@ extern NSString *kEPStopNotification;
 @property (weak, nonatomic) IBOutlet EPLyricView *lyricView;
 @property (weak, nonatomic) IBOutlet UIView *centralView;
 
-@property (readonly, nonatomic) EPRoot *root;
-
 // Player
-@property (strong, nonatomic) AVAudioPlayer *currentPlayer;
-@property (strong, nonatomic) AVAudioPlayer *nextPlayer;
-@property (assign, nonatomic) BOOL isPlaying;
-@property (assign, nonatomic) BOOL interruptedWhilePlaying;
+@property (nonatomic) EPPlayer *player;
 @property (readonly, nonatomic) float volume;
 // This is used for volume/libray stuff.
 @property (strong, nonatomic) MPMusicPlayerController *mpPlayer;
 @property (assign, nonatomic) NSTimeInterval lastFastSeekTime;
-@property (strong, nonatomic) NSTimer *seekTimer;
 
 // Scrubber/Display update support.
 @property (strong, nonatomic) NSTimer *timer;

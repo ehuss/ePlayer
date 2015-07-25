@@ -7,6 +7,12 @@ NOTES
 ****
 TODO
 ****
+- Bug: Info button in queue is kinda bugged.  Tapping it just glows.  Tapping now playing view does the right thing.
+- Bug: MPMusic backend: After queue is finished, pressing "play" again starts with the second track.  Not obvious why, when "play" is called, the current index is 0.
+- Bug: (MPMusic backend?) pause playback, then go back to "playlists", the play/append button does not update properly.
+- Queue repeat support.
+- Exiting "Settings" view should disable editing mode.
+- EPEntry methods (like EPFolder addEntries) should set dirty flag.  Then, remove manual calls to setting dirty (like in player).
 - After reset database, table views are not updated (must restart app).
 - Animate the edit toolbar coming in/out.
 
