@@ -8,7 +8,6 @@ NOTES
 TODO
 ****
 - Instead of using tabs, put the artist and album views in the main playlist table.  The "queue" view is a button in the upper-right corner (just like Apple Music).
-- Bug: Info button in queue is kinda bugged.  Tapping it just glows.  Tapping now playing view does the right thing.
 - Bug: MPMusic backend: After queue is finished, pressing "play" again starts with the second track.  Not obvious why, when "play" is called, the current index is 0.
 - Bug: (MPMusic backend?) pause playback, then go back to "playlists", the play/append button does not update properly.
 - Queue repeat support.
