@@ -14,5 +14,7 @@
 @property (nonatomic) CGFloat ep_frame_y;
 @property (nonatomic) CGFloat ep_frame_width;
 @property (nonatomic) CGFloat ep_frame_height;
+@property (nonatomic) CGPoint ep_frame_origin;
+@property (nonatomic) CGSize ep_frame_size;
 
 @end

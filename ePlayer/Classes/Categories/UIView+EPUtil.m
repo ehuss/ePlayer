@@ -58,5 +58,28 @@
     self.frame = frame;
 }
 
+- (CGSize)ep_frame_size
+{
+    return self.frame.size;
+}
+
+- (void)setEp_frame_size:(CGSize)ep_frame_size
+{
+    CGRect frame = self.frame;
+    frame.size = ep_frame_size;
+    self.frame = frame;
+}
+
+- (CGPoint)ep_frame_origin
+{
+    return self.frame.origin;
+}
+
+- (void)setEp_frame_origin:(CGPoint)ep_frame_origin
+{
+    CGRect frame = self.frame;
+    frame.origin = ep_frame_origin;
+    self.frame = frame;
+}
 
 @end

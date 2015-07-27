@@ -736,16 +736,17 @@ sectionForSectionIndexTitle:(NSString *)title
 /*****************************************************************************/
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
-    NSLog(@"Set Editing %s", editing ? "YES" : "NO");
     [super setEditing:editing animated:animated];
     if (editing) {
         [self showEditToolbar];
+        self.tableView.contentInset = UIEdgeInsetsMake(self.tableView.contentInset.top, 0, self.tableView.contentInset.bottom+self.editToolbar.frame.size.height, 0);
         self.indexesEnabled = NO;
         // Make sure enabled status on buttons is correct.
         [self updateEditToolbarStatus];
     } else {
         [self hideEditToolbar];
-        // Commit editing changes.
+        self.tableView.contentInset = UIEdgeInsetsMake(self.tableView.contentInset.top, 0, self.tableView.contentInset.bottom-self.editToolbar.frame.size.height, 0);
+        self.tableView.ep_frame_height += self.editToolbar.frame.size.height;
         // Save any changes made.
         self.root.dirty = YES;
         // Clean up.
