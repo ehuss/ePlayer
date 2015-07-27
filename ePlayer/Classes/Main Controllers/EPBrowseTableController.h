@@ -35,6 +35,7 @@ extern NSUInteger minEntriesForSections;
 @property (strong, nonatomic) EPFolder *folder;
 @property (readonly, nonatomic) EPRoot *root;
 @property (assign, nonatomic) BOOL focusAddFolder;
+@property (nonatomic, readonly) BOOL isRootFolder;
 
 @property (assign, nonatomic)EPSortOrder sortOrder;
 // Array of arrays.  The types of items depends on the subclass.

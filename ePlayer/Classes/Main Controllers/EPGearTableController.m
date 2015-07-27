@@ -94,9 +94,16 @@
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
     EPMainTabController *tabC = (EPMainTabController *)self.tabBarController;
     [tabC resetBrowsers];
-    EPUpdateResultsController *update = [[EPUpdateResultsController alloc] init];
-    update.results = results;
-    [self.navigationController pushViewController:update animated:YES];
+
+    EPUpdateResultsController *update = [tabC.storyboard instantiateViewControllerWithIdentifier:@"UpdateResults"];
+    // Force the views to load.
+    [update view];
+    update.textView.text = results;
+    // I'm not certain why, but when you change the text of the text view,
+    // it's scroll position is somewhere in the middle.  This forces it to
+    // scroll to the top.
+    [update.textView scrollRangeToVisible:NSMakeRange(0, 0)];
+    [self presentViewController:update animated:YES completion:nil];
 }
 
 /*****************************************************************************/

@@ -18,6 +18,7 @@
 
 NSUInteger minEntriesForSections = 10;
 static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
+static NSString *kSpecialSectionTitle = @"SPECIAL";
 
 @interface EPBrowseTableController ()
 
@@ -306,18 +307,6 @@ static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
 #pragma mark - Section Methods
 /*****************************************************************************/
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    NSArray *data;
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
-        data = self.filteredSectionTitles;
-    } else {
-        data = self.sectionTitles;
-    }
-    return data[section];
-}
-
-
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
     if (self.indexesEnabled) {
@@ -366,7 +355,12 @@ sectionForSectionIndexTitle:(NSString *)title
     // difficult to determine if the section indexes are currently being
     // displayed.  So for now, it is shifted over 35 pixels so it never
     // overlaps with the section indexes.
-    view.sectionLabel.text = data[section];
+    if (data[section] == kSpecialSectionTitle) {
+        view.sectionLabel.text = @"";
+        view.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1.0];
+    } else {
+        view.sectionLabel.text = data[section];
+    }
     if (section == 0) {
         NSString *text;
         self.topSectionView = view;
@@ -481,7 +475,7 @@ sectionForSectionIndexTitle:(NSString *)title
 
 - (EPPlayerController *)playerController
 {
-    return self.tabBarController.viewControllers[3];
+    return ((EPMainTabController *)self.tabBarController).playerController;
 }
 
 - (void)setIndexesEnabled:(BOOL)indexesEnabled
@@ -504,6 +498,11 @@ sectionForSectionIndexTitle:(NSString *)title
         _root = [EPRoot sharedRoot];
     }
     return _root;
+}
+
+- (BOOL)isRootFolder
+{
+    return self.folder == self.root.playlists;
 }
 
 /*****************************************************************************/
@@ -721,11 +720,23 @@ sectionForSectionIndexTitle:(NSString *)title
             }
             [currentSection addObject:entry];
         }
+        if (self.isRootFolder) {
+            [self.sectionTitles addObject:kSpecialSectionTitle];
+            currentSection = [NSMutableArray arrayWithObjects:self.root.artists,
+                              self.root.albums, nil];
+            [self.sections addObject:currentSection];
+            [self.sectionIndexTitles addObject:@"--"];
+        }
         self.indexesEnabled = YES;
     } else {
         self.sections = [NSMutableArray arrayWithObject:
                          [NSMutableArray arrayWithArray:sortedEntries]];
         self.sectionTitles = [NSMutableArray arrayWithObject:@""];
+        if (self.isRootFolder) {
+            [self.sections addObject:[NSMutableArray arrayWithObjects:self.root.artists,
+                                      self.root.albums, nil]];
+            [self.sectionTitles addObject:kSpecialSectionTitle];
+        }
         self.sectionIndexTitles = self.sectionTitles;
         self.indexesEnabled = NO;
     }
@@ -774,8 +785,6 @@ sectionForSectionIndexTitle:(NSString *)title
                                navSize.height - toolbar.frame.size.height - tabC.tabBar.frame.size.height,
                                navSize.width,
                                toolbar.frame.size.height);
-    [toolbar.settingsButton addTarget:self action:@selector(settings:)
-                     forControlEvents:UIControlEventTouchUpInside];
     [toolbar.deleteButton addTarget:self action:@selector(delete:)
                           forControlEvents:UIControlEventTouchUpInside];
     [toolbar.cutButton addTarget:self action:@selector(cut:)
@@ -1296,15 +1305,6 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     // Could call insertRowsAtIndexPaths for better animation.
     [self updateSections];
     [self.tableView reloadData];
-}
-
-/*****************************************************************************/
-#pragma mark - Gear
-/*****************************************************************************/
-- (void)settings:(id)sender
-{
-    EPGearTableController *controller = [self.tabBarController.storyboard instantiateViewControllerWithIdentifier:@"GearTableController"];
-    [self.navigationController pushViewController:controller animated:YES];
 }
 
 @end

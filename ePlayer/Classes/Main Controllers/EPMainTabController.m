@@ -9,6 +9,7 @@
 #import "EPMainTabController.h"
 #import "EPBrowseTableController.h"
 #import "EPRoot.h"
+#import "EPGearTableController.h"
 
 @implementation EPMainTabController
 
@@ -27,17 +28,11 @@
     [controllers addObject:navCont];
     navCont.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Playlists"
                                                        image:nil tag:0];
-    
-    navCont = [sboard instantiateViewControllerWithIdentifier:@"PlaylistNavController"];
-    [controllers addObject:navCont];
-    navCont.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Artists"
-                                                       image:nil tag:0];
-    
-    navCont = [sboard instantiateViewControllerWithIdentifier:@"PlaylistNavController"];
-    [controllers addObject:navCont];
-    navCont.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Albums"
-                                                       image:nil tag:0];
-    
+
+    EPGearTableController *gearCont = [sboard instantiateViewControllerWithIdentifier:@"GearTableController"];
+    [controllers addObject:gearCont];
+    gearCont.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings" image:nil tag:0];
+
     // Get the queue/player and add as a tab.
     self.playerController = [sboard instantiateViewControllerWithIdentifier:@"PlayerScene"];
     [controllers addObject:self.playerController];
@@ -52,30 +47,18 @@
     cont = (EPBrowseTableController *)((UINavigationController *)self.viewControllers[0]).topViewController;
     cont.folder = root.playlists;
     [cont.tableView reloadData];
-
-    cont = (EPBrowseTableController *)((UINavigationController *)self.viewControllers[1]).topViewController;
-    cont.folder = root.artists;
-    [cont.tableView reloadData];
-
-    cont = (EPBrowseTableController *)((UINavigationController *)self.viewControllers[2]).topViewController;
-    cont.folder = root.albums;
-    [cont.tableView reloadData];
 }
 
 - (void)reloadBrowsers
 {
-    for (UIViewController *controller in self.viewControllers) {
-        if ([controller.class isSubclassOfClass:[UINavigationController class]]) {
-            UINavigationController *navCont = (UINavigationController *)controller;
-            for (EPBrowseTableController *browseCont in navCont.viewControllers) {
-                if ([browseCont.class isSubclassOfClass:[EPBrowseTableController class]]) {
-                    // XXX Why did I have this?
+    UINavigationController *navCont = self.viewControllers[0];
+    for (EPBrowseTableController *browseCont in navCont.viewControllers) {
+        if ([browseCont.class isSubclassOfClass:[EPBrowseTableController class]]) {
+            // XXX Why did I have this?
 //                    if (browseCont.sortOrder == EPSortOrderPlayDate) {
-                        [browseCont updateSections];
-                        [browseCont.tableView reloadData];
+                [browseCont updateSections];
+                [browseCont.tableView reloadData];
 //                    }
-                }
-            }
         }
     }
 }
@@ -90,18 +73,6 @@
     [navCont popToRootViewControllerAnimated:NO];
     browseCont = (EPBrowseTableController *)navCont.topViewController;
     browseCont.folder = root.playlists;
-    [browseCont.tableView reloadData];
-
-    navCont = self.viewControllers[1];
-    [navCont popToRootViewControllerAnimated:NO];
-    browseCont = (EPBrowseTableController *)navCont.topViewController;
-    browseCont.folder = root.artists;
-    [browseCont.tableView reloadData];
-
-    navCont = self.viewControllers[2];
-    [navCont popToRootViewControllerAnimated:NO];
-    browseCont = (EPBrowseTableController *)navCont.topViewController;
-    browseCont.folder = root.albums;
     [browseCont.tableView reloadData];
 }
 

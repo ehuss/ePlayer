@@ -13,5 +13,9 @@
 // what has been updated.
 @interface EPUpdateResultsController : UIViewController
 
-@property (strong, nonatomic) NSString *results;
+@property (weak, nonatomic) IBOutlet UITextView *textView;
+@property (weak, nonatomic) IBOutlet UIButton *okButton;
+
+- (IBAction)okTapped:(id)sender;
+
 @end

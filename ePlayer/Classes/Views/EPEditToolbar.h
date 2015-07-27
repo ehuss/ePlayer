@@ -15,7 +15,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *pasteButton;
 @property (weak, nonatomic) IBOutlet UIButton *renameButton;
 @property (weak, nonatomic) IBOutlet UIButton *addFolderButton;
-@property (weak, nonatomic) IBOutlet UIButton *settingsButton;
 @property (weak, nonatomic) IBOutlet UIButton *collapseButton;
 
 @end

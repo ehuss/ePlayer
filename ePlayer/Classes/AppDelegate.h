@@ -16,7 +16,6 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) EPMainTabController *mainTabController;
-@property (strong, nonatomic) SVProgressHUD *progressHUD;
 @property (nonatomic) NSString *hudString;
 @property (nonatomic) NSDate *lastHudUpdate;
 @property (assign, nonatomic) BOOL initializing;

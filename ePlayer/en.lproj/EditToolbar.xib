@@ -19,38 +19,26 @@
                     </state>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lKZ-WJ-Ij8">
-                    <rect key="frame" x="95" y="0.0" width="30" height="30"/>
+                    <rect key="frame" x="121" y="0.0" width="30" height="30"/>
                     <state key="normal" title="Cut">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eQX-nS-4ld">
-                    <rect key="frame" x="169" y="0.0" width="37" height="30"/>
+                    <rect key="frame" x="221" y="0.0" width="37" height="30"/>
                     <state key="normal" title="Copy">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yUV-mn-NMV">
-                    <rect key="frame" x="238" y="0.0" width="39" height="30"/>
-                    <state key="normal" title="Paste">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cEN-sK-Xp1">
-                    <rect key="frame" x="310" y="0.0" width="57" height="30"/>
-                    <state key="normal" title="Rename">
+                    <rect key="frame" x="328" y="0.0" width="39" height="30"/>
+                    <state key="normal" title="Paste">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xd6-Wa-crd">
                     <rect key="frame" x="8" y="50" width="76" height="30"/>
                     <state key="normal" title="Add Folder">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Z9r-5u-1t7">
-                    <rect key="frame" x="310" y="50" width="57" height="30"/>
-                    <state key="normal" title="Settings">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                 </button>
@@ -61,31 +49,30 @@
                     </state>
                 </button>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="R7W-jT-ciz" userLabel="Spacer View Delete/Cut">
-                    <rect key="frame" x="52" y="0.0" width="44" height="30"/>
+                    <rect key="frame" x="52" y="0.0" width="69.5" height="30"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="0RO-zN-6hV"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kta-ER-aw0" userLabel="Spacer View Copy/Paste">
-                    <rect key="frame" x="206" y="0.0" width="32.5" height="30"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="30" id="3lY-PX-xKC"/>
-                    </constraints>
-                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aMZ-P6-adm" userLabel="Spacer View Cut/Copy">
-                    <rect key="frame" x="125.5" y="0.0" width="43.5" height="30"/>
+                    <rect key="frame" x="151" y="0.0" width="70" height="30"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="MF6-qk-CfF"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IuJ-sG-NHg" userLabel="Spacer View Paste/Rename">
-                    <rect key="frame" x="277" y="0.0" width="32" height="30"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yUV-mn-NMV">
+                    <rect key="frame" x="310" y="50" width="57" height="30"/>
+                    <state key="normal" title="Rename">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                </button>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kta-ER-aw0" userLabel="Spacer View Copy/Paste">
+                    <rect key="frame" x="258" y="0.0" width="69.5" height="30"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="30" id="hdN-B5-4Pm"/>
+                        <constraint firstAttribute="height" constant="30" id="3lY-PX-xKC"/>
                     </constraints>
                 </view>
             </subviews>
@@ -95,32 +82,26 @@
                 <constraint firstItem="NGe-Et-aSO" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="0gL-6H-oY9"/>
                 <constraint firstItem="aMZ-P6-adm" firstAttribute="leading" secondItem="lKZ-WJ-Ij8" secondAttribute="trailing" id="1wA-RB-XEV"/>
                 <constraint firstItem="R7W-jT-ciz" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="3WZ-pu-Xgi"/>
-                <constraint firstItem="yUV-mn-NMV" firstAttribute="baseline" secondItem="eQX-nS-4ld" secondAttribute="baseline" id="4Hn-yA-1xy"/>
+                <constraint firstItem="cEN-sK-Xp1" firstAttribute="leading" secondItem="Kta-ER-aw0" secondAttribute="trailing" id="4Cs-Fa-im2"/>
+                <constraint firstItem="R7W-jT-ciz" firstAttribute="width" secondItem="aMZ-P6-adm" secondAttribute="width" id="4Jb-78-I41"/>
                 <constraint firstItem="Kta-ER-aw0" firstAttribute="leading" secondItem="eQX-nS-4ld" secondAttribute="trailing" id="8kA-uE-hRd"/>
-                <constraint firstItem="yUV-mn-NMV" firstAttribute="leading" secondItem="Kta-ER-aw0" secondAttribute="trailing" id="8ox-MU-jOP"/>
-                <constraint firstItem="Kta-ER-aw0" firstAttribute="width" secondItem="IuJ-sG-NHg" secondAttribute="width" id="9K7-p3-tQ3"/>
                 <constraint firstItem="lKZ-WJ-Ij8" firstAttribute="leading" secondItem="R7W-jT-ciz" secondAttribute="trailing" id="AIw-Zl-9aZ"/>
                 <constraint firstItem="51l-ya-5Bs" firstAttribute="leading" secondItem="Xd6-Wa-crd" secondAttribute="trailing" constant="14" id="ANo-ux-Msm"/>
-                <constraint firstItem="cEN-sK-Xp1" firstAttribute="leading" secondItem="IuJ-sG-NHg" secondAttribute="trailing" id="AYq-01-vw0"/>
-                <constraint firstItem="R7W-jT-ciz" firstAttribute="width" secondItem="aMZ-P6-adm" secondAttribute="width" id="Hih-S2-qoB"/>
-                <constraint firstItem="Z9r-5u-1t7" firstAttribute="leading" secondItem="51l-ya-5Bs" secondAttribute="trailing" constant="8" symbolic="YES" id="KNJ-gd-Yer"/>
                 <constraint firstItem="51l-ya-5Bs" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottomMargin" id="L0N-9n-C75"/>
                 <constraint firstItem="Xd6-Wa-crd" firstAttribute="leading" secondItem="NGe-Et-aSO" secondAttribute="leading" id="LbL-pq-F7O"/>
-                <constraint firstItem="cEN-sK-Xp1" firstAttribute="baseline" secondItem="yUV-mn-NMV" secondAttribute="baseline" id="Oo9-wi-4VL"/>
                 <constraint firstItem="Kta-ER-aw0" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="PFH-Iy-9Mx"/>
+                <constraint firstItem="eQX-nS-4ld" firstAttribute="baseline" secondItem="cEN-sK-Xp1" secondAttribute="baseline" id="QqW-Hu-k8z"/>
                 <constraint firstItem="Xd6-Wa-crd" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leadingMargin" id="T6U-sI-VT1"/>
-                <constraint firstItem="IuJ-sG-NHg" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="V1v-L5-Pbv"/>
                 <constraint firstItem="lKZ-WJ-Ij8" firstAttribute="baseline" secondItem="NGe-Et-aSO" secondAttribute="baseline" id="WcP-aV-phH"/>
                 <constraint firstItem="eQX-nS-4ld" firstAttribute="baseline" secondItem="lKZ-WJ-Ij8" secondAttribute="baseline" id="Wny-nU-br2"/>
                 <constraint firstItem="aMZ-P6-adm" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="dFy-P7-fpj"/>
                 <constraint firstItem="eQX-nS-4ld" firstAttribute="leading" secondItem="aMZ-P6-adm" secondAttribute="trailing" id="djX-Fm-XFI"/>
-                <constraint firstItem="IuJ-sG-NHg" firstAttribute="leading" secondItem="yUV-mn-NMV" secondAttribute="trailing" id="n0a-fH-lrH"/>
                 <constraint firstItem="NGe-Et-aSO" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leadingMargin" id="nNl-5Z-2Mq"/>
-                <constraint firstAttribute="centerX" secondItem="eQX-nS-4ld" secondAttribute="centerX" id="pXz-Ha-02C"/>
-                <constraint firstItem="51l-ya-5Bs" firstAttribute="baseline" secondItem="Z9r-5u-1t7" secondAttribute="baseline" id="ra2-Mz-oxP"/>
-                <constraint firstAttribute="trailingMargin" secondItem="cEN-sK-Xp1" secondAttribute="trailing" id="sWb-Wl-RLg"/>
-                <constraint firstItem="Z9r-5u-1t7" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailingMargin" id="srP-06-wJ3"/>
+                <constraint firstAttribute="trailing" secondItem="yUV-mn-NMV" secondAttribute="trailing" constant="8" id="qhm-Qf-8gp"/>
+                <constraint firstAttribute="trailing" secondItem="cEN-sK-Xp1" secondAttribute="trailing" constant="8" id="sWb-Wl-RLg"/>
+                <constraint firstItem="R7W-jT-ciz" firstAttribute="width" secondItem="Kta-ER-aw0" secondAttribute="width" id="t4f-qN-thg"/>
                 <constraint firstItem="Xd6-Wa-crd" firstAttribute="baseline" secondItem="51l-ya-5Bs" secondAttribute="baseline" id="ubg-N4-9ua"/>
+                <constraint firstItem="yUV-mn-NMV" firstAttribute="baseline" secondItem="51l-ya-5Bs" secondAttribute="baseline" id="vqG-ks-rJU"/>
                 <constraint firstAttribute="centerX" secondItem="51l-ya-5Bs" secondAttribute="centerX" id="yX4-bf-Kup"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
@@ -131,7 +112,6 @@
                 <mask key="constraints">
                     <exclude reference="LbL-pq-F7O"/>
                     <exclude reference="ANo-ux-Msm"/>
-                    <exclude reference="KNJ-gd-Yer"/>
                 </mask>
             </variation>
             <connections>
@@ -140,9 +120,8 @@
                 <outlet property="cpyButton" destination="eQX-nS-4ld" id="eyE-8A-dj5"/>
                 <outlet property="cutButton" destination="lKZ-WJ-Ij8" id="c5y-12-oeE"/>
                 <outlet property="deleteButton" destination="NGe-Et-aSO" id="HS6-wA-NiW"/>
-                <outlet property="pasteButton" destination="yUV-mn-NMV" id="flV-uA-WpR"/>
-                <outlet property="renameButton" destination="cEN-sK-Xp1" id="MBf-Hs-ZdU"/>
-                <outlet property="settingsButton" destination="Z9r-5u-1t7" id="OVh-sv-NeU"/>
+                <outlet property="pasteButton" destination="cEN-sK-Xp1" id="70y-tO-mTI"/>
+                <outlet property="renameButton" destination="yUV-mn-NMV" id="pia-Ls-qko"/>
             </connections>
             <point key="canvasLocation" x="138.5" y="154"/>
         </view>

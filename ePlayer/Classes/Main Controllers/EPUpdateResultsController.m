@@ -10,13 +10,9 @@
 
 @implementation EPUpdateResultsController
 
-- (void)viewDidLoad
+- (IBAction)okTapped:(id)sender
 {
-    UITextView *textView = [[UITextView alloc] initWithFrame:self.view.bounds];
-    textView.text = self.results;
-    textView.editable = NO;
-    textView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    [self.view addSubview:textView];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
