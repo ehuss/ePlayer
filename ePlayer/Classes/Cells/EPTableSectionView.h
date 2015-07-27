@@ -7,8 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EPSortPopup.h"
 
 @interface EPTableSectionView : UIView
+
+@property (nonatomic) EPSortPopup *sortPopup;
+
 @property (weak, nonatomic) IBOutlet UILabel *sortDescriptionLabel;
 @property (weak, nonatomic) IBOutlet UILabel *sectionLabel;
 

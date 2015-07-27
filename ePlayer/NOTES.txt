@@ -25,7 +25,6 @@ TODO
 - Use clean, simple, flat icons (plus, play), particularly in list view.
 - Show queue length (total and remaining).
 - Removing a song, and adding it back in iTunes confuses the sync (it stays removed, doesn't get readded).
-- Weird white line in the queue player cell (under index numbers).
 - Rename Button does not revert from "Done" state when you exit editing mode.
 
 - Check for songs without an album title in updateDB.  These do not show up in
@@ -51,9 +50,6 @@ TODO
 - playlist/artists/albums icons.
 - After making modification (like "collapse"), the quick scroll time things on the right come back (they should be hidden).
 - undo would be nice to have.
-- edit buttons are horribly ugly.
-- Having to scroll up to access edit buttons sucks when editing things far down on the list.
-  Make the edit controls outside of the UITable, above (pushes UITable down).
 - Anno 2070 album is "invalid" when importing.
 - Tap "Info" in Queue view when queue is empty crashes.  Probably should just hide the info button when empty.
 - U2 album won't play.  Presumably due to DRM?

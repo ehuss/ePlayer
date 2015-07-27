@@ -14,6 +14,7 @@
 #import "EPPopupButton.h"
 #import "EPRoot.h"
 #import "EPEditToolbar.h"
+#import "EPTableSectionView.h"
 
 extern NSUInteger minEntriesForSections;
 
@@ -45,6 +46,7 @@ extern NSUInteger minEntriesForSections;
 @property (readonly, nonatomic) EPPlayerController *playerController;
 @property (assign, nonatomic) BOOL renaming;
 @property (nonatomic) EPEditToolbar *editToolbar;
+@property (nonatomic) EPTableSectionView *topSectionView;
 
 // Searching.
 @property (strong, nonatomic) UISearchDisplayController *searchController;

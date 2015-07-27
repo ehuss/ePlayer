@@ -9,7 +9,6 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import <QuartzCore/QuartzCore.h>
 #import "EPBrowseTableController.h"
-#import "EPTableSectionView.h"
 #import "EPCommon.h"
 #import "EPPlayerController.h"
 #import "EPTrackController.h"
@@ -370,6 +369,8 @@ sectionForSectionIndexTitle:(NSString *)title
     view.sectionLabel.text = data[section];
     if (section == 0) {
         NSString *text;
+        self.topSectionView = view;
+        view.sortPopup = nibViews[1];
         switch (self.sortOrder) {
             case EPSortOrderAlpha:
                 text = @"Alphabetical";
@@ -399,7 +400,52 @@ sectionForSectionIndexTitle:(NSString *)title
 
 - (void)sortTap:(UIGestureRecognizer *)recognizer
 {
-    NSLog(@"TAP!");
+    EPSortPopup *popupView = self.topSectionView.sortPopup;
+
+    popupView.blockingView.frame = self.view.window.frame;
+    [self.view.window addSubview:popupView.blockingView];
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
+                                          initWithTarget:self
+                                          action:@selector(sortPopupDismiss)];
+    [popupView.blockingView addGestureRecognizer:tapGesture];
+
+    // Position the popup.
+    CGPoint p = [self.tableView convertPoint:self.tableView.frame.origin toView:self.view.window];
+    popupView.center = CGPointMake(self.topSectionView.frame.size.width-popupView.frame.size.width/2,
+                                 popupView.frame.size.height/2+self.topSectionView.frame.origin.y+p.y);
+
+    popupView.sortOrder = self.sortOrder;
+    [popupView updateSelected];
+    [self.view.window addSubview:popupView];
+    // Animate the view scrolling down.
+    CGFloat popViewHeight = popupView.frame.size.height;
+    popupView.ep_frame_height = 0;
+    [popupView setTarget:self action:@selector(sortUpdated:)];
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         popupView.ep_frame_height = popViewHeight;
+                     }];
+}
+
+- (void)sortUpdated:(EPSortPopup *)popupView
+{
+    self.sortOrder = popupView.sortOrder;
+    [self sortPopupDismiss];
+}
+
+- (void)sortPopupDismiss
+{
+    EPSortPopup *popupView = self.topSectionView.sortPopup;
+    CGFloat originalHeight = popupView.ep_frame_height;
+    [popupView.blockingView removeFromSuperview];
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         popupView.ep_frame_height = 0;
+                     }
+                     completion:^(BOOL finished) {
+                         [popupView removeFromSuperview];
+                         popupView.ep_frame_height = originalHeight;
+                     }];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section

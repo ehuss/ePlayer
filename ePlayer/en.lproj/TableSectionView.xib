@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6249" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6243"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -44,13 +44,90 @@
                 <outlet property="sortDescriptionLabel" destination="38" id="72"/>
             </connections>
         </view>
-        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ZqR-m7-VhM">
-            <rect key="frame" x="0.0" y="0.0" width="42" height="21"/>
+        <view contentMode="scaleToFill" id="hjB-br-BtV" userLabel="Sort Popup View" customClass="EPSortPopup">
+            <rect key="frame" x="0.0" y="0.0" width="160" height="197"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-            <nil key="highlightedColor"/>
-        </label>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wr0-8U-ASF">
+                    <rect key="frame" x="27" y="0.0" width="98" height="33"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                    <state key="normal" title="Alphabetical">
+                        <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="alphaTouched:" destination="hjB-br-BtV" eventType="touchUpInside" id="0Vh-4m-gEP"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dOa-iT-ZVc">
+                    <rect key="frame" x="31" y="41" width="94" height="33"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                    <state key="normal" title="Added Date">
+                        <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="addDateTouched:" destination="hjB-br-BtV" eventType="touchUpInside" id="27n-0m-uMa"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="32d-3d-wgr">
+                    <rect key="frame" x="49" y="82" width="76" height="33"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                    <state key="normal" title="Play Date">
+                        <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="playDateTouched:" destination="hjB-br-BtV" eventType="touchUpInside" id="MN0-mf-VDd"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sCq-3s-vLy">
+                    <rect key="frame" x="20" y="123" width="105" height="33"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                    <state key="normal" title="Release Date">
+                        <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="releaseDateTouched:" destination="hjB-br-BtV" eventType="touchUpInside" id="PDc-am-Tdq"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2dk-9k-Pxz">
+                    <rect key="frame" x="67" y="164" width="58" height="33"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                    <state key="normal" title="Manual">
+                        <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="manualTouched:" destination="hjB-br-BtV" eventType="touchUpInside" id="X50-no-zsL"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="Wr0-8U-ASF" firstAttribute="top" secondItem="hjB-br-BtV" secondAttribute="top" id="3Ik-gN-T5g"/>
+                <constraint firstItem="dOa-iT-ZVc" firstAttribute="trailing" secondItem="Wr0-8U-ASF" secondAttribute="trailing" id="BMo-gR-rS2"/>
+                <constraint firstItem="32d-3d-wgr" firstAttribute="top" secondItem="dOa-iT-ZVc" secondAttribute="bottom" constant="8" symbolic="YES" id="RkS-PF-RlG"/>
+                <constraint firstAttribute="trailing" secondItem="Wr0-8U-ASF" secondAttribute="trailing" constant="35" id="U5C-uo-LQd"/>
+                <constraint firstItem="2dk-9k-Pxz" firstAttribute="trailing" secondItem="sCq-3s-vLy" secondAttribute="trailing" id="Ul2-cU-XXw"/>
+                <constraint firstItem="2dk-9k-Pxz" firstAttribute="top" secondItem="sCq-3s-vLy" secondAttribute="bottom" constant="8" symbolic="YES" id="XVr-Sj-A8n"/>
+                <constraint firstItem="dOa-iT-ZVc" firstAttribute="trailing" secondItem="32d-3d-wgr" secondAttribute="trailing" id="byv-ui-2h3"/>
+                <constraint firstItem="32d-3d-wgr" firstAttribute="trailing" secondItem="sCq-3s-vLy" secondAttribute="trailing" id="dHo-7K-LEh"/>
+                <constraint firstItem="dOa-iT-ZVc" firstAttribute="top" secondItem="Wr0-8U-ASF" secondAttribute="bottom" constant="8" symbolic="YES" id="f7W-Yw-Gwh"/>
+                <constraint firstItem="sCq-3s-vLy" firstAttribute="top" secondItem="32d-3d-wgr" secondAttribute="bottom" constant="8" symbolic="YES" id="fnK-mi-kDe"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="addDateButton" destination="dOa-iT-ZVc" id="6wY-H5-AdP"/>
+                <outlet property="alphaButton" destination="Wr0-8U-ASF" id="4sm-5e-RuE"/>
+                <outlet property="manualButton" destination="2dk-9k-Pxz" id="7s6-lx-NpY"/>
+                <outlet property="playDateButton" destination="32d-3d-wgr" id="BPD-CL-REC"/>
+                <outlet property="releaseDateButton" destination="sCq-3s-vLy" id="QD1-KF-mmX"/>
+            </connections>
+            <point key="canvasLocation" x="219" y="553.5"/>
+        </view>
     </objects>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

@@ -96,6 +96,8 @@
 		07E3F47E1A4F395D000B390E /* EPEditToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E3F47D1A4F395D000B390E /* EPEditToolbar.m */; };
 		07E3F4811A4F5B0E000B390E /* EditToolbar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07E3F47F1A4F5B0E000B390E /* EditToolbar.xib */; };
 		07E3F4831A4F6475000B390E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07E3F4821A4F6475000B390E /* Images.xcassets */; };
+		07E600431B656C8400970FBB /* EPSortPopup.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E600421B656C8400970FBB /* EPSortPopup.m */; };
+		07E600491B659BBC00970FBB /* UIView+EPUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E600481B659BBC00970FBB /* UIView+EPUtil.m */; };
 		07E6FF9F1B5EE23D00970FBB /* EPPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E6FF9E1B5EE23D00970FBB /* EPPlayer.m */; };
 		07E6FFA21B5EE24E00970FBB /* EPPlayerAVAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E6FFA11B5EE24E00970FBB /* EPPlayerAVAudio.m */; };
 		07E6FFA51B61E1B600970FBB /* EPPlayerMPMusic.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E6FFA41B61E1B600970FBB /* EPPlayerMPMusic.m */; };
@@ -239,6 +241,10 @@
 		07E3F47D1A4F395D000B390E /* EPEditToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPEditToolbar.m; sourceTree = "<group>"; };
 		07E3F4801A4F5B0E000B390E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = EditToolbar.xib; sourceTree = "<group>"; };
 		07E3F4821A4F6475000B390E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		07E600411B656C8400970FBB /* EPSortPopup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPSortPopup.h; sourceTree = "<group>"; };
+		07E600421B656C8400970FBB /* EPSortPopup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPSortPopup.m; sourceTree = "<group>"; };
+		07E600471B659BBC00970FBB /* UIView+EPUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+EPUtil.h"; sourceTree = "<group>"; };
+		07E600481B659BBC00970FBB /* UIView+EPUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+EPUtil.m"; sourceTree = "<group>"; };
 		07E6FF9D1B5EE23D00970FBB /* EPPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayer.h; sourceTree = "<group>"; };
 		07E6FF9E1B5EE23D00970FBB /* EPPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayer.m; sourceTree = "<group>"; };
 		07E6FFA01B5EE24E00970FBB /* EPPlayerAVAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayerAVAudio.h; sourceTree = "<group>"; };
@@ -288,6 +294,8 @@
 				079B4143171E139C0036F0D4 /* NSArray+EPMap.m */,
 				0719E37717262A7B00D325B5 /* UIImage+EPCrop.h */,
 				0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */,
+				07E600471B659BBC00970FBB /* UIView+EPUtil.h */,
+				07E600481B659BBC00970FBB /* UIView+EPUtil.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -515,6 +523,8 @@
 				078A3BFB172CA779009A8FF5 /* EPLyricView.m */,
 				07E3F47C1A4F395D000B390E /* EPEditToolbar.h */,
 				07E3F47D1A4F395D000B390E /* EPEditToolbar.m */,
+				07E600411B656C8400970FBB /* EPSortPopup.h */,
+				07E600421B656C8400970FBB /* EPSortPopup.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -724,6 +734,8 @@
 				07677A5E1719264E00D1784D /* EPScrubberView.m in Sources */,
 				07C841531832232900AEBA07 /* SVProgressHUD.m in Sources */,
 				07677A67171A006600D1784D /* EPGradientView.m in Sources */,
+				07E600491B659BBC00970FBB /* UIView+EPUtil.m in Sources */,
+				07E600431B656C8400970FBB /* EPSortPopup.m in Sources */,
 				079B411C171A60340036F0D4 /* EPPlayerCellView.m in Sources */,
 				079B4121171B4F400036F0D4 /* EPBrowseTableController.m in Sources */,
 				079B412F171CCA6F0036F0D4 /* EPMediaItemWrapper.m in Sources */,
