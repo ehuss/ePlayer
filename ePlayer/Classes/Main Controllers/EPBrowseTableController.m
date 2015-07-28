@@ -156,6 +156,7 @@ static NSString *kSpecialSectionTitle = @"SPECIAL";
     // File's Owner does not work.
     cell.textView.delegate = cell;
     cell.textView.userInteractionEnabled = self.renaming;
+    cell.textView.returnKeyType = UIReturnKeyDone;
 
     return cell;
 }

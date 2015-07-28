@@ -59,23 +59,15 @@
     [self.parentController rename:self to:textView.text];
 }
 
-/*
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
+// When pressing the "DONE" button on the keyboard, dismiss the keyboard.
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
-	[textField resignFirstResponder];
-	return YES;
-}
+    if([text isEqualToString:@"\n"]) {
+        [textView resignFirstResponder];
+        return NO;
+    }
 
-
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
-{
-    return self.parentController.renaming;
+    return YES;
 }
-
-- (void)textFieldDidEndEditing:(UITextField *)textField
-{
-    [self.parentController rename:self to:textField.text];
-}
- */
 
 @end
