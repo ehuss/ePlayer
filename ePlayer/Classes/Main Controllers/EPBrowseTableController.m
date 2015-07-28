@@ -993,11 +993,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 - (void)setRenaming:(BOOL)renaming
 {
     _renaming = renaming;
-    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
-    if (cell) {
-        UIButton *renameButton = (UIButton *)[cell viewWithTag:1];
-        renameButton.selected = renaming;
-    }
+    self.editToolbar.renameButton.selected = renaming;
     // Enable the text fields.
     for (UITableViewCell *cell in self.tableView.visibleCells) {
         if ([cell.class isSubclassOfClass:EPBrowserCell.class]) {
@@ -1005,7 +1001,6 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
             bcell.textView.userInteractionEnabled = renaming;
         }
     }
-    
 }
 
 - (void)rename:(EPBrowserCell *)cell to:(NSString *)newText
