@@ -896,11 +896,6 @@ sectionForSectionIndexTitle:(NSString *)title
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    // Adjust index for the 2 special rows if necessary.  (Manual only has 1 section.)
-    assert(fromIndexPath.section!=0);
-    assert(toIndexPath.section!=0);
-    fromIndexPath = [NSIndexPath indexPathForRow:fromIndexPath.row inSection:fromIndexPath.section];
-    toIndexPath = [NSIndexPath indexPathForRow:toIndexPath.row inSection:toIndexPath.section];
     // Figure out the entry being moved.
     EPEntry *entry = self.sections[fromIndexPath.section][fromIndexPath.row];
     [self.folder removeObjectFromEntriesAtIndex:fromIndexPath.row];
@@ -930,18 +925,6 @@ sectionForSectionIndexTitle:(NSString *)title
     //        return UITableViewCellEditingStyleNone;
     //    }
 }
-
-- (NSIndexPath *)tableView:(UITableView *)tableView
-targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
-       toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
-{
-    if (proposedDestinationIndexPath.section==0) {
-        return [NSIndexPath indexPathForRow:0 inSection:1];
-    } else {
-        return proposedDestinationIndexPath;
-    }
-}
-
 
 /*****************************************************************************/
 #pragma mark - Insert Cell/Text Field
