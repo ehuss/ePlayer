@@ -726,7 +726,10 @@ sectionForSectionIndexTitle:(NSString *)title
             [self.sections addObject:currentSection];
             [self.sectionIndexTitles addObject:@"--"];
         }
-        self.indexesEnabled = YES;
+        // Don't enable indexes while editing.
+        if (!self.editing) {
+            self.indexesEnabled = YES;
+        }
     } else {
         self.sections = [NSMutableArray arrayWithObject:
                          [NSMutableArray arrayWithArray:sortedEntries]];
@@ -749,6 +752,7 @@ sectionForSectionIndexTitle:(NSString *)title
     [super setEditing:editing animated:animated];
     if (editing) {
         [self showEditToolbar];
+        // Prevent the table from showing under the edit toolbar.
         self.tableView.contentInset = UIEdgeInsetsMake(self.tableView.contentInset.top, 0, self.tableView.contentInset.bottom+self.editToolbar.frame.size.height, 0);
         self.indexesEnabled = NO;
         // Make sure enabled status on buttons is correct.
