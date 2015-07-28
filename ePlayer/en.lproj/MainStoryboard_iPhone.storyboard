@@ -326,7 +326,6 @@
                                                     <constraints>
                                                         <constraint firstAttribute="trailing" secondItem="bIG-0p-2Fs" secondAttribute="trailing" constant="59" id="3xV-d3-30y"/>
                                                         <constraint firstItem="bIG-0p-2Fs" firstAttribute="leading" secondItem="Fm4-ye-6vu" secondAttribute="leading" constant="58" id="76p-hA-LDH"/>
-                                                        <constraint firstAttribute="bottom" secondItem="bIG-0p-2Fs" secondAttribute="bottom" constant="4" id="JzF-wF-0Bc"/>
                                                         <constraint firstAttribute="centerY" secondItem="GTi-dR-FdH" secondAttribute="centerY" id="Kg2-gb-cib"/>
                                                         <constraint firstItem="IVQ-xn-ww0" firstAttribute="leading" secondItem="Fm4-ye-6vu" secondAttribute="leading" constant="50" id="Le5-CC-NNV"/>
                                                         <constraint firstItem="bIG-0p-2Fs" firstAttribute="top" secondItem="bFa-iZ-weW" secondAttribute="bottom" constant="3" id="MWn-5X-iQb"/>
@@ -339,10 +338,10 @@
                                                         <constraint firstAttribute="bottom" secondItem="IVQ-xn-ww0" secondAttribute="bottom" id="eMA-wq-wff"/>
                                                         <constraint firstAttribute="bottom" secondItem="DEO-xP-vfn" secondAttribute="bottom" id="fTZ-JM-8I7"/>
                                                         <constraint firstItem="GTi-dR-FdH" firstAttribute="leading" secondItem="Fm4-ye-6vu" secondAttribute="leading" id="kJa-jN-jf3"/>
-                                                        <constraint firstAttribute="centerY" secondItem="sfe-qq-mwI" secondAttribute="centerY" constant="-0.25" id="rH1-LG-2R9"/>
+                                                        <constraint firstAttribute="centerY" secondItem="sfe-qq-mwI" secondAttribute="centerY" id="rH1-LG-2R9"/>
                                                         <constraint firstAttribute="trailing" secondItem="vuM-Gd-MSs" secondAttribute="trailing" id="tlo-Ob-cWF"/>
                                                         <constraint firstAttribute="trailing" secondItem="DEO-xP-vfn" secondAttribute="trailing" constant="53" id="wlW-PG-7mQ"/>
-                                                        <constraint firstAttribute="centerY" secondItem="vuM-Gd-MSs" secondAttribute="centerY" constant="-0.75" id="z4L-pj-XeB"/>
+                                                        <constraint firstAttribute="centerY" secondItem="vuM-Gd-MSs" secondAttribute="centerY" id="z4L-pj-XeB"/>
                                                     </constraints>
                                                 </tableViewCellContentView>
                                                 <connections>
