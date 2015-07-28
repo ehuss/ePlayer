@@ -134,7 +134,7 @@ static NSString *kSpecialSectionTitle = @"SPECIAL";
         cell.dateLabel.text = nil;
     }
 
-    if (self.focusAddFolder && cell && indexPath.section==1 && indexPath.row==0) {
+    if (self.focusAddFolder && indexPath.section==0 && indexPath.row==0) {
         // Force the keyboard to show for a new folder.
         EPBrowserCell *bcell = (EPBrowserCell *)cell;
         bcell.textView.editable = YES;
