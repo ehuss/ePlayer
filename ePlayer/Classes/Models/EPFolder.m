@@ -261,6 +261,15 @@
     return nil;
 }
 
+- (NSUInteger)songCount
+{
+    NSUInteger count=0;
+    for (EPEntry *entry in self.entries) {
+        count += [entry songCount];
+    }
+    return count;
+}
+
 /*****************************************************************************/
 #pragma mark - Entries mutators.
 /*****************************************************************************/

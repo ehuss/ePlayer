@@ -47,3 +47,24 @@ void createGregorianCalendar()
 {
     gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
 }
+
+// iOS 8 has introduced NSDateComponentsFormatter which supports
+// localization.
+NSString *formatDuration(NSTimeInterval interval)
+{
+    int i = interval;
+//    int seconds = i % 60;
+    int minutes = (i / 60) % 60;
+    int hours = (i /3600);
+    NSMutableArray *components = [NSMutableArray array];
+    if (hours) {
+        [components addObject:[NSString stringWithFormat:@"%ih", hours]];
+    }
+    if (minutes) {
+        [components addObject:[NSString stringWithFormat:@"%im", minutes]];
+    }
+//    if (seconds) {
+//        [components addObject:[NSString stringWithFormat:@"%is", seconds]];
+//    }
+    return [components componentsJoinedByString:@" "];
+}

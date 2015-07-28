@@ -30,4 +30,7 @@
 // Checks if this song has been orphaned (call after removing from a folder).
 - (void)checkForOrphan;
 
+// Number of songs in this entry.  For EPSong, this returns 1.
+- (NSUInteger)songCount;
+
 @end

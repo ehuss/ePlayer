@@ -102,5 +102,9 @@
     }
 }
 
+- (NSUInteger)songCount
+{
+    return 1;
+}
 
 @end

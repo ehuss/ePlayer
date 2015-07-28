@@ -109,6 +109,10 @@
     }
 }
 
+- (NSUInteger)songCount
+{
+    return 0;
+}
 
 /*****************************************************************************/
 #pragma mark - Propagate Methods

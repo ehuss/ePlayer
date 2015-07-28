@@ -15,6 +15,7 @@
 #import "EPGearTableController.h"
 #import "EPPlayButton.h"
 #import "EPMainTabController.h"
+#import "EPInfoPopup.h"
 
 NSUInteger minEntriesForSections = 10;
 static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
@@ -603,14 +604,14 @@ sectionForSectionIndexTitle:(NSString *)title
 - (void)popupAppend:(id)sender
 {
     [self popupDone:^(EPEntry *entry) {
-        [self.playerController appendEntry:entry];
+        [self appendEntry:entry];
     }];
 }
 
 - (void)popupPlay:(id)sender
 {
     [self popupDone:^(EPEntry *entry) {
-        [self.playerController playEntry:entry];
+        [self playEntry:entry];
     }];
 }
 
@@ -642,13 +643,32 @@ sectionForSectionIndexTitle:(NSString *)title
     // Determine which entry was tapped.
     EPPlayButton *playButton = (EPPlayButton *)gesture.view;
     if ([self.playerController shouldAppend]) {
-        [self.playerController appendEntry:playButton.browserCell.entry];
+        [self appendEntry:playButton.browserCell.entry];
     } else {
-        [self.playerController playEntry:playButton.browserCell.entry];
+        [self playEntry:playButton.browserCell.entry];
     }
-    // I decided that showing when hitting play isn't useful.
-    // TODO: Show some kind of pop-up notification of what was added.
-//    self.tabBarController.selectedIndex = 3;
+}
+
+- (void)playEntry:(EPEntry *)entry
+{
+    [self.playerController playEntry:entry];
+    NSString *text = [NSString stringWithFormat:@"Playing %@\n%lu entries.\n%@",
+                      entry.name,
+                      [entry songCount],
+                      formatDuration(entry.duration)];
+    [EPInfoPopup showPopupWithText:text inView:self.navigationController.view];
+}
+
+- (void)appendEntry:(EPEntry *)entry
+{
+    [self.playerController appendEntry:entry];
+    // TODO: Added vs total.
+    NSString *text = [NSString stringWithFormat:@"Added %@\n%lu entries.\n%@ Added\n%@ Total",
+                      entry.name,
+                      [entry songCount],
+                      formatDuration(entry.duration),
+                      formatDuration(self.root.queue.duration)];
+    [EPInfoPopup showPopupWithText:text inView:self.navigationController.view];
 }
 
 /*****************************************************************************/
@@ -1172,19 +1192,8 @@ sectionForSectionIndexTitle:(NSString *)title
     [self updateSections];
     [self.tableView reloadData];
     // Display a little popup that indicates how many entries pasted.
-    UILabel *pasteNote = [[UILabel alloc] init];
-    pasteNote.text = [NSString stringWithFormat:@"Pasted %lu items.", (unsigned long)count];
-    pasteNote.textColor = [UIColor whiteColor];
-    pasteNote.backgroundColor = [UIColor blackColor];
-    pasteNote.layer.cornerRadius = 4;
-    [pasteNote sizeToFit];
-    pasteNote.center = self.view.center;
-    [self.view addSubview:pasteNote];
-    [UIView animateWithDuration:2.0 delay:1.0 options:0 animations:^{
-        pasteNote.alpha = 0;
-    } completion:^(BOOL finished) {
-        [pasteNote removeFromSuperview];
-    }];
+    NSString *text = [NSString stringWithFormat:@"Pasted %lu items.", (unsigned long)count];
+    [EPInfoPopup showPopupWithText:text inView:self.navigationController.view];
 }
 
 - (EPEntry *)checkPasteCycle:(EPEntry *)entry

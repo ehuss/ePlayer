@@ -21,6 +21,7 @@ typedef enum {
 
 NSString *nameForSortOrder(EPSortOrder order);
 NSString *yearFromDate(NSDate *date);
+NSString *formatDuration(NSTimeInterval interval);
 
 // Creating this is relatively expensive.
 extern NSCalendar *gregorianCalendar;
