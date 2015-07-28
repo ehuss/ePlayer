@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "EPPlayerController.h"
 
-@interface EPMainTabController : UITabBarController <UITabBarControllerDelegate>
+@interface EPMainTabController : UITabBarController <UITabBarControllerDelegate, UIGestureRecognizerDelegate>
 
 @property (strong, nonatomic) EPPlayerController *playerController;
 @property (nonatomic) UIViewController *previousController;

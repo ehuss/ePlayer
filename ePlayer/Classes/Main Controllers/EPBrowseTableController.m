@@ -590,11 +590,9 @@ sectionForSectionIndexTitle:(NSString *)title
                              // Don't go all the way to 0 so that it stays enabled.
                              button.alpha = 0.1;
                          } completion:^(BOOL finished) {
-                             if (finished) {
-                                 [button removeFromSuperview];
-                                 if (self.popupButton == button) {
-                                     self.popupButton = nil;
-                                 }
+                             [button removeFromSuperview];
+                             if (self.popupButton == button) {
+                                 self.popupButton = nil;
                              }
                          }];
     }

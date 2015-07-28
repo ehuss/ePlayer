@@ -28,6 +28,13 @@
     [controllers addObject:navCont];
     navCont.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Playlists"
                                                        image:nil tag:0];
+    // This fixes an issue where the interactive pop gesture recognizer
+    // conflicts with the UILongPressGestureRecognizer of the play/append
+    // buttons.
+    // For lack of a better place to put this code, it lives here.
+    // Load view to force the gesture recognizer to be created.
+    [navCont view];
+    navCont.interactivePopGestureRecognizer.delegate = self;
 
     EPGearTableController *gearCont = [sboard instantiateViewControllerWithIdentifier:@"GearTableController"];
     [controllers addObject:gearCont];
@@ -108,5 +115,12 @@
 //    return YES;
 //}
 
+/*****************************************************************************/
+#pragma mark - Gesture Recognizer Delegate
+/*****************************************************************************/
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return [otherGestureRecognizer isKindOfClass:UILongPressGestureRecognizer.class];
+}
 
 @end
