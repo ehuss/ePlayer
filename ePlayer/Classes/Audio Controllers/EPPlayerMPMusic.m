@@ -134,6 +134,7 @@
 - (void)switchToQueueIndex:(NSInteger)index
 {
     EPSong *song = self.root.queue.entries[index];
+    self.root.currentQueueIndex = index;
     // TODO: How does this handle when playing?
     // XXX: Consider using the skipToNextItem API instead, since that is all
     //      this is really used for.

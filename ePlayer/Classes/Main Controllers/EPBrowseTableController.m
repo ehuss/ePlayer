@@ -654,7 +654,7 @@ sectionForSectionIndexTitle:(NSString *)title
     [self.playerController playEntry:entry];
     NSString *text = [NSString stringWithFormat:@"Playing %@\n%lu entries.\n%@",
                       entry.name,
-                      [entry songCount],
+                      (unsigned long)[entry songCount],
                       formatDuration(entry.duration)];
     [EPInfoPopup showPopupWithText:text inView:self.navigationController.view];
 }
@@ -665,7 +665,7 @@ sectionForSectionIndexTitle:(NSString *)title
     // TODO: Added vs total.
     NSString *text = [NSString stringWithFormat:@"Added %@\n%lu entries.\n%@ Added\n%@ Total",
                       entry.name,
-                      [entry songCount],
+                      (unsigned long)[entry songCount],
                       formatDuration(entry.duration),
                       formatDuration(self.root.queue.duration)];
     [EPInfoPopup showPopupWithText:text inView:self.navigationController.view];
