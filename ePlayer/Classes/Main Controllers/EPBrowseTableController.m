@@ -74,14 +74,28 @@ static NSString *kSpecialSectionTitle = @"SPECIAL";
 
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(playStatusUpdate:)
-                                                 name:kEPPlayNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(playStatusUpdate:)
-                                                 name:kEPStopNotification
-                                               object:nil];
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self
+               selector:@selector(playStatusUpdate:)
+                   name:kEPPlayNotification
+                 object:nil];
+    [center addObserver:self
+               selector:@selector(playStatusUpdate:)
+                   name:kEPStopNotification
+                 object:nil];
+    [center addObserver:self
+               selector:@selector(playStatusUpdate:)
+                   name:kEPQueueFinishedNotification
+                 object:nil];
+    [center addObserver:self
+               selector:@selector(didBecomeActive:)
+                   name:UIApplicationDidBecomeActiveNotification
+                 object:nil];
+}
+
+- (void)didBecomeActive:(UIApplication *)application
+{
+    [self updatePlayButtons];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -193,6 +207,11 @@ static NSString *kSpecialSectionTitle = @"SPECIAL";
 - (void)updateCellButton:(EPBrowserCell *)cell
 {
     UIImage *playImage;
+    if (self.playerController.player.isPlaying) {
+        NSLog(@"update is NOW playing - Append");
+    } else {
+        NSLog(@"update is STOPPED - Play");
+    }
     if ([self.playerController shouldAppend]) {
         playImage = [UIImage imageNamed:@"add"];
     } else {

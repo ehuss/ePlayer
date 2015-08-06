@@ -23,8 +23,8 @@ NSString *kEPPlayerUpdateNotification = @"EPNextSongStarted";
 {
     if (self.isPlaying) {
         self.isPlaying = NO;
-        [[NSNotificationCenter defaultCenter] postNotificationName:kEPStopNotification object:nil];
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kEPStopNotification object:nil];
 }
 
 - (void)dbAppendEntry:(EPEntry *)entry

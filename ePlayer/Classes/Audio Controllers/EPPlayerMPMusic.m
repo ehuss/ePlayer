@@ -39,6 +39,11 @@
     // 1 = playing
     // 2 = paused
 
+    // currentPlaybackRate is not 100% reliable.
+    // One bug: after finishing the queue, the playback rate stays at 1.
+    if (self.mpPlayer.playbackState == MPMusicPlaybackStateStopped) {
+        return NO;
+    }
     return self.mpPlayer.currentPlaybackRate > 0;
 
     return self.mpPlayer.playbackState == MPMusicPlaybackStatePlaying ||
