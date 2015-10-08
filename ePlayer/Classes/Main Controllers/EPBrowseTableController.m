@@ -207,11 +207,11 @@ static NSString *kSpecialSectionTitle = @"SPECIAL";
 - (void)updateCellButton:(EPBrowserCell *)cell
 {
     UIImage *playImage;
-    if (self.playerController.player.isPlaying) {
-        NSLog(@"update is NOW playing - Append");
-    } else {
-        NSLog(@"update is STOPPED - Play");
-    }
+//    if (self.playerController.player.isPlaying) {
+//        NSLog(@"update is NOW playing - Append");
+//    } else {
+//        NSLog(@"update is STOPPED - Play");
+//    }
     if ([self.playerController shouldAppend]) {
         playImage = [UIImage imageNamed:@"add"];
     } else {
