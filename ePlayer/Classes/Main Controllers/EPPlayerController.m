@@ -101,6 +101,7 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     // (set UIViewControllerBasedStatusBarAppearance to NO?).  Well, regardless
     // I need to redo the coloring anyways, this will fix the problem for now
     // (was getting black text on a black background).
+    // Deprecated iOS 7.  Use UIStatusBarStyleLightContent instead.
     return UIStatusBarStyleBlackOpaque;
 }
 
@@ -522,6 +523,9 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
                              object:nil];
 
 
+    // Deprecated iOS 7.  See Audio Session Programming Guide for the new
+    // way to register a NSNotification.
+    // https://developer.apple.com/library/content/documentation/Audio/Conceptual/AudioSessionProgrammingGuide/HandlingAudioHardwareRouteChanges/HandlingAudioHardwareRouteChanges.html#//apple_ref/doc/uid/TP40007875-CH5-SW1
 	AudioSessionAddPropertyListener (kAudioSessionProperty_AudioRouteChange,
                                      audioRouteChangeListenerCallback,
                                      (__bridge void *)(self)
@@ -719,6 +723,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 /****************************************************************************/
 - (float)volume
 {
+    // Deprecated iOS 7.  Use MPVolumeView instead.
     return self.mpPlayer.volume;
     // An alternative.
 //    Float32 volume;

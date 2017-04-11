@@ -69,6 +69,10 @@
 		078A3BFE172CB37E009A8FF5 /* list-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BFD172CB37E009A8FF5 /* list-button@2x.png */; };
 		078A3C01172CD7ED009A8FF5 /* EPTrackController.m in Sources */ = {isa = PBXBuildFile; fileRef = 078A3C00172CD7ED009A8FF5 /* EPTrackController.m */; };
 		078A3C3F172FA1E1009A8FF5 /* EPRoot.m in Sources */ = {isa = PBXBuildFile; fileRef = 078A3C3E172FA1E0009A8FF5 /* EPRoot.m */; };
+		078FB1441BC60A5B0012D7D3 /* EPREntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 078FB1431BC60A5B0012D7D3 /* EPREntry.m */; };
+		078FB1711BC6105C0012D7D3 /* EPRFolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 078FB1701BC6105C0012D7D3 /* EPRFolder.m */; };
+		078FB1741BC613830012D7D3 /* EPRSong.m in Sources */ = {isa = PBXBuildFile; fileRef = 078FB1731BC613830012D7D3 /* EPRSong.m */; };
+		078FB1771BC613F70012D7D3 /* EPRRoot.m in Sources */ = {isa = PBXBuildFile; fileRef = 078FB1761BC613F70012D7D3 /* EPRRoot.m */; };
 		079B411C171A60340036F0D4 /* EPPlayerCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B411B171A60340036F0D4 /* EPPlayerCellView.m */; };
 		079B4121171B4F400036F0D4 /* EPBrowseTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4120171B4F400036F0D4 /* EPBrowseTableController.m */; };
 		079B4125171B961C0036F0D4 /* current-queue-item-playing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079B4122171B961B0036F0D4 /* current-queue-item-playing@2x.png */; };
@@ -90,6 +94,8 @@
 		07D8F1BF173895D60044DEC9 /* EPGearTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D8F1BE173895D60044DEC9 /* EPGearTableController.m */; };
 		07D8F1C21738CA650044DEC9 /* EPUpdateResultsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D8F1C11738CA640044DEC9 /* EPUpdateResultsController.m */; };
 		07D8F1C4173995F20044DEC9 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07D8F1C3173995F00044DEC9 /* icon@2x.png */; };
+		07DE9F221BC60740006744FA /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07DE9F211BC60740006744FA /* Realm.framework */; };
+		07DE9F231BC60740006744FA /* Realm.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 07DE9F211BC60740006744FA /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		07E3F4741A4A21C6000B390E /* add@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07E3F4721A4A21C6000B390E /* add@2x.png */; };
 		07E3F4751A4A21C6000B390E /* play2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07E3F4731A4A21C6000B390E /* play2@2x.png */; };
 		07E3F4781A4A5577000B390E /* NSNotificationCenter+MainThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E3F4771A4A5577000B390E /* NSNotificationCenter+MainThread.m */; };
@@ -114,6 +120,20 @@
 			remoteInfo = ePlayer;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		07DE9F241BC60740006744FA /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				07DE9F231BC60740006744FA /* Realm.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0718E6321720E11C00301D0E /* EPSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPSegmentedControl.h; sourceTree = "<group>"; };
@@ -201,6 +221,14 @@
 		078A3C00172CD7ED009A8FF5 /* EPTrackController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPTrackController.m; sourceTree = "<group>"; };
 		078A3C3D172FA1E0009A8FF5 /* EPRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPRoot.h; sourceTree = "<group>"; };
 		078A3C3E172FA1E0009A8FF5 /* EPRoot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPRoot.m; sourceTree = "<group>"; };
+		078FB1421BC60A5B0012D7D3 /* EPREntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPREntry.h; sourceTree = "<group>"; };
+		078FB1431BC60A5B0012D7D3 /* EPREntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPREntry.m; sourceTree = "<group>"; };
+		078FB16F1BC6105C0012D7D3 /* EPRFolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPRFolder.h; sourceTree = "<group>"; };
+		078FB1701BC6105C0012D7D3 /* EPRFolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPRFolder.m; sourceTree = "<group>"; };
+		078FB1721BC613830012D7D3 /* EPRSong.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPRSong.h; sourceTree = "<group>"; };
+		078FB1731BC613830012D7D3 /* EPRSong.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPRSong.m; sourceTree = "<group>"; };
+		078FB1751BC613F70012D7D3 /* EPRRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPRRoot.h; sourceTree = "<group>"; };
+		078FB1761BC613F70012D7D3 /* EPRRoot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPRRoot.m; sourceTree = "<group>"; };
 		079B411A171A60340036F0D4 /* EPPlayerCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayerCellView.h; sourceTree = "<group>"; };
 		079B411B171A60340036F0D4 /* EPPlayerCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayerCellView.m; sourceTree = "<group>"; };
 		079B411F171B4F400036F0D4 /* EPBrowseTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPBrowseTableController.h; sourceTree = "<group>"; };
@@ -234,6 +262,7 @@
 		07D8F1C01738CA640044DEC9 /* EPUpdateResultsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPUpdateResultsController.h; sourceTree = "<group>"; };
 		07D8F1C11738CA640044DEC9 /* EPUpdateResultsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPUpdateResultsController.m; sourceTree = "<group>"; };
 		07D8F1C3173995F00044DEC9 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
+		07DE9F211BC60740006744FA /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = "realm-objc/ios/dynamic/Realm.framework"; sourceTree = "<group>"; };
 		07E3F4721A4A21C6000B390E /* add@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add@2x.png"; sourceTree = "<group>"; };
 		07E3F4731A4A21C6000B390E /* play2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play2@2x.png"; sourceTree = "<group>"; };
 		07E3F4761A4A5577000B390E /* NSNotificationCenter+MainThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotificationCenter+MainThread.h"; sourceTree = "<group>"; };
@@ -268,6 +297,7 @@
 				07475EC417289654001BB7AA /* AVFoundation.framework in Frameworks */,
 				07677A641719DF5D00D1784D /* QuartzCore.framework in Frameworks */,
 				0755C3651714F1E800AAF81F /* MediaPlayer.framework in Frameworks */,
+				07DE9F221BC60740006744FA /* Realm.framework in Frameworks */,
 				0755C2F21714BE0300AAF81F /* UIKit.framework in Frameworks */,
 				0755C2F41714BE0300AAF81F /* Foundation.framework in Frameworks */,
 				0755C2F61714BE0300AAF81F /* CoreGraphics.framework in Frameworks */,
@@ -355,6 +385,7 @@
 		0755C2E51714BE0300AAF81F = {
 			isa = PBXGroup;
 			children = (
+				07DE9F211BC60740006744FA /* Realm.framework */,
 				07475EC71728FF9E001BB7AA /* AudioToolbox.framework */,
 				0755C2F71714BE0300AAF81F /* ePlayer */,
 				0755C3291714BE0400AAF81F /* ePlayerTests */,
@@ -444,6 +475,7 @@
 				078A3BF6172BC019009A8FF5 /* Views */,
 				07E6FF9C1B5EE1B300970FBB /* Audio Controllers */,
 				07475EB7172726A9001BB7AA /* Main Controllers */,
+				078FB1411BC60A0E0012D7D3 /* Realm */,
 				0755C3711716215400AAF81F /* Models */,
 				0755C3611714F12200AAF81F /* AppDelegate.h */,
 				0755C3621714F12200AAF81F /* AppDelegate.m */,
@@ -534,6 +566,21 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		078FB1411BC60A0E0012D7D3 /* Realm */ = {
+			isa = PBXGroup;
+			children = (
+				078FB1421BC60A5B0012D7D3 /* EPREntry.h */,
+				078FB1431BC60A5B0012D7D3 /* EPREntry.m */,
+				078FB16F1BC6105C0012D7D3 /* EPRFolder.h */,
+				078FB1701BC6105C0012D7D3 /* EPRFolder.m */,
+				078FB1721BC613830012D7D3 /* EPRSong.h */,
+				078FB1731BC613830012D7D3 /* EPRSong.m */,
+				078FB1751BC613F70012D7D3 /* EPRRoot.h */,
+				078FB1761BC613F70012D7D3 /* EPRRoot.m */,
+			);
+			path = Realm;
+			sourceTree = "<group>";
+		};
 		079B4139171CF2550036F0D4 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -580,6 +627,8 @@
 				0755C2EA1714BE0300AAF81F /* Sources */,
 				0755C2EB1714BE0300AAF81F /* Frameworks */,
 				0755C2EC1714BE0300AAF81F /* Resources */,
+				07DE9F241BC60740006744FA /* Embed Frameworks */,
+				07DE9F251BC607E5006744FA /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -597,7 +646,6 @@
 				0755C31D1714BE0400AAF81F /* Sources */,
 				0755C31E1714BE0400AAF81F /* Frameworks */,
 				0755C31F1714BE0400AAF81F /* Resources */,
-				0755C3201714BE0400AAF81F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -616,7 +664,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastTestingUpgradeCheck = 0510;
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "Eric Huss";
 				TargetAttributes = {
 					0755C2ED1714BE0300AAF81F = {
@@ -706,7 +754,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0755C3201714BE0400AAF81F /* ShellScript */ = {
+		07DE9F251BC607E5006744FA /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -717,7 +765,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+			shellScript = "bash \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework/strip-frameworks.sh\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -729,9 +777,11 @@
 				0755C2FE1714BE0400AAF81F /* main.m in Sources */,
 				0755C34B1714EC6300AAF81F /* MusicModel.xcdatamodeld in Sources */,
 				0755C3631714F12200AAF81F /* AppDelegate.m in Sources */,
+				078FB1741BC613830012D7D3 /* EPRSong.m in Sources */,
 				07E3F4781A4A5577000B390E /* NSNotificationCenter+MainThread.m in Sources */,
 				0755C36B1715244A00AAF81F /* EPSong.m in Sources */,
 				0755C36E1715335800AAF81F /* EPMemoryDebug.m in Sources */,
+				078FB1771BC613F70012D7D3 /* EPRRoot.m in Sources */,
 				0755C3841716442600AAF81F /* EPFolder.m in Sources */,
 				0755C38717164DFE00AAF81F /* EPEntry.m in Sources */,
 				07E6FFA51B61E1B600970FBB /* EPPlayerMPMusic.m in Sources */,
@@ -751,6 +801,7 @@
 				07E6FF9F1B5EE23D00970FBB /* EPPlayer.m in Sources */,
 				079B4153171F55F00036F0D4 /* EPTableSectionView.m in Sources */,
 				0718E6341720E11C00301D0E /* EPSegmentedControl.m in Sources */,
+				078FB1441BC60A5B0012D7D3 /* EPREntry.m in Sources */,
 				07E6FFA21B5EE24E00970FBB /* EPPlayerAVAudio.m in Sources */,
 				0719E37917262A7D00D325B5 /* UIImage+EPCrop.m in Sources */,
 				07BE575519CD025800D45EC0 /* NSMutableDictionary+EP.m in Sources */,
@@ -760,6 +811,7 @@
 				078A3BFC172CA779009A8FF5 /* EPLyricView.m in Sources */,
 				078A3C01172CD7ED009A8FF5 /* EPTrackController.m in Sources */,
 				078A3C3F172FA1E1009A8FF5 /* EPRoot.m in Sources */,
+				078FB1711BC6105C0012D7D3 /* EPRFolder.m in Sources */,
 				07D8F1BC1738728A0044DEC9 /* EPStretchButton.m in Sources */,
 				07D8F1BF173895D60044DEC9 /* EPGearTableController.m in Sources */,
 				0746FA88181A398E0056D3A5 /* EPPlayButton.m in Sources */,
@@ -855,25 +907,35 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -887,18 +949,27 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -913,10 +984,16 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/realm-objc/ios/dynamic",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ePlayer/ePlayer-Prefix.pch";
 				INFOPLIST_FILE = "ePlayer/ePlayer-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.ehuss.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -931,10 +1008,16 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/realm-objc/ios/dynamic",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ePlayer/ePlayer-Prefix.pch";
 				INFOPLIST_FILE = "ePlayer/ePlayer-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.ehuss.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -946,14 +1029,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ePlayer.app/ePlayer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-					"$(inherited)",
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ePlayer/ePlayer-Prefix.pch";
 				INFOPLIST_FILE = "ePlayerTests/ePlayerTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.ehuss.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
@@ -963,14 +1042,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ePlayer.app/ePlayer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"\\\"$(SDKROOT)/Developer/Library/Frameworks\\\"",
-					"\\\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\\\"",
-					"$(inherited)",
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ePlayer/ePlayer-Prefix.pch";
 				INFOPLIST_FILE = "ePlayerTests/ePlayerTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.ehuss.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};

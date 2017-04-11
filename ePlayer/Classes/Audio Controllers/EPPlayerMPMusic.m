@@ -16,7 +16,8 @@
     self = [super init];
     if (self) {
         // This has been renamed to systemMusicPlayer in iOS 8.
-        self.mpPlayer = [MPMusicPlayerController iPodMusicPlayer];
+//        self.mpPlayer = [MPMusicPlayerController iPodMusicPlayer];
+        self.mpPlayer = [MPMusicPlayerController systemMusicPlayer];
         [self registerNotifications];
     }
     return self;
@@ -46,15 +47,15 @@
     }
     return self.mpPlayer.currentPlaybackRate > 0;
 
-    return self.mpPlayer.playbackState == MPMusicPlaybackStatePlaying ||
-           self.mpPlayer.playbackState == MPMusicPlaybackStateSeekingBackward ||
-           self.mpPlayer.playbackState == MPMusicPlaybackStateSeekingForward;
+//    return self.mpPlayer.playbackState == MPMusicPlaybackStatePlaying ||
+//           self.mpPlayer.playbackState == MPMusicPlaybackStateSeekingBackward ||
+//           self.mpPlayer.playbackState == MPMusicPlaybackStateSeekingForward;
 }
 
 - (void)setIsPlaying:(BOOL)isPlaying
 {
     abort();
-    [NSException raise:@"Internal Error" format:@"do not set isPlaying"];
+//    [NSException raise:@"Internal Error" format:@"do not set isPlaying"];
 }
 
 /****************************************************************************/
