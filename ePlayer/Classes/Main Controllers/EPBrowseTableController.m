@@ -53,22 +53,17 @@ static NSString *kSpecialSectionTitle = @"SPECIAL";
     
     if (self.wantsSearch) {
         // Add a search ability.
-        UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-        // This will automatically set self.searchDisplayController.
-        // However, due to some kind of bug with ARC, it doesn't get retained, so
-        // I'm using a second property to hold ownership.
-        self.searchController = [[UISearchDisplayController alloc]
-                                 initWithSearchBar:searchBar
-                                 contentsController:self];
+        // Don't need a search results controller, will use our existing table.
+        self.searchController = [[UISearchController alloc]
+                                 initWithSearchResultsController:nil];
+        self.searchController.searchResultsUpdater = self;
         self.searchController.delegate = self;
-        self.searchController.searchResultsDataSource = self;
-        self.searchController.searchResultsDelegate = self;
-        [self.searchController.searchResultsTableView registerNib:entryNib
-                                           forCellReuseIdentifier:@"EntryCell"];
-        self.tableView.tableHeaderView = searchBar;
+        self.searchController.dimsBackgroundDuringPresentation = NO;
+        self.tableView.tableHeaderView = self.searchController.searchBar;
+//        self.definesPresentationContext = YES;
 
         // Scroll down to hide the header.
-        CGFloat headerHeight = searchBar.frame.size.height;
+        CGFloat headerHeight = self.searchController.searchBar.frame.size.height;
         self.tableView.contentOffset = CGPointMake(0, headerHeight);
     }
 
@@ -159,7 +154,7 @@ static NSString *kSpecialSectionTitle = @"SPECIAL";
     }
     
     NSArray *data;
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    if (self.filteredSections) {
         data = self.filteredSections;
     } else {
         data = self.sections;
@@ -232,20 +227,11 @@ static NSString *kSpecialSectionTitle = @"SPECIAL";
 }
 
 
-- (void)touchSortOrder:(EPSegmentedControl *)sender
-{
-    // Exit editing mode.
-    if (self.editing) {
-        [self setEditing:NO animated:YES];
-    }
-    self.sortOrder = [[[self supportedSortOrders] objectAtIndex:sender.selectedSegmentIndex] intValue];
-}
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
     NSArray *data;
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    if (self.filteredSectionTitles) {
         data = self.filteredSectionTitles;
     } else {
         data = self.sectionTitles;
@@ -261,7 +247,7 @@ static NSString *kSpecialSectionTitle = @"SPECIAL";
 {
     // Return the number of rows in the section.
     NSArray *data;
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    if (self.filteredSections) {
         data = self.filteredSections;
     } else {
         data = self.sections;
@@ -274,57 +260,6 @@ static NSString *kSpecialSectionTitle = @"SPECIAL";
 }
 
 /*****************************************************************************/
-#pragma mark - Control Cells
-/*****************************************************************************/
-- (UITableViewCell *)createSortOrderCell
-{
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                   reuseIdentifier:@"SortCell"];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    NSMutableArray *items = [NSMutableArray arrayWithCapacity:5];
-    int selectedIndex = 0;
-    NSArray *supportedSortOrders = [self supportedSortOrders];
-    for (int i=0; i<supportedSortOrders.count; i++) {
-        EPSortOrder so = [[supportedSortOrders objectAtIndex:i] intValue];
-        switch (so) {
-            case EPSortOrderAlpha:
-                [items addObject:@"Alpha"];
-                break;
-            case EPSortOrderAddDate:
-                [items addObject:@"Add\nDate"];
-                break;
-            case EPSortOrderPlayDate:
-                [items addObject:@"Play\nDate"];
-                break;
-            case EPSortOrderReleaseDate:
-                [items addObject:@"Release\nDate"];
-                break;
-            case EPSortOrderManual:
-                [items addObject:@"Manual"];
-                break;
-        }
-        if (so == self.sortOrder) {
-            selectedIndex = i;
-        }
-    }
-    EPSegmentedControl *seg = [[EPSegmentedControl alloc] initWithItems:items
-                                                                  frame:cell.frame];
-    seg.selectedSegmentIndex = selectedIndex;
-    [seg addTarget:self action:@selector(touchSortOrder:) forControlEvents:UIControlEventValueChanged];
-    [cell addSubview:seg];
-    return cell;
-}
-
-- (NSArray *)supportedSortOrders
-{
-    return @[@(EPSortOrderAlpha),
-             @(EPSortOrderAddDate),
-             @(EPSortOrderPlayDate),
-             @(EPSortOrderReleaseDate),
-             @(EPSortOrderManual)];
-}
-
-/*****************************************************************************/
 #pragma mark - Section Methods
 /*****************************************************************************/
 
@@ -332,7 +267,7 @@ static NSString *kSpecialSectionTitle = @"SPECIAL";
 {
     if (self.indexesEnabled) {
         NSArray *data;
-        if (tableView == self.searchDisplayController.searchResultsTableView) {
+        if (self.filteredSectionIndexTitles) {
             data = self.filteredSectionIndexTitles;
         } else {
             data = self.sectionIndexTitles;
@@ -359,7 +294,7 @@ sectionForSectionIndexTitle:(NSString *)title
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     NSArray *data;
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    if (self.filteredSectionTitles) {
         data = self.filteredSectionTitles;
     } else {
         data = self.sectionTitles;
@@ -466,7 +401,7 @@ sectionForSectionIndexTitle:(NSString *)title
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     NSArray *data;
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    if (self.filteredSectionTitles) {
         data = self.filteredSectionTitles;
     } else {
         data = self.sectionTitles;
@@ -529,8 +464,34 @@ sectionForSectionIndexTitle:(NSString *)title
 /*****************************************************************************/
 #pragma mark - Searching
 /*****************************************************************************/
-- (void)filterContentForSearchText:(NSString *)searchText
+- (void)didPresentSearchController:(UISearchController *)searchController
 {
+}
+
+- (void)didDismissSearchController:(UISearchController *)searchController
+{
+    self.filteredSections = nil;
+    self.filteredSectionTitles = nil;
+    self.filteredSectionIndexTitles = nil;
+    [self.tableView reloadData];
+}
+
+- (void)presentSearchController:(UISearchController *)searchController
+{
+}
+
+- (void)willDismissSearchController:(UISearchController *)searchController
+{
+}
+
+- (void)willPresentSearchController:(UISearchController *)searchController
+{
+}
+
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
+{
+    NSString *searchText = searchController.searchBar.text;
     // Update filtered sections.
     NSPredicate *resultPred = [NSPredicate predicateWithFormat:@"name contains[cd] %@",
                                searchText];
@@ -555,23 +516,7 @@ sectionForSectionIndexTitle:(NSString *)title
     self.filteredSections = newSections;
     self.filteredSectionTitles = newSectionTitles;
     self.filteredSectionIndexTitles = newSectionIndexTitles;
-    
-}
-
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller
-        shouldReloadTableForSearchString:(NSString *)searchString
-{
-    [self filterContentForSearchText:searchString];
-    
-    // Return YES to cause the search result table view to be reloaded.
-    return YES;
-}
-
-- (void)searchDisplayController:(UISearchDisplayController *)controller didHideSearchResultsTableView:(UITableView *)tableView
-{
-    self.filteredSections = nil;
-    self.filteredSectionTitles = nil;
-    self.filteredSectionIndexTitles = nil;
+    [self.tableView reloadData];
 }
 
 /*****************************************************************************/
@@ -701,7 +646,7 @@ sectionForSectionIndexTitle:(NSString *)title
         return;
     }
     NSArray *data;
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    if (self.filteredSections) {
         data = self.filteredSections;
     } else {
         data = self.sections;

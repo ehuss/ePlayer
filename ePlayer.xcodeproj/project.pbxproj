@@ -7,15 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0718E6341720E11C00301D0E /* EPSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 0718E6331720E11C00301D0E /* EPSegmentedControl.m */; };
-		0718E63D1721068A00301D0E /* segmented-divider-normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E6351721068A00301D0E /* segmented-divider-normal@2x.png */; };
-		0718E63E1721068A00301D0E /* segmented-divider-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E6361721068A00301D0E /* segmented-divider-selected@2x.png */; };
-		0718E63F1721068A00301D0E /* segmented-left-normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E6371721068A00301D0E /* segmented-left-normal@2x.png */; };
-		0718E6401721068A00301D0E /* segmented-left-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E6381721068A00301D0E /* segmented-left-selected@2x.png */; };
-		0718E6411721068A00301D0E /* segmented-middle-normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E6391721068A00301D0E /* segmented-middle-normal@2x.png */; };
-		0718E6421721068A00301D0E /* segmented-middle-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E63A1721068A00301D0E /* segmented-middle-selected@2x.png */; };
-		0718E6431721068A00301D0E /* segmented-right-normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E63B1721068A00301D0E /* segmented-right-normal@2x.png */; };
-		0718E6441721068A00301D0E /* segmented-right-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0718E63C1721068A00301D0E /* segmented-right-selected@2x.png */; };
 		0719E2E71723AEE700D325B5 /* EntryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0719E2E51723AEE700D325B5 /* EntryCell.xib */; };
 		0719E3741726248100D325B5 /* queue-volume-off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E3731726248100D325B5 /* queue-volume-off@2x.png */; };
 		0719E3761726268E00D325B5 /* queue-volume-on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0719E3751726268E00D325B5 /* queue-volume-on@2x.png */; };
@@ -136,16 +127,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0718E6321720E11C00301D0E /* EPSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPSegmentedControl.h; sourceTree = "<group>"; };
-		0718E6331720E11C00301D0E /* EPSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPSegmentedControl.m; sourceTree = "<group>"; };
-		0718E6351721068A00301D0E /* segmented-divider-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-divider-normal@2x.png"; sourceTree = "<group>"; };
-		0718E6361721068A00301D0E /* segmented-divider-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-divider-selected@2x.png"; sourceTree = "<group>"; };
-		0718E6371721068A00301D0E /* segmented-left-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-left-normal@2x.png"; sourceTree = "<group>"; };
-		0718E6381721068A00301D0E /* segmented-left-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-left-selected@2x.png"; sourceTree = "<group>"; };
-		0718E6391721068A00301D0E /* segmented-middle-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-middle-normal@2x.png"; sourceTree = "<group>"; };
-		0718E63A1721068A00301D0E /* segmented-middle-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-middle-selected@2x.png"; sourceTree = "<group>"; };
-		0718E63B1721068A00301D0E /* segmented-right-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-right-normal@2x.png"; sourceTree = "<group>"; };
-		0718E63C1721068A00301D0E /* segmented-right-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "segmented-right-selected@2x.png"; sourceTree = "<group>"; };
 		0719E2E61723AEE700D325B5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = EntryCell.xib; sourceTree = "<group>"; };
 		0719E3731726248100D325B5 /* queue-volume-off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-volume-off@2x.png"; sourceTree = "<group>"; };
 		0719E3751726268E00D325B5 /* queue-volume-on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "queue-volume-on@2x.png"; sourceTree = "<group>"; };
@@ -353,8 +334,6 @@
 				07475EBE17278023001BB7AA /* EPPopupButton.m */,
 				07677A5C1719264E00D1784D /* EPScrubberView.h */,
 				07677A5D1719264E00D1784D /* EPScrubberView.m */,
-				0718E6321720E11C00301D0E /* EPSegmentedControl.h */,
-				0718E6331720E11C00301D0E /* EPSegmentedControl.m */,
 				07D8F1BA1738728A0044DEC9 /* EPStretchButton.h */,
 				07D8F1BB1738728A0044DEC9 /* EPStretchButton.m */,
 				0746FA86181A398E0056D3A5 /* EPPlayButton.h */,
@@ -522,14 +501,6 @@
 				07475EBB172761BD001BB7AA /* append-popout@2x.png */,
 				0719E3751726268E00D325B5 /* queue-volume-on@2x.png */,
 				0719E3731726248100D325B5 /* queue-volume-off@2x.png */,
-				0718E6351721068A00301D0E /* segmented-divider-normal@2x.png */,
-				0718E6361721068A00301D0E /* segmented-divider-selected@2x.png */,
-				0718E6371721068A00301D0E /* segmented-left-normal@2x.png */,
-				0718E6381721068A00301D0E /* segmented-left-selected@2x.png */,
-				0718E6391721068A00301D0E /* segmented-middle-normal@2x.png */,
-				0718E63A1721068A00301D0E /* segmented-middle-selected@2x.png */,
-				0718E63B1721068A00301D0E /* segmented-right-normal@2x.png */,
-				0718E63C1721068A00301D0E /* segmented-right-selected@2x.png */,
 				079B4164171F5BBF0036F0D4 /* header-background@2x.png */,
 				079B4122171B961B0036F0D4 /* current-queue-item-playing@2x.png */,
 				079B4123171B961B0036F0D4 /* current-queue-item-stopped@2x.png */,
@@ -717,14 +688,6 @@
 				079B4127171B961C0036F0D4 /* queue-pause@2x.png in Resources */,
 				079B4163171F5B5D0036F0D4 /* TableSectionView.xib in Resources */,
 				079B4165171F5BBF0036F0D4 /* header-background@2x.png in Resources */,
-				0718E63D1721068A00301D0E /* segmented-divider-normal@2x.png in Resources */,
-				0718E63E1721068A00301D0E /* segmented-divider-selected@2x.png in Resources */,
-				0718E63F1721068A00301D0E /* segmented-left-normal@2x.png in Resources */,
-				0718E6401721068A00301D0E /* segmented-left-selected@2x.png in Resources */,
-				0718E6411721068A00301D0E /* segmented-middle-normal@2x.png in Resources */,
-				0718E6421721068A00301D0E /* segmented-middle-selected@2x.png in Resources */,
-				0718E6431721068A00301D0E /* segmented-right-normal@2x.png in Resources */,
-				0718E6441721068A00301D0E /* segmented-right-selected@2x.png in Resources */,
 				0719E2E71723AEE700D325B5 /* EntryCell.xib in Resources */,
 				0719E3741726248100D325B5 /* queue-volume-off@2x.png in Resources */,
 				0719E3761726268E00D325B5 /* queue-volume-on@2x.png in Resources */,
@@ -800,7 +763,6 @@
 				079B4150171E9F980036F0D4 /* EPBrowserCell.m in Sources */,
 				07E6FF9F1B5EE23D00970FBB /* EPPlayer.m in Sources */,
 				079B4153171F55F00036F0D4 /* EPTableSectionView.m in Sources */,
-				0718E6341720E11C00301D0E /* EPSegmentedControl.m in Sources */,
 				078FB1441BC60A5B0012D7D3 /* EPREntry.m in Sources */,
 				07E6FFA21B5EE24E00970FBB /* EPPlayerAVAudio.m in Sources */,
 				0719E37917262A7D00D325B5 /* UIImage+EPCrop.m in Sources */,

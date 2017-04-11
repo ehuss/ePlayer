@@ -16,6 +16,7 @@
 - (void)awakeFromNib
 {
     self.delegate = self;
+    [super awakeFromNib];
 }
 
 - (void)mainInit

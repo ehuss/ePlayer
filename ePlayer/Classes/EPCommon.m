@@ -39,13 +39,13 @@ NSString *yearFromDate(NSDate *date)
         NSLog(@"nil date, please fix");
         return @"UNKNOWN";
     }
-    NSDateComponents *comp = [gregorianCalendar components:NSYearCalendarUnit fromDate:date];
+    NSDateComponents *comp = [gregorianCalendar components:NSCalendarUnitYear fromDate:date];
     return [NSString stringWithFormat:@"%li", (long)comp.year];
 }
 
 void createGregorianCalendar()
 {
-    gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
 }
 
 // iOS 8 has introduced NSDateComponentsFormatter which supports

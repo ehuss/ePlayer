@@ -10,7 +10,6 @@
 #import "EPCommon.h"
 #import "EPBrowserCell.h"
 #import "EPPlayerController.h"
-#import "EPSegmentedControl.h"
 #import "EPPopupButton.h"
 #import "EPRoot.h"
 #import "EPEditToolbar.h"
@@ -19,7 +18,8 @@
 extern NSUInteger minEntriesForSections;
 
 @interface EPBrowseTableController : UITableViewController
-    <UISearchBarDelegate, UISearchDisplayDelegate, UITextFieldDelegate, UIActionSheetDelegate>
+    <UISearchBarDelegate, UISearchControllerDelegate, UISearchResultsUpdating,
+     UITextFieldDelegate, UIActionSheetDelegate>
 {
     BOOL _renaming;
     EPRoot *_root;
@@ -27,9 +27,6 @@ extern NSUInteger minEntriesForSections;
 
 - (void)updateSections;
 
-- (void)touchSortOrder:(EPSegmentedControl *)sender;
-- (NSArray *)supportedSortOrders;
-- (UITableViewCell *)createSortOrderCell;
 - (void)rename:(EPBrowserCell *)cell to:(NSString *)newText;
 
 @property (strong, nonatomic) EPFolder *folder;
@@ -50,7 +47,7 @@ extern NSUInteger minEntriesForSections;
 @property (nonatomic) EPTableSectionView *topSectionView;
 
 // Searching.
-@property (strong, nonatomic) UISearchDisplayController *searchController;
+@property (strong, nonatomic) UISearchController *searchController;
 @property (strong, nonatomic) NSArray *filteredSections;
 @property (strong, nonatomic) NSArray *filteredSectionTitles;
 @property (nonatomic) NSArray *filteredSectionIndexTitles;

@@ -1,4 +1,4 @@
-//
+
 //  PlayerController.m
 //  ePlayer
 //
@@ -18,66 +18,6 @@
 #import "EPPlayerAVAudio.h"
 #import "EPPlayerMPMusic.h"
 #import "EPSettings.h"
-
-//static NSTimeInterval scrubberUpdateTime = 0.300;
-
-/****************************************************************************/
-#pragma mark - Audio Callback
-/****************************************************************************/
-
-void audioRouteChangeListenerCallback (void                      *inUserData,
-                                       AudioSessionPropertyID    inPropertyID,
-                                       UInt32                    inPropertyValueSize,
-                                       const void                *inPropertyValue
-                                       )
-{
-	// ensure that this callback was invoked for a route change
-	if (inPropertyID != kAudioSessionProperty_AudioRouteChange) {
-        return;
-    }
-    
-	// This callback, being outside the implementation block, needs a reference to the
-	//		MainViewController object, which it receives in the inUserData parameter.
-	//		You provide this reference when registering this callback (see the call to
-	//		AudioSessionAddPropertyListener).
-	EPPlayerController *controller = (__bridge EPPlayerController *) inUserData;
-
-    // XXX: interruptedWhilePlaying?
-    if (controller.player.isPlaying) {
-		// Determines the reason for the route change, to ensure that it is not
-		//		because of a category change.
-		CFDictionaryRef	routeChangeDictionary = inPropertyValue;
-		
-		CFNumberRef routeChangeReasonRef = CFDictionaryGetValue(
-                              routeChangeDictionary,
-                              CFSTR (kAudioSession_AudioRouteChangeKey_Reason));
-        
-		SInt32 routeChangeReason;
- 		CFNumberGetValue(routeChangeReasonRef,
-                         kCFNumberSInt32Type,
-                         &routeChangeReason);
-		
-		// "Old device unavailable" indicates that a headset was unplugged, or that the
-		//	device was removed from a dock connector that supports audio output. This is
-		//	the recommended test for when to pause audio.
-		if (routeChangeReason == kAudioSessionRouteChangeReason_OldDeviceUnavailable) {
-            [controller pause];
-			NSLog(@"Output device removed, so application audio was paused.");
-            
-//			UIAlertView *routeChangeAlertView =
-//            [[UIAlertView alloc]	initWithTitle: NSLocalizedString (@"Playback Paused", @"Title for audio hardware route-changed alert view")
-//                                       message: NSLocalizedString (@"Audio output was changed", @"Explanation for route-changed alert view")
-//                                      delegate: controller
-//                             cancelButtonTitle: NSLocalizedString (@"StopPlaybackAfterRouteChange", @"Stop button title")
-//                             otherButtonTitles: NSLocalizedString (@"ResumePlaybackAfterRouteChange", @"Play button title"), nil];
-//			[routeChangeAlertView show];
-			// release takes place in alertView:clickedButtonAtIndex: method
-            
-		} else {
-			NSLog (@"A route change occurred that does not require pausing of application audio.");
-		}
-	}
-}
 
 /****************************************************************************/
 #pragma mark - Implementation
@@ -101,8 +41,7 @@ void audioRouteChangeListenerCallback (void                      *inUserData,
     // (set UIViewControllerBasedStatusBarAppearance to NO?).  Well, regardless
     // I need to redo the coloring anyways, this will fix the problem for now
     // (was getting black text on a black background).
-    // Deprecated iOS 7.  Use UIStatusBarStyleLightContent instead.
-    return UIStatusBarStyleBlackOpaque;
+    return UIStatusBarStyleLightContent;
 }
 
 - (EPMainTabController *)mainTabController
@@ -522,15 +461,39 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
                                name:UIApplicationDidBecomeActiveNotification
                              object:nil];
 
+    // Audio route changes.
+    [notificationCenter addObserver:self
+                           selector:@selector(routeChanged:)
+                               name:AVAudioSessionRouteChangeNotification
+                             object:nil];
+    // Handle AVAudioSessionMediaServicesWereResetNotification too?
+}
 
-    // Deprecated iOS 7.  See Audio Session Programming Guide for the new
-    // way to register a NSNotification.
-    // https://developer.apple.com/library/content/documentation/Audio/Conceptual/AudioSessionProgrammingGuide/HandlingAudioHardwareRouteChanges/HandlingAudioHardwareRouteChanges.html#//apple_ref/doc/uid/TP40007875-CH5-SW1
-	AudioSessionAddPropertyListener (kAudioSessionProperty_AudioRouteChange,
-                                     audioRouteChangeListenerCallback,
-                                     (__bridge void *)(self)
-                                     );
+- (void)routeChanged:(NSNotification *)notification
+{
+    NSNumber *interruptionType = notification.userInfo[AVAudioSessionInterruptionTypeKey];
+    NSNumber *interruptionReason = notification.userInfo[AVAudioSessionRouteChangeReasonKey];
+    AVAudioSessionInterruptionType iType = interruptionType.unsignedIntegerValue;
+    AVAudioSessionRouteChangeReason iReason = interruptionReason.unsignedIntegerValue;
+//    NSLog(@"type=%lu reason=%lu", (unsigned long)iType, iReason);
 
+    if (self.player.isPlaying) {
+        switch (iType) {
+            case AVAudioSessionInterruptionTypeBegan:
+                break;
+            case AVAudioSessionInterruptionTypeEnded:
+                if (iReason == AVAudioSessionRouteChangeReasonOldDeviceUnavailable) {
+                    // Headset was unplugged, or device remove from dock that
+                    // has audio output.  Must call on main thread since this
+                    // may cause UI updates.
+                    NSLog(@"Pausing due to route change.");
+                    [self performSelectorOnMainThread:@selector(pause) withObject:nil waitUntilDone:NO];
+                }
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 - (void)willResignActive:(UIApplication *)application
@@ -747,8 +710,9 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     [off drawAtPoint:CGPointMake(width, 0)];
     UIImage* result = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    [self.tabBarItem setFinishedSelectedImage:result
-                  withFinishedUnselectedImage:result];
+    result = [result imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    self.tabBarItem.image = result;
+    self.tabBarItem.selectedImage = result;
 }
 
 /****************************************************************************/

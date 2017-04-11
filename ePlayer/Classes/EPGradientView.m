@@ -20,6 +20,7 @@
                        (id)[[UIColor colorWithWhite:0.10f alpha:1.0f] CGColor],
                        nil];
     [self.layer insertSublayer:gradient atIndex:0];
+    [super awakeFromNib];
 }
 
 - (void)layoutSublayersOfLayer:(CALayer *)layer
