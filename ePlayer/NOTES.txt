@@ -1,12 +1,5 @@
 dbAppendEntry -> is song, why does it not propagate?
 
-Include artist/album folder in top view (isRootFolder in browser manually adds artists/albums, need to investigate why).
-
-queue modification methods need to be wrapped in a transaction.
-switchToQueueIndex
-replaceQueue
-appendEntry
-
 To test:
 - cycle checking
 
@@ -21,6 +14,7 @@ NOTES
 ****
 TODO
 ****
+- Make artists and albums read-only?
 - Add Folder:  Should scroll the table to the newly added folder (doesn't work quite right when scrolled down)
 - The new "request permission to access music" dialog prevents first time import from running.  Need to run again after use says "yes".
 - Instead of using tabs, put the artist and album views in the main playlist table.  The "queue" view is a button in the upper-right corner (just like Apple Music).

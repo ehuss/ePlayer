@@ -38,6 +38,7 @@
 		0755C3841716442600AAF81F /* EPFolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755C3831716442600AAF81F /* EPFolder.m */; };
 		0755C38717164DFE00AAF81F /* EPEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755C38617164DFE00AAF81F /* EPEntry.m */; };
 		075A44C61E9D872900A574F6 /* RLMCollection+EPRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = 075A44C51E9D872900A574F6 /* RLMCollection+EPRealm.m */; };
+		075A44D21EA2CC6C00A574F6 /* RLMRealm+EPCat.m in Sources */ = {isa = PBXBuildFile; fileRef = 075A44D11EA2CC6C00A574F6 /* RLMRealm+EPCat.m */; };
 		076779E31718E11300D1784D /* EPPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 076779E21718E11300D1784D /* EPPlayerController.m */; };
 		07677A4E171924F200D1784D /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A40171924F200D1784D /* pause.png */; };
 		07677A4F171924F200D1784D /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A41171924F200D1784D /* play.png */; };
@@ -169,6 +170,8 @@
 		0755C38617164DFE00AAF81F /* EPEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EPEntry.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		075A44C41E9D872900A574F6 /* RLMCollection+EPRealm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RLMCollection+EPRealm.h"; sourceTree = "<group>"; };
 		075A44C51E9D872900A574F6 /* RLMCollection+EPRealm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RLMCollection+EPRealm.m"; sourceTree = "<group>"; };
+		075A44D01EA2CC6C00A574F6 /* RLMRealm+EPCat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RLMRealm+EPCat.h"; sourceTree = "<group>"; };
+		075A44D11EA2CC6C00A574F6 /* RLMRealm+EPCat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RLMRealm+EPCat.m"; sourceTree = "<group>"; };
 		076779E11718E11300D1784D /* EPPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayerController.h; sourceTree = "<group>"; };
 		076779E21718E11300D1784D /* EPPlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayerController.m; sourceTree = "<group>"; };
 		07677A40171924F200D1784D /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
@@ -301,6 +304,8 @@
 				07E600481B659BBC00970FBB /* UIView+EPUtil.m */,
 				075A44C41E9D872900A574F6 /* RLMCollection+EPRealm.h */,
 				075A44C51E9D872900A574F6 /* RLMCollection+EPRealm.m */,
+				075A44D01EA2CC6C00A574F6 /* RLMRealm+EPCat.h */,
+				075A44D11EA2CC6C00A574F6 /* RLMRealm+EPCat.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -726,6 +731,7 @@
 				07E600491B659BBC00970FBB /* UIView+EPUtil.m in Sources */,
 				075A44C61E9D872900A574F6 /* RLMCollection+EPRealm.m in Sources */,
 				07E600431B656C8400970FBB /* EPSortPopup.m in Sources */,
+				075A44D21EA2CC6C00A574F6 /* RLMRealm+EPCat.m in Sources */,
 				079B411C171A60340036F0D4 /* EPPlayerCellView.m in Sources */,
 				079B4121171B4F400036F0D4 /* EPBrowseTableController.m in Sources */,
 				079B412F171CCA6F0036F0D4 /* EPMediaItemWrapper.m in Sources */,

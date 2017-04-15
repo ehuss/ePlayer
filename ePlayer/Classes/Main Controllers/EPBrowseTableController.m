@@ -16,6 +16,7 @@
 #import "EPPlayButton.h"
 #import "EPMainTabController.h"
 #import "EPInfoPopup.h"
+#import "RLMRealm+EPCat.h"
 
 NSUInteger minEntriesForSections = 10;
 static const NSInteger kSectionIndexMinimumDisplayRowCount = 10;
@@ -417,7 +418,7 @@ sectionForSectionIndexTitle:(NSString *)title
 /*****************************************************************************/
 - (void)setSortOrder:(EPSortOrder)sortOrder
 {
-    [[RLMRealm defaultRealm] transactionWithBlock:^{
+    [[RLMRealm defaultRealm] epInnerTransactionWithBlock:^{
         self.folder.sortOrder = sortOrder;
     }];
     [self updateSections];
@@ -463,7 +464,7 @@ sectionForSectionIndexTitle:(NSString *)title
 
 - (BOOL)isRootFolder
 {
-    return self.folder == self.root.playlists;
+    return [self.folder.uuid isEqualToString:self.root.playlists.uuid];
 }
 
 /*****************************************************************************/
@@ -644,6 +645,16 @@ sectionForSectionIndexTitle:(NSString *)title
 #pragma mark - Table view delegate
 /*****************************************************************************/
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.editing) {
+        if (indexPath.section == self.specialSection) {
+            return nil;
+        }
+    }
+    return indexPath;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.editing) {
@@ -686,6 +697,7 @@ sectionForSectionIndexTitle:(NSString *)title
 - (void)updateSections
 {
     NSArray *sortedEntries = [self.folder sortedEntries];
+    self.specialSection = -1;
     // With a small number of entries, sections are a pain.
     if (self.sortOrder!=EPSortOrderManual &&
         sortedEntries.count > minEntriesForSections) {
@@ -709,6 +721,7 @@ sectionForSectionIndexTitle:(NSString *)title
             [currentSection addObject:entry];
         }
         if (self.isRootFolder) {
+            self.specialSection = self.sectionTitles.count;
             [self.sectionTitles addObject:kSpecialSectionTitle];
             currentSection = [NSMutableArray arrayWithObjects:self.root.artists,
                               self.root.albums, nil];
@@ -724,6 +737,7 @@ sectionForSectionIndexTitle:(NSString *)title
                          [NSMutableArray arrayWithArray:sortedEntries]];
         self.sectionTitles = [NSMutableArray arrayWithObject:@""];
         if (self.isRootFolder) {
+            self.specialSection = self.sectionTitles.count;
             [self.sections addObject:[NSMutableArray arrayWithObjects:self.root.artists,
                                       self.root.albums, nil]];
             [self.sectionTitles addObject:kSpecialSectionTitle];
@@ -862,13 +876,13 @@ sectionForSectionIndexTitle:(NSString *)title
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return YES;
+    return indexPath.section != self.specialSection;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.sortOrder == EPSortOrderManual) {
-        return YES;
+        return indexPath.section != self.specialSection;
     } else {
         return NO;
     }

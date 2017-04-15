@@ -38,10 +38,15 @@ extern NSUInteger minEntriesForSections;
 // Array of arrays of EPEntry objects.
 // Sections segregate the entries based on the sorting type
 // (alpha uses the first letter of each name, others use years for date).
+// The root folder includes a magic section that includes artists
+// and albums.
 @property (strong, nonatomic) NSMutableArray *sections;
-// sectionTitles is nil if there are no sections.
+// Array of strings, the name of each section.
 @property (strong, nonatomic) NSMutableArray *sectionTitles;
+// Array of strings, the short-hand name of the section on the right-hand side.
 @property (nonatomic) NSMutableArray *sectionIndexTitles;
+// The section used for artists and albums.  -1 if n/a.
+@property (nonatomic) NSInteger specialSection;
 @property (readonly, nonatomic) EPPlayerController *playerController;
 @property (assign, nonatomic) BOOL renaming;
 @property (nonatomic) EPEditToolbar *editToolbar;
