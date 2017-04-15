@@ -172,14 +172,6 @@
     return nil; // Silence warning.
 }
 
-- (void)checkForOrphan:(EPRoot *)root
-{
-    if (self.parents.count == 0) {
-        NSLog(@"ORPHAN %@", self.name);
-        [root.orphans addFolder:self];
-    }
-}
-
 - (void)removeIfEmpty:(RLMRealm *)realm
 {
     if (self.folders.count == 0 && self.songs.count == 0 && self.parents.count) {

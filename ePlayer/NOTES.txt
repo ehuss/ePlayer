@@ -1,8 +1,6 @@
 dbAppendEntry -> is song, why does it not propagate?
 
-Include orphan folder in top view (isRootFolder in browser manually adds artists/albums, need to investigate why).
-
-Finish preventOrphanSelection
+Include artist/album folder in top view (isRootFolder in browser manually adds artists/albums, need to investigate why).
 
 queue modification methods need to be wrapped in a transaction.
 switchToQueueIndex
@@ -48,10 +46,6 @@ TODO
 - Check for songs without an album title in updateDB.  These do not show up in
   the albumsquery.
 - More explicit backup/restore of the database.
-- When deleting from orphan folder, pop up warning that the songs will be
-  readded during next sync.
-  - Could add a hidden orphan folder where they would go.
-  - Option to "clear orphans" for debug purposes (allows you to reimport those songs).
 - Not entirely comfortable with saving on entering background.  Ideas:
     - Save in background thread.  Would require synchronization work.
     - Save while idle?
@@ -96,8 +90,6 @@ Medium
 - Queue tab icon - change speaker icon to not have arcs when not playing.
     Also, change to a continuous triangle?  Not really happy with the squares.
 - re-instate max 1-sec scrubber update rate.
-- Creating orphan folder from player does not update playlists table view.
-    Would be best to have a dirty flag on a folder, and have viewwillappear check it.
 - del/cut/copy/paste do not update playCount/playDate/addDate/releaseDate
 - libraryChanged notification doesn't seem to show up.  Would be nice to pop
   up an alert or something.

@@ -87,11 +87,7 @@ NSString *kEPPlayerUpdateNotification = @"EPNextSongStarted";
     RLMRealm *realm = [RLMRealm defaultRealm];
     [realm beginWriteTransaction];
     // Clear the queue.
-    NSArray *oldEnts = [self.root.queue.songs realmToArray];
     [self.root.queue removeAllEntries];
-    for (EPEntry *ent in oldEnts) {
-        [ent checkForOrphan:self.root];
-    }
     self.root.currentQueueIndex = 0;
     [self dbAppendEntry:entry];
     [realm commitWriteTransaction];

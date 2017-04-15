@@ -823,12 +823,8 @@ sectionForSectionIndexTitle:(NSString *)title
     }
 }
 
-/* Delete rows from the current view.
-
-   If doCheckOrphans is YES, then orphaned songs will be moved to the orphans
-   folder.
- */
-- (void)deleteRows:(NSArray *)indexPaths checkOrphans:(BOOL)doCheckOrphans
+/* Delete rows from the current view. */
+- (void)deleteRows:(NSArray *)indexPaths
 {
     // Determine the entries to delete.
     NSMutableArray *entriesToDelete = [NSMutableArray arrayWithCapacity:indexPaths.count];
@@ -852,14 +848,6 @@ sectionForSectionIndexTitle:(NSString *)title
     }
     [self.folder removeEntries:entriesToDelete];
     // Will be committed when editing is done.
-    
-    if (doCheckOrphans) {
-        for (EPEntry *entry in entriesToDelete) {
-            // If any songs in this entry have no parents, put it into a special
-            // orphan folder.  Otherwise there would be no way to ever access them.
-            [entry checkForOrphan:self.root];
-        }
-    }
     
     [sectionsToDelete enumerateKeysAndObjectsUsingBlock:^(NSNumber *key, NSMutableIndexSet *obj, BOOL *stop) {
         NSMutableArray *section = self.sections[key.integerValue];
@@ -1010,48 +998,8 @@ sectionForSectionIndexTitle:(NSString *)title
 #pragma mark - Cut/Copy/Paste
 /*****************************************************************************/
 
-/* Prevents operations that would modify the orphan folder.
- 
- emptyDeleteOK = YES means to allow deleting the orphan folder if it is empty.
-*/
-- (BOOL)preventOrphanSelection:(NSString *)action emptyDeleteOK:(BOOL)emptyDeleteOK
-{
-    return NO;
-//    if (self.folder.parents.count == 0) {
-//        EPFolder *orphanFolder = nil;
-//        for (EPEntry *entry in self.folder.entries) {
-//            if ([entry.name compare:kEPOrphanFolderName] == NSOrderedSame) {
-//                orphanFolder = (EPFolder *)entry;
-//                break;
-//            }
-//        }
-//        if (orphanFolder) {
-//            if (orphanFolder.entries.count == 0 && emptyDeleteOK) {
-//                return NO;
-//            }
-//            for (NSIndexPath *path in [self.tableView indexPathsForSelectedRows]) {
-//                EPEntry *entry = self.sections[path.section][path.row];
-//                if (entry == orphanFolder) {
-//                    NSString *message = [NSString stringWithFormat:@"Cannot %@ the orphaned songs folder.", action];
-//                    UIAlertView *alert = [[UIAlertView alloc]
-//                                          initWithTitle:@"Operation Not Permitted"
-//                                          message:message
-//                                          delegate:nil
-//                                          cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//                    [alert show];
-//                    return YES;
-//                }
-//            }
-//        }
-//    }
-//    return NO;
-}
-
 - (void)delete:(id)sender
 {
-    if ([self preventOrphanSelection:@"delete" emptyDeleteOK:YES]) {
-        return;
-    }
     // Display a confirmation.
     NSString *title = [NSString stringWithFormat:@"Really delete %lu items?",
                        (unsigned long)self.tableView.indexPathsForSelectedRows.count];
@@ -1073,13 +1021,7 @@ sectionForSectionIndexTitle:(NSString *)title
     } else if (buttonIndex == actionSheet.destructiveButtonIndex) {
         NSString *name = [actionSheet buttonTitleAtIndex:buttonIndex];
         if ([name compare:@"Delete"] == NSOrderedSame) {
-            BOOL checkOrphans = YES;
-            if ([self.folder.name compare:kEPOrphanFolderName] == NSOrderedSame) {
-                // Allow permanent deletion from the orphan folder.
-                checkOrphans = NO;
-            }
-            [self deleteRows:[self.tableView indexPathsForSelectedRows]
-                checkOrphans:checkOrphans];
+            [self deleteRows:[self.tableView indexPathsForSelectedRows]];
         } else if ([name compare:@"Collapse"] == NSOrderedSame) {
             [self collapseRows:[self.tableView indexPathsForSelectedRows]];
         }
@@ -1088,32 +1030,21 @@ sectionForSectionIndexTitle:(NSString *)title
 
 - (void)cut:(id)sender
 {
-    if([self preventOrphanSelection:@"cut" emptyDeleteOK:NO]) {
-        return;
-    }
     NSArray *indexPaths = [self.tableView indexPathsForSelectedRows];
     [self doCopyWithCut:YES];
     // Remove these entries (shallow).
-    [self deleteRows:indexPaths checkOrphans:NO];
+    [self deleteRows:indexPaths];
 }
 
 
 - (void)clearCutFolder
 {
     // Make a copy so we can iterate over them after removing them from the folder.
-    NSArray *entries = [self.root.cut sortedEntries];
     [self.root.cut removeAllEntries];
-    for (EPEntry *entry in entries) {
-        NSLog(@"Checking cut song: %@", entry.name);
-        [entry checkForOrphan:self.root];
-    }
 }
 
 - (void)copy:(id)sender
 {
-    if([self preventOrphanSelection:@"copy" emptyDeleteOK:NO]) {
-        return;
-    }
     [self doCopyWithCut:NO];
 }
 
@@ -1230,9 +1161,6 @@ sectionForSectionIndexTitle:(NSString *)title
 
 - (void)collapse:(id)sender
 {
-    if ([self preventOrphanSelection:@"delete" emptyDeleteOK:NO]) {
-        return;
-    }
     // Verify that all selections are folders.
     for (NSIndexPath *path in self.tableView.indexPathsForSelectedRows) {
         EPEntry *entry = self.sections[path.section][path.row];

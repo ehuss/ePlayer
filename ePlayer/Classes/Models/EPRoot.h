@@ -9,15 +9,12 @@
 #import <Realm/Realm.h>
 #import "EPFolder.h"
 
-extern NSString *kEPOrphanFolderName;
-
 @interface EPRoot : RLMObject
 @property EPFolder *playlists;
 @property EPFolder *artists;
 @property EPFolder *albums;
 @property EPFolder *cut;
 @property EPFolder *queue;
-@property EPFolder *orphans;
 // This is the index of the song that is currently playing in queue.
 @property NSInteger currentQueueIndex;
 

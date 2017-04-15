@@ -8,8 +8,6 @@
 
 #import "EPRoot.h"
 
-NSString *kEPOrphanFolderName = @"Orphaned Songs";
-
 @implementation EPRoot
 
 /*****************************************************************************/
@@ -98,11 +96,6 @@ NSString *kEPOrphanFolderName = @"Orphaned Songs";
                                releaseDate:[NSDate distantPast]
                                    addDate:[NSDate date]
                                   playDate:[NSDate distantPast]];
-    self.orphans = [EPFolder folderWithName:kEPOrphanFolderName
-                                  sortOrder:EPSortOrderManual
-                                releaseDate:[NSDate distantPast]
-                                    addDate:[NSDate date]
-                                   playDate:[NSDate distantPast]];
     self.currentQueueIndex = 0;
 }
 

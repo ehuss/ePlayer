@@ -35,9 +35,6 @@ RLM_ARRAY_TYPE(EPEntry)
 - (void)propagateAddDate:(NSDate *)date;
 - (void)propagateReleaseDate:(NSDate *)date;
 
-// Checks if this song has been orphaned (call after removing from a folder).
-- (void)checkForOrphan:(EPRoot *)root;
-
 // Number of songs in this entry.  For EPSong, this returns 1.
 - (NSUInteger)songCount;
 

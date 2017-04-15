@@ -99,14 +99,6 @@
 /*****************************************************************************/
 #pragma mark - Misc
 /*****************************************************************************/
-- (void)checkForOrphan:(EPRoot *)root
-{
-    if (self.parents.count == 0) {
-        NSLog(@"ORPHAN: Putting song %@ into orphaned.", self.name);
-        // Put this song into the orphan folder.
-        [root.orphans addSong:self];
-    }
-}
 
 - (NSUInteger)songCount
 {

@@ -63,12 +63,6 @@
 #pragma mark - Misc
 /*****************************************************************************/
 
-- (void)checkForOrphan:(EPRoot *)root
-{
-    // Subclasses implement.
-    return;
-}
-
 - (NSArray *)pathNames
 {
     NSMutableArray *result = [[NSMutableArray alloc] init];

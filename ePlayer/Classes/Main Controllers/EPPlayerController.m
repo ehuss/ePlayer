@@ -329,8 +329,6 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     [self.player replaceQueue:entry];
     [self.tableView reloadData];
     [self play];
-    // TODO: I *think* this is for orphan support?
-    [self.mainTabController reloadBrowsers];
 }
 - (void)appendEntry:(EPEntry *)entry
 {
