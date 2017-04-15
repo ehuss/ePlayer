@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+/*
+ Controller for the table used for configuration ("Settings").
+*/
+
 @interface EPGearTableController : UITableViewController
 
 @property (weak, nonatomic) IBOutlet UISwitch *iPodSwitch;

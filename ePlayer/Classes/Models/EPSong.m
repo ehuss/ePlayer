@@ -1,9 +1,9 @@
 //
-//  Song.m
+//  EPSong.m
 //  ePlayer
 //
-//  Created by Eric Huss on 4/9/13.
-//  Copyright (c) 2013 Eric Huss. All rights reserved.
+//  Created by Eric Huss on 10/7/15.
+//  Copyright © 2015 Eric Huss. All rights reserved.
 //
 
 #import "EPSong.h"
@@ -11,6 +11,34 @@
 #import "EPRoot.h"
 
 @implementation EPSong
+
+/*****************************************************************************/
+#pragma mark - Realm
+/*****************************************************************************/
+
+// Specify default values for properties
+//+ (NSDictionary *)defaultPropertyValues
+//{
+//    return @{};
+//}
+
+// Specify properties to ignore (Realm won't persist these)
++ (NSArray *)ignoredProperties
+{
+    return @[@"mediaItem", @"mediaWrapper"];
+}
+
++ (NSDictionary *)linkingObjectsProperties
+{
+    return @{
+             @"songParents": [RLMPropertyDescriptor descriptorWithClass:EPFolder.class propertyName:@"songs"]
+             };
+}
+
+- (RLMLinkingObjects *)parents
+{
+    return self.songParents;
+}
 
 /*****************************************************************************/
 #pragma mark - Class methods
@@ -21,27 +49,7 @@
     EPSong *song = [[EPSong alloc] init];
     song.name = name;
     song.persistentID = PID;
-    song.parents = [[NSMutableSet alloc] init];
     return song;
-}
-
-/*****************************************************************************/
-#pragma mark - NSCoding
-/*****************************************************************************/
-
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-    self = [super initWithCoder:aDecoder];
-    if (self) {
-        self.persistentID = [aDecoder decodeObjectForKey:@"persistentID"];
-    }
-    return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-    [super encodeWithCoder:aCoder];
-    [aCoder encodeObject:self.persistentID forKey:@"persistentID"];
 }
 
 /*****************************************************************************/
@@ -50,7 +58,7 @@
 
 - (NSURL *)url
 {
-    return [[NSURL alloc] initWithString:[NSString stringWithFormat:@"ePlayer:///Song/%@", self.persistentID]];
+    return [[NSURL alloc] initWithString:[NSString stringWithFormat:@"ePlayer:///Song/%@", self.uuid]];
 }
 
 - (MPMediaItem *)mediaItem
@@ -91,14 +99,12 @@
 /*****************************************************************************/
 #pragma mark - Misc
 /*****************************************************************************/
-- (void)checkForOrphan
+- (void)checkForOrphan:(EPRoot *)root
 {
     if (self.parents.count == 0) {
         NSLog(@"ORPHAN: Putting song %@ into orphaned.", self.name);
         // Put this song into the orphan folder.
-        EPRoot *root = [EPRoot sharedRoot];
-        EPFolder *orphanFolder = [root getOrMakeOraphans];
-        [orphanFolder addEntriesObject:self];
+        [root.orphans addSong:self];
     }
 }
 

@@ -10,6 +10,7 @@
 #import "NSArray+EPMap.h"
 #import "EPMemoryDebug.h"
 #import "UIView+EPUtil.h"
+#import "RLMCollection+EPRealm.h"
 
 typedef enum {
     EPSortOrderAlpha,

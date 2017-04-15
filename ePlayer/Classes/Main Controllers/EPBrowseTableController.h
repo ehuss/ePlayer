@@ -29,14 +29,15 @@ extern NSUInteger minEntriesForSections;
 
 - (void)rename:(EPBrowserCell *)cell to:(NSString *)newText;
 
-@property (strong, nonatomic) EPFolder *folder;
-@property (readonly, nonatomic) EPRoot *root;
-@property (assign, nonatomic) BOOL focusAddFolder;
+@property (nonatomic) EPFolder *folder;
+@property (nonatomic) EPRoot *root;
+@property (nonatomic) BOOL focusAddFolder;
 @property (nonatomic, readonly) BOOL isRootFolder;
 
 @property (assign, nonatomic)EPSortOrder sortOrder;
-// Array of arrays.  The types of items depends on the subclass.
-// The sections are passed to  "updateCell..." in order to set the cell content.
+// Array of arrays of EPEntry objects.
+// Sections segregate the entries based on the sorting type
+// (alpha uses the first letter of each name, others use years for date).
 @property (strong, nonatomic) NSMutableArray *sections;
 // sectionTitles is nil if there are no sections.
 @property (strong, nonatomic) NSMutableArray *sectionTitles;

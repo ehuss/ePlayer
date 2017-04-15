@@ -83,10 +83,10 @@
 
     if (self.mpPlayer.indexOfNowPlayingItem == NSNotFound) {
         // Queue is empty (typically happens when the last track has finished).
-        self.root.currentQueueIndex = 0;
+        [self.root transUpdateIndex:0];
         [[NSNotificationCenter defaultCenter] postNotificationName:kEPQueueFinishedNotification object:nil];
     } else {
-        self.root.currentQueueIndex = self.mpPlayer.indexOfNowPlayingItem;
+        [self.root transUpdateIndex:self.mpPlayer.indexOfNowPlayingItem];
     }
 
     [[NSNotificationCenter defaultCenter] postNotificationName:kEPPlayerUpdateNotification object:nil];
@@ -116,7 +116,7 @@
 
 - (void)play
 {
-    if (!self.isPlaying && self.root.queue.entries.count) {
+    if (!self.isPlaying && self.root.queue.songs.count) {
         [self.mpPlayer play];
 //        self.isPlaying = YES;
     }
@@ -139,19 +139,18 @@
 
 - (void)switchToQueueIndex:(NSInteger)index
 {
-    EPSong *song = self.root.queue.entries[index];
-    self.root.currentQueueIndex = index;
+    EPSong *song = self.root.queue.songs[index];
+    [self.root transUpdateIndex:index];
     // TODO: How does this handle when playing?
     // XXX: Consider using the skipToNextItem API instead, since that is all
     //      this is really used for.
     self.mpPlayer.nowPlayingItem = song.mediaItem;
 }
 
-- (void)replaceQueue:(EPEntry *)entry;
+- (void)replaceQueue:(EPEntry *)entry
 {
     [super replaceQueue:entry];
-    [self dbAppendEntry:entry];
-    NSArray *items = [self.root.queue.entries mapWithBlock:^MPMediaItem *(EPSong *song) {
+    NSArray *items = [self.root.queue.songs realmMapWithBlock:^MPMediaItem *(EPSong *song) {
         return song.mediaItem;
     }];
     MPMediaItemCollection *collection = [MPMediaItemCollection collectionWithItems:items];
@@ -160,11 +159,10 @@
 
 - (void)appendEntry:(EPEntry *)entry
 {
-    [self dbAppendEntry:entry];
-    self.root.dirty = YES;
+    [super appendEntry:entry];
     // TODO: What happens if playing?
     // TODO: Share code with replaceQueue.
-    NSArray *items = [self.root.queue.entries mapWithBlock:^MPMediaItem *(EPSong *song) {
+    NSArray *items = [self.root.queue.songs realmMapWithBlock:^MPMediaItem *(EPSong *song) {
         return song.mediaItem;
     }];
     MPMediaItemCollection *collection = [MPMediaItemCollection collectionWithItems:items];

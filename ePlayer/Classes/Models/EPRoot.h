@@ -2,42 +2,43 @@
 //  EPRoot.h
 //  ePlayer
 //
-//  Created by Eric Huss on 4/29/13.
-//  Copyright (c) 2013 Eric Huss. All rights reserved.
+//  Created by Eric Huss on 10/7/15.
+//  Copyright © 2015 Eric Huss. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <Realm/Realm.h>
 #import "EPFolder.h"
-#import "EPSong.h"
 
 extern NSString *kEPOrphanFolderName;
 
-@interface EPRoot : NSObject <NSCoding>
+@interface EPRoot : RLMObject
+@property EPFolder *playlists;
+@property EPFolder *artists;
+@property EPFolder *albums;
+@property EPFolder *cut;
+@property EPFolder *queue;
+@property EPFolder *orphans;
+// This is the index of the song that is currently playing in queue.
+@property NSInteger currentQueueIndex;
 
-@property (strong, nonatomic) EPFolder *playlists;
-@property (strong, nonatomic) EPFolder *artists;
-@property (strong, nonatomic) EPFolder *albums;
-@property (strong, nonatomic) EPFolder *cut;
-@property (strong, nonatomic) EPFolder *queue;
-@property (strong, nonatomic) EPFolder *orphans;
-@property (assign, nonatomic) BOOL dirty;
-// This is the index of the song that is currently playing in _queue.
-@property (assign, nonatomic) NSInteger currentQueueIndex;
-
-// Return the shared root.  If it has not been loaded from disk, it will be
-// loaded.  If it doesn't exist, an empty root will be returned (marked dirty).
+// Returns the global EPRoot, loaded from disk (using the default Realm).
+// If it does not exist on disk, it will be created.
++ (EPRoot *)sharedRoot:(BOOL *)wasCreated;
+// Convenience if you don't care if it was created.
 + (EPRoot *)sharedRoot;
-+ (NSString *)dbPath;
 
-- (void)save;
-- (EPFolder *)getOrMakeOraphans;
-- (EPFolder *)folderWithUUID:(NSUUID *)uuid;
-- (EPSong *)songWithPersistentID:(NSNumber *)persistentID;
-- (NSArray *)topFolders;
 // Erases all in-memory information.
 - (void)reset;
+
+// Updates currentQueueIndex inside a transaction.
+- (void)transUpdateIndex:(NSInteger)newIndex;
+
 #ifdef TARGET_IPHONE_SIMULATOR
 - (void)createSimulatedData;
 #endif
 
 @end
+
+// This protocol enables typed collections. i.e.:
+// RLMArray<EPRoot>
+RLM_ARRAY_TYPE(EPRoot)

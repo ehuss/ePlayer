@@ -12,6 +12,12 @@
 #import "EPCommon.h"
 #import "EPSong.h"
 
+/*
+ Controller for the view displayed when tapping a song in the browser.
+ 
+ It displays the name, album art, play data, lyrics, etc.
+*/
+
 @interface EPTrackController : UIViewController
 @property (weak, nonatomic) IBOutlet EPTrackSummaryView *trackSummary;
 @property (weak, nonatomic) IBOutlet EPLyricView *lyricView;

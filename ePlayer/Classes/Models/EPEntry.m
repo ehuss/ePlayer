@@ -1,61 +1,46 @@
 //
-//  Entry.m
+//  EPEntry.m
 //  ePlayer
 //
-//  Created by Eric Huss on 4/10/13.
-//  Copyright (c) 2013 Eric Huss. All rights reserved.
+//  Created by Eric Huss on 10/7/15.
+//  Copyright © 2015 Eric Huss. All rights reserved.
 //
 
 #import "EPEntry.h"
 #import "EPFolder.h"
-#import "EPRoot.h"
 
 @implementation EPEntry
 
 /*****************************************************************************/
-#pragma mark - NSCoding
+#pragma mark - Realm
 /*****************************************************************************/
 
-- (id)initWithCoder:(NSCoder *)aDecoder
+// Specify default values for properties
++ (NSDictionary *)defaultPropertyValues
 {
-    self = [super init];
-    if (self) {
-        _name = [aDecoder decodeObjectForKey:@"name"];
-        _addDate = [aDecoder decodeObjectForKey:@"addDate"];
-        _playDate = [aDecoder decodeObjectForKey:@"playDate"];
-        _releaseDate = [aDecoder decodeObjectForKey:@"releaseDate"];
-        _playCount = [aDecoder decodeIntegerForKey:@"playCount"];
-        _parents = [aDecoder decodeObjectForKey:@"parents"];
-    }
-    return self;
+    NSDate *now = [NSDate date];
+    return @{@"uuid": [NSUUID UUID].UUIDString,
+             @"name": @"",
+             @"addDate": now,
+             @"playDate": now,
+             @"releaseDate": now,
+             @"playCount": @0};
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-    [aCoder encodeObject:_name forKey:@"name"];
-    [aCoder encodeObject:_addDate forKey:@"addDate"];
-    [aCoder encodeObject:_playDate forKey:@"playDate"];
-    [aCoder encodeObject:_releaseDate forKey:@"releaseDate"];
-    [aCoder encodeInteger:_playCount forKey:@"playCount"];
-    [aCoder encodeObject:_parents forKey:@"parents"];
++ (NSString *)primaryKey {
+    return @"uuid";
 }
 
-/*****************************************************************************/
-#pragma mark - NSCopying
-/*****************************************************************************/
-
-- (id)copyWithZone:(NSZone *)zone
+// Specify properties to ignore (Realm won't persist these)
++ (NSArray *)ignoredProperties
 {
-    EPEntry *entry = [[self.class allocWithZone:zone] init];
-    if (entry) {
-        entry->_name = self.name;
-        entry->_addDate = [NSDate date];
-        entry->_playDate = _playDate;
-        entry->_releaseDate = _releaseDate;
-        entry->_playCount = _playCount;
-        entry->_parents = [[NSMutableSet alloc] init];
-    }
-    return entry;
+    return @[@"parents"];
+}
+
+// Subclasses implement.
+- (RLMLinkingObjects *)parents
+{
+    return nil;
 }
 
 /*****************************************************************************/
@@ -78,7 +63,7 @@
 #pragma mark - Misc
 /*****************************************************************************/
 
-- (void)checkForOrphan
+- (void)checkForOrphan:(EPRoot *)root
 {
     // Subclasses implement.
     return;

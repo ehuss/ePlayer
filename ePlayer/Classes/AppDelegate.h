@@ -22,11 +22,16 @@
 @property (weak, nonatomic) NSObject *dbSender;
 @property (weak, nonatomic) NSObject *initCompleteDelegate;
 
+// Returns true if the data is ready, false if it is being loaded
+// in a background thread.
 - (BOOL)loadData;
 - (void)initDB:(NSObject *)completionDelegate;
 
+// Scan the music database for new/removed/changed items.
+// Runs in background, and sends a message
+// `dbUpdateDone:(NSString *)results` to `sender` when it is finished.
 - (void)beginDBUpdate:(NSObject *)sender;
+// Completely deletes the database, starting a new one with no songs.
 - (void)resetDB;
-
 
 @end

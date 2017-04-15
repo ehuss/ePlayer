@@ -80,6 +80,7 @@
     navCont = self.viewControllers[0];
     [navCont popToRootViewControllerAnimated:NO];
     browseCont = (EPBrowseTableController *)navCont.topViewController;
+    browseCont.root = root;
     browseCont.folder = root.playlists;
     [browseCont.tableView reloadData];
 }

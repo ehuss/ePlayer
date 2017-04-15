@@ -1,50 +1,66 @@
 //
-//  Folder.h
+//  EPFolder.h
 //  ePlayer
 //
-//  Created by Eric Huss on 4/10/13.
-//  Copyright (c) 2013 Eric Huss. All rights reserved.
+//  Created by Eric Huss on 10/7/15.
+//  Copyright © 2015 Eric Huss. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "EPSong.h"
+#import <Realm/Realm.h>
+#import "EPEntry.h"
 #import "EPCommon.h"
+#import "EPSong.h"
 
-@class EPEntry;
+@class EPFolder;
+// This protocol enables typed collections. i.e.:
+// RLMArray<EPFolder>
+RLM_ARRAY_TYPE(EPFolder)
 
-@interface EPFolder : EPEntry <NSCoding, NSCopying>
-{
-    NSTimeInterval _duration;
-}
-
-@property (assign, nonatomic) EPSortOrder sortOrder;
-@property (strong, nonatomic) NSMutableArray *entries;
-@property (strong, nonatomic) NSUUID *uuid;
+@interface EPFolder : EPEntry
+@property EPSortOrder sortOrder;
+@property RLMArray<EPFolder *><EPFolder> *folders;
+@property RLMArray<EPSong *><EPSong> *songs;
+@property (readonly) RLMLinkingObjects *folderParents;
+@property NSTimeInterval duration;
 
 + (EPFolder *)folderWithName:(NSString *)name
-                   sortOrder:(EPSortOrder)sortOrder
-                 releaseDate:(NSDate *)releaseDate
-                     addDate:(NSDate *)addDate
-                    playDate:(NSDate *)palyDate;
+                    sortOrder:(EPSortOrder)sortOrder
+                  releaseDate:(NSDate *)releaseDate
+                      addDate:(NSDate *)addDate
+                     playDate:(NSDate *)palyDate;
 
 - (NSString *)sectionTitleForEntry:(EPEntry *)entry forIndex:(BOOL)forIndex;
+// Beware that this array is a snapshot, any modifications to the
+// folder will not be reflected.
 - (NSArray *)sortedEntries;
-- (EPFolder *)folderWithUUID:(NSUUID *)uuid;
-- (EPSong *)songWithPersistentID:(NSNumber *)persistentID;
+
+
+- (void)moveFolderAtIndex:(NSUInteger)sourceIndex
+                  toIndex:(NSUInteger)destinationIndex;
+- (void)moveSongAtIndex:(NSUInteger)sourceIndex
+                toIndex:(NSUInteger)destinationIndex;
+- (void)insertFolder:(EPFolder *)folder atIndex:(NSUInteger)idx;
+- (void)replaceFolderAtIndex:(NSUInteger)index
+                  withFolder:(EPFolder *)folder;
+
+- (void)addFolder:(EPFolder *)folder;
+- (void)addSong:(EPSong *)song;
+- (void)addEntry:(EPEntry *)entry;
+- (void)addSongs:(id <NSFastEnumeration>)songs;
+- (void)addFolders:(id <NSFastEnumeration>)folders;
+
+- (void)removeSong:(EPSong *)song;
+- (void)removeFolder:(EPFolder *)folder;
+- (void)removeEntry:(EPEntry *)entry;
+- (void)removeAllEntries;
+- (void)removeEntries:(id <NSFastEnumeration>)entries;
+
+
+
 // Remove this folder if it is empty (and it is not a top-level folder).
-- (void)removeIfEmpty;
+- (void)removeIfEmpty:(RLMRealm *)realm;
+// Does a shallow search for a folder in this folder with the given name.
 - (EPFolder *)folderWithName:(NSString *)name;
 
-- (void)insertObject:(EPEntry *)value inEntriesAtIndex:(NSUInteger)idx;
-- (void)removeObjectFromEntriesAtIndex:(NSUInteger)idx;
-// - (void)insertEntries:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
-// - (void)removeEntriesAtIndexes:(NSIndexSet *)indexes;
-- (void)replaceObjectInEntriesAtIndex:(NSUInteger)idx withObject:(EPEntry *)value;
-// - (void)replaceEntriesAtIndexes:(NSIndexSet *)indexes withEntries:(NSArray *)values;
-- (void)addEntriesObject:(EPEntry *)value;
-- (void)removeEntriesObject:(EPEntry *)value;
-- (void)addEntries:(NSArray *)values;
-- (void)removeEntries:(NSArray *)values;
-- (void)removeAllEntries;
 @end
 

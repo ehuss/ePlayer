@@ -1,3 +1,19 @@
+dbAppendEntry -> is song, why does it not propagate?
+
+Include orphan folder in top view (isRootFolder in browser manually adds artists/albums, need to investigate why).
+
+Finish preventOrphanSelection
+
+queue modification methods need to be wrapped in a transaction.
+switchToQueueIndex
+replaceQueue
+appendEntry
+
+To test:
+- cycle checking
+
+Does Realm do garbage collection when entries are removed?
+
 *****
 NOTES
 *****
@@ -7,6 +23,8 @@ NOTES
 ****
 TODO
 ****
+- Add Folder:  Should scroll the table to the newly added folder (doesn't work quite right when scrolled down)
+- The new "request permission to access music" dialog prevents first time import from running.  Need to run again after use says "yes".
 - Instead of using tabs, put the artist and album views in the main playlist table.  The "queue" view is a button in the upper-right corner (just like Apple Music).
 - Bug: MPMusic backend: After queue is finished, pressing "play" again starts with the second track.  Not obvious why, when "play" is called, the current index is 0.
 - Bug: (MPMusic backend?) pause playback, then go back to "playlists", the play/append button does not update properly.
@@ -47,7 +65,6 @@ TODO
 
 - "Select all" in edit.
 - Scroll titles that are too long to display (or something), otherwise it is impossible to see.
-- playlist/artists/albums icons.
 - After making modification (like "collapse"), the quick scroll time things on the right come back (they should be hidden).
 - undo would be nice to have.
 - Anno 2070 album is "invalid" when importing.

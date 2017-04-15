@@ -107,14 +107,14 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return self.root.queue.entries.count;
+    return self.root.queue.songs.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"PlayerCell";
     EPPlayerCellView *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    EPSong *song = self.root.queue.entries[indexPath.row];
+    EPSong *song = (EPSong *)self.root.queue.songs[indexPath.row];
     // Dunno why Xcode flip-flops the warning here, just force it with a cast.
     cell.queueNumLabel.text = [NSString stringWithFormat:@"%i.", (int)(indexPath.row+1)];
     cell.trackNameLabel.text = song.name;
@@ -208,7 +208,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)tappedInfo:(id)sender
 {
     if (!self.tableView.hidden) {
-        [self.lyricView updateWithSong:self.root.queue.entries[self.root.currentQueueIndex]];
+        [self.lyricView updateWithSong:(EPSong *)self.root.queue.songs[self.root.currentQueueIndex]];
     }
     NSUInteger transitionType = (self.tableView.hidden ? UIViewAnimationOptionTransitionFlipFromRight : UIViewAnimationOptionTransitionFlipFromLeft);
     
@@ -366,8 +366,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)nextTrack
 {
-    if (self.root.queue.entries.count) {
-        if (self.root.currentQueueIndex == self.root.queue.entries.count-1) {
+    if (self.root.queue.songs.count) {
+        if (self.root.currentQueueIndex == self.root.queue.songs.count-1) {
             [self.player stop];
             [self.player switchToQueueIndex:0];
             [self updateDisplay];
@@ -386,7 +386,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)prevTrack
 {
-    if (self.root.queue.entries.count) {
+    if (self.root.queue.songs.count) {
         if (self.root.currentQueueIndex == 0) {
             self.player.currentPlaybackTime = 0;
         } else {
@@ -566,8 +566,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)updateNowPlayingView
 {
-    if (self.root.queue.entries.count) {
-        EPSong *song = self.root.queue.entries[self.root.currentQueueIndex];
+    if (self.root.queue.songs.count) {
+        EPSong *song = (EPSong *)self.root.queue.songs[self.root.currentQueueIndex];
         [self.trackSummary loadSong:song];
         if (self.player.isPlaying) {
             // Make sure the scrubber is updating.
@@ -587,7 +587,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
     for (EPPlayerCellView *cell in self.tableView.visibleCells) {
         [cell unsetCurrent];
     }
-    if (self.root.queue.entries.count) {
+    if (self.root.queue.songs.count) {
         NSIndexPath *path = [NSIndexPath indexPathForRow:self.root.currentQueueIndex inSection:0];
         EPPlayerCellView *cell = (EPPlayerCellView *)[self.tableView cellForRowAtIndexPath:path];
         if (cell) {
@@ -599,7 +599,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 
 - (void)scrollToCurrent
 {
-    if (self.isDisplayed && self.root.queue.entries.count) {
+    if (self.isDisplayed && self.root.queue.songs.count) {
         NSIndexPath *path = [NSIndexPath indexPathForRow:self.root.currentQueueIndex inSection:0];
         if (![self.tableView.indexPathsForVisibleRows containsObject:path]) {
             // It is currently not visible, scroll to it.

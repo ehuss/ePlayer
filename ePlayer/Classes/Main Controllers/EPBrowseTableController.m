@@ -104,8 +104,7 @@ static NSString *kSpecialSectionTitle = @"SPECIAL";
     if (self.editing) {
         // Hit the back button while editing.  It won't turn editing off, so
         // do anything that needs to be done.
-        [self reloadParents];
-        [self hideEditToolbar];
+        [self setEditing:NO animated:NO];
     }
 }
 
@@ -418,8 +417,9 @@ sectionForSectionIndexTitle:(NSString *)title
 /*****************************************************************************/
 - (void)setSortOrder:(EPSortOrder)sortOrder
 {
-    self.folder.sortOrder = sortOrder;
-    self.root.dirty = YES;
+    [[RLMRealm defaultRealm] transactionWithBlock:^{
+        self.folder.sortOrder = sortOrder;
+    }];
     [self updateSections];
     [self.tableView reloadData];
 }
@@ -454,6 +454,11 @@ sectionForSectionIndexTitle:(NSString *)title
         _root = [EPRoot sharedRoot];
     }
     return _root;
+}
+
+- (void)setRoot:(EPRoot *)root
+{
+    _root = root;
 }
 
 - (BOOL)isRootFolder
@@ -735,6 +740,7 @@ sectionForSectionIndexTitle:(NSString *)title
 {
     [super setEditing:editing animated:animated];
     if (editing) {
+        [[RLMRealm defaultRealm] beginWriteTransaction];
         [self showEditToolbar];
         // Prevent the table from showing under the edit toolbar.
         self.tableView.contentInset = UIEdgeInsetsMake(self.tableView.contentInset.top, 0, self.tableView.contentInset.bottom+self.editToolbar.frame.size.height, 0);
@@ -742,11 +748,10 @@ sectionForSectionIndexTitle:(NSString *)title
         // Make sure enabled status on buttons is correct.
         [self updateEditToolbarStatus];
     } else {
+        [[RLMRealm defaultRealm] commitWriteTransaction];
         [self hideEditToolbar];
         self.tableView.contentInset = UIEdgeInsetsMake(self.tableView.contentInset.top, 0, self.tableView.contentInset.bottom-self.editToolbar.frame.size.height, 0);
         self.tableView.ep_frame_height += self.editToolbar.frame.size.height;
-        // Save any changes made.
-        self.root.dirty = YES;
         // Clean up.
         self.indexesEnabled = YES;
         [self setRenaming:false];
@@ -832,20 +837,18 @@ sectionForSectionIndexTitle:(NSString *)title
     // Key is NSNumber section number, value is NSIndexSet.
     NSMutableDictionary *sectionsToDelete = [NSMutableDictionary dictionaryWithCapacity:indexPaths.count];
     for (NSIndexPath *path in indexPaths) {
-        // Adjust index for the 2 special rows if necessary.
-        NSIndexPath *realIndexPath = [NSIndexPath indexPathForRow:path.row inSection:path.section];
         // Figure out the entry being removed.
-        EPEntry *entry = self.sections[realIndexPath.section][realIndexPath.row];
+        EPEntry *entry = self.sections[path.section][path.row];
         NSLog(@"Deleting %@", entry.name);
         [entriesToDelete addObject:entry];
         // Add to the set of section data to clean up.
-        NSNumber *sectionNumber = [NSNumber numberWithInteger:realIndexPath.section];
+        NSNumber *sectionNumber = [NSNumber numberWithInteger:path.section];
         NSMutableIndexSet *indexSet = [sectionsToDelete objectForKey:sectionNumber];
         if (indexSet == nil) {
             indexSet = [[NSMutableIndexSet alloc] init];
             [sectionsToDelete setObject:indexSet forKey:sectionNumber];
         }
-        [indexSet addIndex:realIndexPath.row];
+        [indexSet addIndex:path.row];
     }
     [self.folder removeEntries:entriesToDelete];
     // Will be committed when editing is done.
@@ -854,7 +857,7 @@ sectionForSectionIndexTitle:(NSString *)title
         for (EPEntry *entry in entriesToDelete) {
             // If any songs in this entry have no parents, put it into a special
             // orphan folder.  Otherwise there would be no way to ever access them.
-            [entry checkForOrphan];
+            [entry checkForOrphan:self.root];
         }
     }
     
@@ -883,14 +886,29 @@ sectionForSectionIndexTitle:(NSString *)title
     }
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(nonnull NSIndexPath *)sourceIndexPath toProposedIndexPath:(nonnull NSIndexPath *)proposedDestinationIndexPath
+{
+    // TODO: Prevent mixing of folders and songs.
+    return proposedDestinationIndexPath;
+}
+
+// Moving is only supported in manual sorting method.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
     // Figure out the entry being moved.
     EPEntry *entry = self.sections[fromIndexPath.section][fromIndexPath.row];
-    [self.folder removeObjectFromEntriesAtIndex:fromIndexPath.row];
-    [self.folder insertObject:entry inEntriesAtIndex:toIndexPath.row];
-    // Will be committed when editing is done.
-    // Remove from sections.
+    NSUInteger sourceIndex = fromIndexPath.row;
+    NSUInteger destIndex = toIndexPath.row;
+    // Since folders appear before songs, adjust the index.
+    if ([entry.class isSubclassOfClass:[EPSong class]]) {
+        sourceIndex -= self.folder.folders.count;
+        destIndex -= self.folder.folders.count;
+        [self.folder moveSongAtIndex:sourceIndex toIndex:destIndex];
+    } else {
+        [self.folder moveFolderAtIndex:sourceIndex toIndex:destIndex];
+    }
+
+    // Update sections.
     NSMutableArray *section = self.sections[fromIndexPath.section];
     [section removeObjectAtIndex:fromIndexPath.row];
     [section insertObject:entry atIndex:toIndexPath.row];
@@ -929,7 +947,7 @@ sectionForSectionIndexTitle:(NSString *)title
                                         addDate:[NSDate date]
                                        playDate:[NSDate distantPast]];
     // Insert into the parent folder.
-    [self.folder insertObject:folder inEntriesAtIndex:0];
+    [self.folder insertFolder:folder atIndex:0];
     // Add to sections.  This will get resorted later.
     NSMutableArray *section;
     if (self.sections.count) {
@@ -998,34 +1016,35 @@ sectionForSectionIndexTitle:(NSString *)title
 */
 - (BOOL)preventOrphanSelection:(NSString *)action emptyDeleteOK:(BOOL)emptyDeleteOK
 {
-    if (self.folder.parents.count == 0) {
-        EPFolder *orphanFolder = nil;
-        for (EPEntry *entry in self.folder.entries) {
-            if ([entry.name compare:kEPOrphanFolderName] == NSOrderedSame) {
-                orphanFolder = (EPFolder *)entry;
-                break;
-            }
-        }
-        if (orphanFolder) {
-            if (orphanFolder.entries.count == 0 && emptyDeleteOK) {
-                return NO;
-            }
-            for (NSIndexPath *path in [self.tableView indexPathsForSelectedRows]) {
-                EPEntry *entry = self.sections[path.section][path.row];
-                if (entry == orphanFolder) {
-                    NSString *message = [NSString stringWithFormat:@"Cannot %@ the orphaned songs folder.", action];
-                    UIAlertView *alert = [[UIAlertView alloc]
-                                          initWithTitle:@"Operation Not Permitted"
-                                          message:message
-                                          delegate:nil
-                                          cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                    [alert show];
-                    return YES;
-                }
-            }
-        }
-    }
     return NO;
+//    if (self.folder.parents.count == 0) {
+//        EPFolder *orphanFolder = nil;
+//        for (EPEntry *entry in self.folder.entries) {
+//            if ([entry.name compare:kEPOrphanFolderName] == NSOrderedSame) {
+//                orphanFolder = (EPFolder *)entry;
+//                break;
+//            }
+//        }
+//        if (orphanFolder) {
+//            if (orphanFolder.entries.count == 0 && emptyDeleteOK) {
+//                return NO;
+//            }
+//            for (NSIndexPath *path in [self.tableView indexPathsForSelectedRows]) {
+//                EPEntry *entry = self.sections[path.section][path.row];
+//                if (entry == orphanFolder) {
+//                    NSString *message = [NSString stringWithFormat:@"Cannot %@ the orphaned songs folder.", action];
+//                    UIAlertView *alert = [[UIAlertView alloc]
+//                                          initWithTitle:@"Operation Not Permitted"
+//                                          message:message
+//                                          delegate:nil
+//                                          cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//                    [alert show];
+//                    return YES;
+//                }
+//            }
+//        }
+//    }
+//    return NO;
 }
 
 - (void)delete:(id)sender
@@ -1082,11 +1101,11 @@ sectionForSectionIndexTitle:(NSString *)title
 - (void)clearCutFolder
 {
     // Make a copy so we can iterate over them after removing them from the folder.
-    NSArray *entries = [NSArray arrayWithArray:self.root.cut.entries];
+    NSArray *entries = [self.root.cut sortedEntries];
     [self.root.cut removeAllEntries];
     for (EPEntry *entry in entries) {
         NSLog(@"Checking cut song: %@", entry.name);
-        [entry checkForOrphan];
+        [entry checkForOrphan:self.root];
     }
 }
 
@@ -1110,7 +1129,7 @@ sectionForSectionIndexTitle:(NSString *)title
         [self.tableView deselectRowAtIndexPath:path animated:YES];
         if (doCut) {
             // Move entry to the cut folder.
-            [self.root.cut addEntriesObject:entry];
+            [self.root.cut addEntry:entry];
         }
     }
     playlistPasteboard.URLs = copyItems;
@@ -1128,18 +1147,14 @@ sectionForSectionIndexTitle:(NSString *)title
                 EPEntry *entry = nil;
                 NSString *type = components[1];
                 if ([type isEqualToString:@"Folder"]) {
-                    NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:components[2]];
-                    entry = [self.root folderWithUUID:uuid];
+                    entry = [EPFolder objectForPrimaryKey:components[2]];
                 } else if ([type isEqualToString:@"Song"]) {
-                    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-                    formatter.numberStyle = NSNumberFormatterDecimalStyle;
-                    NSNumber *pid = [formatter numberFromString:components[2]];
-                    entry = [self.root songWithPersistentID:pid];
+                    entry = [EPSong objectForPrimaryKey:components[2]];
                 }
                 if (entry) {
                     entry = [self checkPasteCycle:entry];
-                    [self.folder addEntriesObject:entry];
-                    [self.root.cut removeEntriesObject:entry];
+                    [self.folder addEntry:entry];
+                    [self.root.cut removeEntry:entry];
                     count += 1;
                 } else {
                     NSLog(@"Could not find %@", objURI);
@@ -1183,12 +1198,10 @@ sectionForSectionIndexTitle:(NSString *)title
     }
     // Verify no sub-folders in folder are a parent.
     NSUInteger index = 0;
-    for (EPEntry *entry in folder.entries) {
-        if ([entry.class isSubclassOfClass:[EPFolder class]]) {
-            EPFolder *newEntry = [self fixCycles:(EPFolder *)entry];
-            if (newEntry != entry) {
-                [folder replaceObjectInEntriesAtIndex:index withObject:newEntry];
-            }
+    for (EPFolder *subfolder in folder.folders) {
+        EPFolder *newFolder = [self fixCycles:subfolder];
+        if (newFolder != subfolder) {
+            [folder replaceFolderAtIndex:index withFolder:newFolder];
         }
         index += 1;
     }
@@ -1200,7 +1213,7 @@ sectionForSectionIndexTitle:(NSString *)title
     if (folder == inFolder) {
         return YES;
     }
-    if ([inFolder.parents containsObject:folder]) {
+    if ([inFolder.parents epRealmContainsObject:folder]) {
         return YES;
     }
     for (EPFolder *parent in inFolder.parents) {
@@ -1250,8 +1263,9 @@ sectionForSectionIndexTitle:(NSString *)title
 {
     for (NSIndexPath *path in indexPaths) {
         EPFolder *folder = self.sections[path.section][path.row];
-        [self.folder addEntries:folder.entries];
-        [self.folder removeEntriesObject:folder];
+        [self.folder addFolders:folder.folders];
+        [self.folder addSongs:folder.songs];
+        [self.folder removeEntry:folder];
         if (folder.parents.count == 0) {
             NSLog(@"Collapse: Permanently removing folder %@", folder.name);
         }

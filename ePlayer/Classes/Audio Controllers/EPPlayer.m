@@ -38,7 +38,7 @@ NSString *kEPPlayerUpdateNotification = @"EPNextSongStarted";
         [folder propagatePlayDate:[NSDate date]];
     } else {
         // is Song type.
-        [self.root.queue addEntriesObject:entry];
+        [self.root.queue addSong:(EPSong *)entry];
     }
 }
 
@@ -52,8 +52,8 @@ NSString *kEPPlayerUpdateNotification = @"EPNextSongStarted";
 
 - (NSTimeInterval)currentDuration
 {
-    if (self.root.currentQueueIndex < self.root.queue.entries.count) {
-        EPSong *song = self.root.queue.entries[self.root.currentQueueIndex];
+    if (self.root.currentQueueIndex < self.root.queue.songs.count) {
+        EPSong *song = (EPSong *)self.root.queue.songs[self.root.currentQueueIndex];
         return song.duration;
     }
     return 0;
@@ -81,19 +81,27 @@ NSString *kEPPlayerUpdateNotification = @"EPNextSongStarted";
 - (void)switchToQueueIndex:(NSInteger)index
 {
 }
-- (void)replaceQueue:(EPEntry *)entry;
+- (void)replaceQueue:(EPEntry *)entry
 {
     [self stop];
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
     // Clear the queue.
-    NSArray *oldEnts = [NSArray arrayWithArray:self.root.queue.entries];
+    NSArray *oldEnts = [self.root.queue.songs realmToArray];
     [self.root.queue removeAllEntries];
     for (EPEntry *ent in oldEnts) {
-        [ent checkForOrphan];
+        [ent checkForOrphan:self.root];
     }
     self.root.currentQueueIndex = 0;
+    [self dbAppendEntry:entry];
+    [realm commitWriteTransaction];
 }
 - (void)appendEntry:(EPEntry *)entry
 {
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [self dbAppendEntry:entry];
+    [realm commitWriteTransaction];
 }
 - (void)beginSeekingForward
 {

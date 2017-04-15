@@ -2,8 +2,8 @@
 //  EPRoot.m
 //  ePlayer
 //
-//  Created by Eric Huss on 4/29/13.
-//  Copyright (c) 2013 Eric Huss. All rights reserved.
+//  Created by Eric Huss on 10/7/15.
+//  Copyright © 2015 Eric Huss. All rights reserved.
 //
 
 #import "EPRoot.h"
@@ -13,166 +13,97 @@ NSString *kEPOrphanFolderName = @"Orphaned Songs";
 @implementation EPRoot
 
 /*****************************************************************************/
+#pragma mark - Realm
+/*****************************************************************************/
+
+// Specify default values for properties
+
+//+ (NSDictionary *)defaultPropertyValues
+//{
+//    return @{};
+//}
+
+// Specify properties to ignore (Realm won't persist these)
+
+//+ (NSArray *)ignoredProperties
+//{
+//    return @[];
+//}
+
+- (void)transUpdateIndex:(NSInteger)newIndex
+{
+    [[RLMRealm defaultRealm] transactionWithBlock:^{
+        self.currentQueueIndex = newIndex;
+    }];
+}
+
+/*****************************************************************************/
 #pragma mark - Class methods
 /*****************************************************************************/
 
-+ (NSString *)dbPath
++ (EPRoot *)sharedRoot:(BOOL *)wasCreated
 {
-    NSString *docs = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
-                                                          NSUserDomainMask,
-                                                          YES) lastObject];
-    return [docs stringByAppendingPathComponent:@"ePlayer.plist"];
+    RLMResults *roots = [EPRoot allObjects];
+    if (roots.count) {
+        *wasCreated = NO;
+        return roots[0];
+    } else {
+        // Create a new root.
+        EPRoot *root = [EPRoot new];
+        [root reset];
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        [realm addObject:root];
+        [realm commitWriteTransaction];
+        *wasCreated = YES;
+        return root;
+    }
 }
 
-static EPRoot *theSharedRoot;
 + (EPRoot *)sharedRoot
 {
-    if (theSharedRoot == nil) {
-        if ([[NSFileManager defaultManager] fileExistsAtPath:[EPRoot dbPath]]) {
-            theSharedRoot = [NSKeyedUnarchiver unarchiveObjectWithFile:[EPRoot dbPath]];
-        } else {
-            theSharedRoot = [EPRoot new];
-            [theSharedRoot reset];
-            theSharedRoot.dirty = YES;
-        }
-    }
-    return theSharedRoot;
+    BOOL wasCreated;
+    return [EPRoot sharedRoot:&wasCreated];
 }
 
-/*****************************************************************************/
-#pragma mark - NSCoding
-/*****************************************************************************/
-
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-    self = [super init];
-    if (self) {
-        self.playlists = [aDecoder decodeObjectForKey:@"playlists"];
-        self.artists = [aDecoder decodeObjectForKey:@"artists"];
-        self.albums = [aDecoder decodeObjectForKey:@"albums"];
-        self.cut = [aDecoder decodeObjectForKey:@"cut"];
-        self.queue = [aDecoder decodeObjectForKey:@"queue"];
-        self.currentQueueIndex = [aDecoder decodeIntegerForKey:@"currentQueueIndex"];
-        self.dirty = NO;
-    }
-    return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-    [aCoder encodeObject:self.playlists forKey:@"playlists"];
-    [aCoder encodeObject:self.artists forKey:@"artists"];
-    [aCoder encodeObject:self.albums forKey:@"albums"];
-    [aCoder encodeObject:self.cut forKey:@"cut"];
-    [aCoder encodeObject:self.queue forKey:@"queue"];
-    [aCoder encodeInteger:self.currentQueueIndex forKey:@"currentQueueIndex"];
-}
-
-/*****************************************************************************/
-#pragma mark - Accessors
-/*****************************************************************************/
-- (void)setCurrentQueueIndex:(NSInteger)currentQueueIndex
-{
-    _currentQueueIndex = currentQueueIndex;
-    _dirty = YES;
-}
 
 /*****************************************************************************/
 #pragma mark - Misc
 /*****************************************************************************/
 
-- (void)save
-{
-    if (self.dirty) {
-        NSLog(@"Save start.");
-        if(![NSKeyedArchiver archiveRootObject:self toFile:[EPRoot dbPath]]) {
-            NSLog(@"Failed to archive db.");
-        }
-        NSLog(@"Save done.");
-        self.dirty = NO;
-    }
-}
-
-- (EPFolder *)getOrMakeOraphans
-{
-    if (self.orphans == nil) {
-        for (EPEntry *entry in self.playlists.entries) {
-            if ([entry.name isEqualToString:kEPOrphanFolderName]) {
-                self.orphans = (EPFolder *)entry;
-                return self.orphans;
-            }
-        }
-        // Didn't find it, create it.
-        self.orphans = [EPFolder folderWithName:kEPOrphanFolderName
-                                      sortOrder:EPSortOrderManual
-                                    releaseDate:[NSDate distantPast]
-                                        addDate:[NSDate date]
-                                       playDate:[NSDate distantPast]];
-        [self.playlists addEntriesObject:self.orphans];
-    }
-    return self.orphans;
-}
-
-- (EPFolder *)folderWithUUID:(NSUUID *)uuid
-{
-    EPFolder *f;
-
-    for (EPFolder *folder in [self topFolders]) {
-        f = [folder folderWithUUID:uuid];
-        if (f) { return f; }
-    }
-    return nil;
-}
-
-- (EPSong *)songWithPersistentID:(NSNumber *)persistentID
-{
-    EPSong *s;
-    
-    for (EPFolder *folder in [self topFolders]) {
-        s = [folder songWithPersistentID:persistentID];
-        if (s) { return s; }
-    }
-    return nil;
-}
-
-- (NSArray *)topFolders
-{
-    return @[self.playlists,
-             self.artists,
-             self.albums,
-             self.cut,
-             self.queue];
-}
-
 - (void)reset
 {
-    _playlists = [EPFolder folderWithName:@"Playlists"
-                                sortOrder:EPSortOrderAlpha
-                              releaseDate:[NSDate distantPast]
-                                  addDate:[NSDate date]
-                                 playDate:[NSDate distantPast]];
-    _artists = [EPFolder folderWithName:@"Artists"
-                              sortOrder:EPSortOrderAlpha
-                            releaseDate:[NSDate distantPast]
-                                addDate:[NSDate date]
-                               playDate:[NSDate distantPast]];
-    _albums = [EPFolder folderWithName:@"Albums"
-                             sortOrder:EPSortOrderAlpha
-                           releaseDate:[NSDate distantPast]
-                               addDate:[NSDate date]
-                              playDate:[NSDate distantPast]];
-    _cut = [EPFolder folderWithName:@"Cut"
-                          sortOrder:EPSortOrderManual
-                        releaseDate:[NSDate distantPast]
-                            addDate:[NSDate date]
-                           playDate:[NSDate distantPast]];
-    _queue = [EPFolder folderWithName:@"Queue"
-                            sortOrder:EPSortOrderManual
-                          releaseDate:[NSDate distantPast]
-                              addDate:[NSDate date]
-                             playDate:[NSDate distantPast]];
-    _dirty = YES;
-    _currentQueueIndex = 0;
+    self.playlists = [EPFolder folderWithName:@"Playlists"
+                                     sortOrder:EPSortOrderAlpha
+                                   releaseDate:[NSDate distantPast]
+                                       addDate:[NSDate date]
+                                      playDate:[NSDate distantPast]];
+    self.artists = [EPFolder folderWithName:@"Artists"
+                                   sortOrder:EPSortOrderAlpha
+                                 releaseDate:[NSDate distantPast]
+                                     addDate:[NSDate date]
+                                    playDate:[NSDate distantPast]];
+    self.albums = [EPFolder folderWithName:@"Albums"
+                                  sortOrder:EPSortOrderAlpha
+                                releaseDate:[NSDate distantPast]
+                                    addDate:[NSDate date]
+                                   playDate:[NSDate distantPast]];
+    self.cut = [EPFolder folderWithName:@"Cut"
+                               sortOrder:EPSortOrderManual
+                             releaseDate:[NSDate distantPast]
+                                 addDate:[NSDate date]
+                                playDate:[NSDate distantPast]];
+    self.queue = [EPFolder folderWithName:@"Queue"
+                                 sortOrder:EPSortOrderManual
+                               releaseDate:[NSDate distantPast]
+                                   addDate:[NSDate date]
+                                  playDate:[NSDate distantPast]];
+    self.orphans = [EPFolder folderWithName:kEPOrphanFolderName
+                                  sortOrder:EPSortOrderManual
+                                releaseDate:[NSDate distantPast]
+                                    addDate:[NSDate date]
+                                   playDate:[NSDate distantPast]];
+    self.currentQueueIndex = 0;
 }
 
 #ifdef TARGET_IPHONE_SIMULATOR
@@ -182,11 +113,11 @@ static EPRoot *theSharedRoot;
     NSArray *categories = @[@"General", @"Classical", @"Soundtracks"];
     for (NSString *name in categories) {
         EPFolder *folder = [EPFolder folderWithName:name
-                                          sortOrder:EPSortOrderAlpha
-                                        releaseDate:[NSDate distantPast]
-                                            addDate:[NSDate date]
-                                           playDate:[NSDate distantPast]];
-        [self.playlists addEntriesObject:folder];
+                                            sortOrder:EPSortOrderAlpha
+                                          releaseDate:[NSDate distantPast]
+                                              addDate:[NSDate date]
+                                             playDate:[NSDate distantPast]];
+        [self.playlists addFolder:folder];
     }
     // Create a bunch of artists.
     // Some letters to use for the first character.
@@ -198,40 +129,46 @@ static EPRoot *theSharedRoot;
         artistName = [NSString stringWithFormat:@"%@ Artist Name", artistName];
         // Artist folder.
         EPFolder *artistFolder = [EPFolder folderWithName:artistName
-                                                sortOrder:EPSortOrderAddDate releaseDate:[NSDate distantPast]
-                                                  addDate:[NSDate distantPast]
-                                                 playDate:[NSDate distantPast]];
-        [self.artists addEntriesObject:artistFolder];
+                                                  sortOrder:EPSortOrderAddDate releaseDate:[NSDate distantPast]
+                                                    addDate:[NSDate distantPast]
+                                                   playDate:[NSDate distantPast]];
+        [self.artists addFolder:artistFolder];
         // Playlist artist folder.
-        EPFolder *playlistArtist = [artistFolder copy];
+        EPFolder *playlistArtist = [EPFolder folderWithName:artistName
+                                                  sortOrder:EPSortOrderAddDate releaseDate:[NSDate distantPast]
+                                                    addDate:[NSDate distantPast]
+                                                   playDate:[NSDate distantPast]];
         // XXX Spread across the genres.
-        EPFolder *genFolder = self.playlists.entries[0];
-        [genFolder addEntriesObject:playlistArtist];
+        EPFolder *genFolder = self.playlists.folders[0];
+        [genFolder addFolder:playlistArtist];
         // Album folder (both genre and artist).
         for (NSUInteger albumIndex=0; albumIndex<3; albumIndex++) {
             NSString *albumName = [NSString stringWithFormat:@"Artist %@'s %lu Album", artistName, (unsigned long)albumIndex+1];
             EPFolder *albumFolder = [EPFolder folderWithName:albumName
-                                                   sortOrder:EPSortOrderManual
-                                                 releaseDate:[NSDate distantPast]
-                                                     addDate:[NSDate distantPast]
-                                                    playDate:[NSDate distantPast]];
-            EPFolder *playlistAlbum = [albumFolder copy];
-            [artistFolder addEntriesObject:albumFolder];
-            [playlistArtist addEntriesObject:playlistAlbum];
-            [self.albums addEntriesObject:albumFolder];
+                                                     sortOrder:EPSortOrderManual
+                                                   releaseDate:[NSDate distantPast]
+                                                       addDate:[NSDate distantPast]
+                                                      playDate:[NSDate distantPast]];
+            EPFolder *playlistAlbum = [EPFolder folderWithName:albumName
+                                                     sortOrder:EPSortOrderManual
+                                                   releaseDate:[NSDate distantPast]
+                                                       addDate:[NSDate distantPast]
+                                                      playDate:[NSDate distantPast]];
+            [artistFolder addFolder:albumFolder];
+            [playlistArtist addFolder:playlistAlbum];
+            [self.albums addFolder:albumFolder];
 
             // Songs.
             for (NSUInteger songIndex=0; songIndex<12; songIndex++) {
                 NSString *songName = [NSString stringWithFormat:@"Song Name %lu", (unsigned long)songIndex+1];
                 EPSong *song = [EPSong songWithName:songName
-                                       persistentID:[NSNumber numberWithLongLong:0]];
-                [albumFolder addEntriesObject:song];
-                [playlistAlbum addEntriesObject:song];
+                                         persistentID:[NSNumber numberWithLongLong:0]];
+                [albumFolder addSong:song];
+                [playlistAlbum addSong:song];
                 // XXX Set date and propogate.
             }
         }
     }
-    [self save];
 }
 #endif
 

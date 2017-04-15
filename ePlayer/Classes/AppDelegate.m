@@ -71,11 +71,6 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 //    NSLog(@"did enter background");
-    if (!self.initializing) {
-        EPRoot *root = [EPRoot sharedRoot];
-        [root save];
-    }
-    
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -132,13 +127,17 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
 #if TARGET_IPHONE_SIMULATOR
     NSLog(@"in the simulater");
     EPRoot *root = [EPRoot sharedRoot];
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
     [root reset];
     [root createSimulatedData];
+    [realm commitWriteTransaction];
     return YES;
 #else
     // First determine if there is anything in the database.
-    EPRoot *root = [EPRoot sharedRoot];
-    if (!root.dirty) {
+    BOOL wasCreated;
+    [EPRoot sharedRoot:&wasCreated];
+    if (!wasCreated) {
         // Was loaded from disk.
         return YES;
     }
@@ -151,10 +150,12 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
 
 - (void)resetDB
 {
-    [[NSFileManager defaultManager] removeItemAtPath:[EPRoot dbPath] error:nil];
-    // Reset the root object.
-    EPRoot *root = [EPRoot sharedRoot];
-    [root reset];
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [realm deleteAllObjects];
+    [realm commitWriteTransaction];
+    // Force the creation of a new root.
+    [EPRoot sharedRoot];
 }
 
 - (void)initDB:(NSObject *)completionDelegate
@@ -163,6 +164,9 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     // NOTE: must delay showing SVProgressHUD until the tab controller has
     // had a chance to display its views.
     self.hudString = @"First time import...";
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+
     EPRoot *root = [EPRoot sharedRoot];
     // Determine the library size for the progress indicator.
     MPMediaQuery *allQuery = [MPMediaQuery songsQuery];
@@ -188,7 +192,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
                                              releaseDate:[NSDate distantPast]
                                                  addDate:[NSDate distantPast]
                                                 playDate:[NSDate distantPast]];
-        [root.playlists addEntriesObject:genreFolder];
+        [root.playlists addFolder:genreFolder];
         [genres setObject:genreFolder forKey:genreFolder.name];
     }
     
@@ -218,14 +222,17 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
                                       addDate:[NSDate distantPast]
                                      playDate:[NSDate distantPast]];
             [artists setObject:artist forKey:artistName];
-            [root.artists addEntriesObject:artist];
+            [root.artists addFolder:artist];
             NSLog(@"Create artist %@", artist.name);
         }
         EPFolder *playlistArtist = [playlistArtists objectForKey:artistName];
         if (playlistArtist == nil) {
-            playlistArtist = [artist copy];
-            playlistArtist.addDate = playlistArtist.releaseDate;
-            [genre addEntriesObject:playlistArtist];
+            playlistArtist = [EPFolder folderWithName:artistName
+                                            sortOrder:EPSortOrderAddDate
+                                          releaseDate:[NSDate distantPast]
+                                              addDate:playlistArtist.releaseDate
+                                             playDate:[NSDate distantPast]];
+            [genre addFolder:playlistArtist];
             [playlistArtists setObject:playlistArtist forKey:artistName];
         }
         // Create album folder.
@@ -235,13 +242,15 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
                                              releaseDate:[NSDate distantPast]
                                                  addDate:[NSDate distantPast]
                                                 playDate:[NSDate distantPast]];
-        EPFolder *playlistAlbum = [albumFolder copy];
-        playlistAlbum.addDate = playlistAlbum.releaseDate;
+        EPFolder *playlistAlbum = [EPFolder folderWithName:albumFolder.name
+                                                 sortOrder:EPSortOrderManual
+                                               releaseDate:[NSDate distantPast]
+                                                   addDate:playlistAlbum.releaseDate
+                                                  playDate:[NSDate distantPast]];
+        [artist addFolder:albumFolder];
+        [playlistArtist addFolder:playlistAlbum];
         
-        [artist addEntriesObject:albumFolder];
-        [playlistArtist addEntriesObject:playlistAlbum];
-        
-        [root.albums addEntriesObject:albumFolder];
+        [root.albums addFolder:albumFolder];
         NSLog(@"Create album %@", albumFolder.name);
         
         // Add songs to album folder.
@@ -250,8 +259,8 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
             EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:songItem];
             EPSong *song = [EPSong songWithName:wrapper.title
                                    persistentID:wrapper.persistentID];
-            [albumFolder addEntriesObject:song];
-            [playlistAlbum addEntriesObject:song];
+            [albumFolder addSong:song];
+            [playlistAlbum addSong:song];
             
             // Propagate will also set on song.
             [song propagateReleaseDate:wrapper.releaseDate];
@@ -276,7 +285,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
 #endif
     } // end for each album.
     NSLog(@"Committing data.");
-    [root save];
+    [realm commitWriteTransaction];
     NSLog(@"Done importing...");
     [SVProgressHUD performSelectorOnMainThread:@selector(showSuccessWithStatus:) withObject:@"Complete!" waitUntilDone:NO];
     [self.initCompleteDelegate performSelectorOnMainThread:@selector(dbInitDone) withObject:nil waitUntilDone:NO];
@@ -318,6 +327,9 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
 - (void)updateDB
 {
     EPRoot *root = [EPRoot sharedRoot];
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+
     // Array of EPMediaItemWrappers.
     NSMutableArray *addedSongs = [[NSMutableArray alloc] init];
     // Array of EPSongs.
@@ -327,10 +339,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     NSMutableArray *brokenItems = [[NSMutableArray alloc] init];
     
     // Find all the songs currently in the database.
-    NSMutableDictionary *allSongs = [[NSMutableDictionary alloc] init];
-    for (EPFolder *folder in root.topFolders) {
-        [self addToAllSongs:allSongs folder:folder];
-    }
+    RLMResults *allSongs = [EPSong allObjects];
 
     // Create a dictionary of all items used to check for deleted songs.
     NSMutableDictionary *allItems = [[NSMutableDictionary alloc] init];
@@ -352,8 +361,11 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
             [self importUpdateProgress:@((float)songsScanned/(float)libSize)];
 
             EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:item];
+            if ([wrapper.title isEqual:@"Day Breaks"]) {
+                NSLog(@"Found it.");
+            }
             [allItems setObject:wrapper forKey:wrapper.persistentID];
-            if ([allSongs objectForKey:wrapper.persistentID] == nil) {
+            if (![allSongs objectsWhere:@"persistentID = %@", wrapper.persistentID].count) {
                 // This song needs to be added to the database.
                 if (wrapper.genre == nil || wrapper.albumArtist == nil || wrapper.albumTitle == nil) {
                     [brokenItems addObject:wrapper];
@@ -374,7 +386,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
                                                releaseDate:[NSDate distantPast]
                                                    addDate:[NSDate distantPast]
                                                   playDate:[NSDate distantPast]];
-                    [root.playlists addEntriesObject:genreFolder];
+                    [root.playlists addFolder:genreFolder];
                 }
                 EPFolder *genreArtist = [genreFolder folderWithName:wrapper.albumArtist];
                 if (genreArtist == nil) {
@@ -383,7 +395,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
                                                releaseDate:[NSDate distantPast]
                                                    addDate:[NSDate distantPast]
                                                   playDate:[NSDate distantPast]];
-                    [genreFolder addEntriesObject:genreArtist];
+                    [genreFolder addFolder:genreArtist];
                 }
                 EPFolder *genreAlbum = [genreArtist folderWithName:wrapper.albumTitle];
                 if (genreAlbum == nil) {
@@ -392,9 +404,9 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
                                               releaseDate:[NSDate distantPast]
                                                   addDate:[NSDate distantPast]
                                                  playDate:[NSDate distantPast]];
-                    [genreArtist addEntriesObject:genreAlbum];
+                    [genreArtist addFolder:genreAlbum];
                 }
-                [genreAlbum addEntriesObject:song];
+                [genreAlbum addSong:song];
 
                 // Determine where it should go in artists.
                 EPFolder *artistFolder = [root.artists folderWithName:wrapper.albumArtist];
@@ -404,7 +416,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
                                                 releaseDate:[NSDate distantPast]
                                                     addDate:[NSDate distantPast]
                                                    playDate:[NSDate distantPast]];
-                    [root.artists addEntriesObject:artistFolder];
+                    [root.artists addFolder:artistFolder];
                 }
                 
                 // Determine where it should go in albums.
@@ -415,11 +427,11 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
                                                releaseDate:[NSDate distantPast]
                                                    addDate:[NSDate distantPast]
                                                   playDate:[NSDate distantPast]];
-                    [root.albums addEntriesObject:albumFolder];
+                    [root.albums addFolder:albumFolder];
                     // Assume album is missing in artist as well.
-                    [artistFolder addEntriesObject:albumFolder];
+                    [artistFolder addFolder:albumFolder];
                 }
-                [albumFolder addEntriesObject:song];
+                [albumFolder addSong:song];
                 
                 [song propagateAddDate:[NSDate date]];
                 [song propagateReleaseDate:wrapper.releaseDate];
@@ -429,16 +441,15 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     }
     
     // Check if any songs have been removed.
-    for (NSNumber *persistentID in allSongs) {
-        if ([allItems objectForKey:persistentID] == nil) {
+    for (EPSong *song in allSongs) {
+        if ([allItems objectForKey:song.persistentID] == nil) {
             // Remove song.
-            EPSong *song = [allSongs objectForKey:persistentID];
             [removedSongs addObjectsFromArray:[song pathNames]];
             removedSongCount += 1;
-            NSSet *parentsCopy = [NSSet setWithSet:song.parents];
-            for (EPFolder *parent in parentsCopy) {
-                [parent removeEntriesObject:song];
-                [parent removeIfEmpty];
+            // RLMResult should be frozen during fast enumeration.
+            for (EPFolder *parent in song.parents) {
+                [parent removeEntry:song];
+                [parent removeIfEmpty:realm];
             }
         }
         songsScanned += 1;
@@ -446,7 +457,7 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     }
     
     NSLog(@"Committing data.");
-    [root save];
+    [realm commitWriteTransaction];
     NSLog(@"Done update scan...");
     
     // Prepare a view of what's added and removed.
@@ -475,18 +486,6 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
     }
 
     [self performSelectorOnMainThread:@selector(updateDBDone:) withObject:results waitUntilDone:NO];
-}
-
-- (void)addToAllSongs:(NSMutableDictionary *)allSongs folder:(EPFolder *)folder
-{
-    for (EPEntry *entry in folder.entries) {
-        if ([entry.class isSubclassOfClass:[EPFolder class]]) {
-            [self addToAllSongs:allSongs folder:(EPFolder *)entry];
-        } else {
-            EPSong *song = (EPSong *)entry;
-            [allSongs setObject:entry forKey:song.persistentID];
-        }
-    }
 }
 
 - (void)updateDBDone:(NSString *)results

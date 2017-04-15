@@ -7,6 +7,7 @@
 //
 
 #import "EPPlayer.h"
+#import "RLMCollection+EPRealm.h"
 
 @interface EPPlayerMPMusic : EPPlayer
 

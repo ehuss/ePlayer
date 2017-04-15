@@ -34,7 +34,7 @@
 
 - (void)play
 {
-    if (!self.isPlaying && self.root.queue.entries.count) {
+    if (!self.isPlaying && self.root.queue.songs.count) {
         if (self.currentPlayer == nil) {
             [self setCurrentPlayer];
         }
@@ -70,7 +70,7 @@
 - (void)switchToQueueIndex:(NSInteger)index
 {
     [self stop];
-    self.root.currentQueueIndex = index;
+    [self.root transUpdateIndex:index];
     [self setCurrentPlayer];
 }
 
@@ -79,13 +79,6 @@
     [super replaceQueue:entry];
     self.currentPlayer = nil;
     self.nextPlayer = nil;
-    [self appendEntry:entry];
-}
-
-- (void)appendEntry:(EPEntry *)entry
-{
-    [self dbAppendEntry:entry];
-    self.root.dirty = YES;
 }
 
 - (void)beginSeekingForward
@@ -155,7 +148,7 @@ static NSTimeInterval seekAmount = 2.0;
 
 - (AVAudioPlayer *)playerForIndex:(NSInteger)index
 {
-    EPSong *song = self.root.queue.entries[index];
+    EPSong *song = (EPSong *)self.root.queue.songs[index];
     NSURL *url = [song.mediaItem valueForProperty:MPMediaItemPropertyAssetURL];
     NSError *error;
     AVAudioPlayer *player;
@@ -172,7 +165,7 @@ static NSTimeInterval seekAmount = 2.0;
 {
     assert(!self.isPlaying);
     self.currentPlayer = [self playerForIndex:self.root.currentQueueIndex];
-    if (self.root.currentQueueIndex < self.root.queue.entries.count-1) {
+    if (self.root.currentQueueIndex < self.root.queue.songs.count-1) {
         self.nextPlayer = [self playerForIndex:self.root.currentQueueIndex+1];
     } else {
         self.nextPlayer = nil;
@@ -192,7 +185,7 @@ static NSTimeInterval seekAmount = 2.0;
 - (void)updateNowPlayingInfoCenter
 {
     if (self.isPlaying) {
-        EPSong *song = self.root.queue.entries[self.root.currentQueueIndex];
+        EPSong *song = (EPSong *)self.root.queue.songs[self.root.currentQueueIndex];
         NSMutableDictionary *info = [[NSMutableDictionary alloc] init];
         [info ep_setOptObject:song.mediaWrapper.albumTitle forKey:MPMediaItemPropertyAlbumTitle];
         [info ep_setOptObject:song.mediaWrapper.artist forKey:MPMediaItemPropertyArtist];
@@ -202,7 +195,7 @@ static NSTimeInterval seekAmount = 2.0;
         [info ep_setOptObject:song.name forKey:MPMediaItemPropertyTitle];
         [info ep_setOptObject:@(self.currentPlayer.currentTime) forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
         [info ep_setOptObject:@(self.root.currentQueueIndex) forKey:MPNowPlayingInfoPropertyPlaybackQueueIndex];
-        [info ep_setOptObject:@(self.root.queue.entries.count) forKey:MPNowPlayingInfoPropertyPlaybackQueueCount];
+        [info ep_setOptObject:@(self.root.queue.songs.count) forKey:MPNowPlayingInfoPropertyPlaybackQueueCount];
         [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo = info;
     } else {
         [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo = nil;
@@ -218,14 +211,14 @@ static NSTimeInterval seekAmount = 2.0;
 {
 //    NSLog(@"%@ Did finish: %i", player, (int)flag);
     if (flag) {
-        EPSong *finishedSong = self.root.queue.entries[self.root.currentQueueIndex];
-        if (self.root.currentQueueIndex < self.root.queue.entries.count-1) {
+        EPSong *finishedSong = (EPSong *)self.root.queue.songs[self.root.currentQueueIndex];
+        if (self.root.currentQueueIndex < self.root.queue.songs.count-1) {
             // Prepare for the next track to play.
-            self.root.currentQueueIndex += 1;
+            [self.root transUpdateIndex:self.root.currentQueueIndex+1];
             if (self.nextPlayer) {
                 // Assume nextPlayer will pick up.
                 self.currentPlayer = self.nextPlayer;
-                if (self.root.currentQueueIndex < self.root.queue.entries.count-1) {
+                if (self.root.currentQueueIndex < self.root.queue.songs.count-1) {
                     // Prepare the next track.
                     self.nextPlayer = [self playerForIndex:self.root.currentQueueIndex+1];
                     [self nextPlayerPrepare];
@@ -245,12 +238,14 @@ static NSTimeInterval seekAmount = 2.0;
             // At the end of the queue.
             self.currentPlayer = nil;
             self.nextPlayer = nil;  // Probably redundant.
-            self.root.currentQueueIndex = 0;
+            [self.root transUpdateIndex:0];
             [self setPlayingIsStopped];
             [[NSNotificationCenter defaultCenter] postNotificationName:kEPQueueFinishedNotification object:nil];
         }
-        finishedSong.playCount += 1;
-        finishedSong.playDate = [NSDate date];
+        [[RLMRealm defaultRealm] transactionWithBlock:^ {
+            finishedSong.playCount += 1;
+            finishedSong.playDate = [NSDate date];
+        }];
     } else {
         // Decode failure.
         if (self.nextPlayer) {

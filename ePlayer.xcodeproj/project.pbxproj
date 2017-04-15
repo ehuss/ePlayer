@@ -31,13 +31,13 @@
 		0755C3261714BE0400AAF81F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C2F31714BE0300AAF81F /* Foundation.framework */; };
 		0755C32E1714BE0400AAF81F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0755C32C1714BE0400AAF81F /* InfoPlist.strings */; };
 		0755C3311714BE0400AAF81F /* ePlayerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755C3301714BE0400AAF81F /* ePlayerTests.m */; };
-		0755C34B1714EC6300AAF81F /* MusicModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0755C3491714EC6300AAF81F /* MusicModel.xcdatamodeld */; };
 		0755C3631714F12200AAF81F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755C3621714F12200AAF81F /* AppDelegate.m */; };
 		0755C3651714F1E800AAF81F /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0755C3641714F1E800AAF81F /* MediaPlayer.framework */; };
 		0755C36B1715244A00AAF81F /* EPSong.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755C36A1715244A00AAF81F /* EPSong.m */; };
 		0755C36E1715335800AAF81F /* EPMemoryDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755C36D1715335800AAF81F /* EPMemoryDebug.m */; };
 		0755C3841716442600AAF81F /* EPFolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755C3831716442600AAF81F /* EPFolder.m */; };
 		0755C38717164DFE00AAF81F /* EPEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755C38617164DFE00AAF81F /* EPEntry.m */; };
+		075A44C61E9D872900A574F6 /* RLMCollection+EPRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = 075A44C51E9D872900A574F6 /* RLMCollection+EPRealm.m */; };
 		076779E31718E11300D1784D /* EPPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 076779E21718E11300D1784D /* EPPlayerController.m */; };
 		07677A4E171924F200D1784D /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A40171924F200D1784D /* pause.png */; };
 		07677A4F171924F200D1784D /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 07677A41171924F200D1784D /* play.png */; };
@@ -60,10 +60,6 @@
 		078A3BFE172CB37E009A8FF5 /* list-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 078A3BFD172CB37E009A8FF5 /* list-button@2x.png */; };
 		078A3C01172CD7ED009A8FF5 /* EPTrackController.m in Sources */ = {isa = PBXBuildFile; fileRef = 078A3C00172CD7ED009A8FF5 /* EPTrackController.m */; };
 		078A3C3F172FA1E1009A8FF5 /* EPRoot.m in Sources */ = {isa = PBXBuildFile; fileRef = 078A3C3E172FA1E0009A8FF5 /* EPRoot.m */; };
-		078FB1441BC60A5B0012D7D3 /* EPREntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 078FB1431BC60A5B0012D7D3 /* EPREntry.m */; };
-		078FB1711BC6105C0012D7D3 /* EPRFolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 078FB1701BC6105C0012D7D3 /* EPRFolder.m */; };
-		078FB1741BC613830012D7D3 /* EPRSong.m in Sources */ = {isa = PBXBuildFile; fileRef = 078FB1731BC613830012D7D3 /* EPRSong.m */; };
-		078FB1771BC613F70012D7D3 /* EPRRoot.m in Sources */ = {isa = PBXBuildFile; fileRef = 078FB1761BC613F70012D7D3 /* EPRRoot.m */; };
 		079B411C171A60340036F0D4 /* EPPlayerCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B411B171A60340036F0D4 /* EPPlayerCellView.m */; };
 		079B4121171B4F400036F0D4 /* EPBrowseTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 079B4120171B4F400036F0D4 /* EPBrowseTableController.m */; };
 		079B4125171B961C0036F0D4 /* current-queue-item-playing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 079B4122171B961B0036F0D4 /* current-queue-item-playing@2x.png */; };
@@ -158,7 +154,6 @@
 		0755C32D1714BE0400AAF81F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0755C32F1714BE0400AAF81F /* ePlayerTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ePlayerTests.h; sourceTree = "<group>"; };
 		0755C3301714BE0400AAF81F /* ePlayerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ePlayerTests.m; sourceTree = "<group>"; };
-		0755C34A1714EC6300AAF81F /* MusicModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MusicModel.xcdatamodel; sourceTree = "<group>"; };
 		0755C34C1714ECB100AAF81F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		0755C3611714F12200AAF81F /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		0755C3621714F12200AAF81F /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -168,10 +163,12 @@
 		0755C36C1715335800AAF81F /* EPMemoryDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPMemoryDebug.h; sourceTree = "<group>"; };
 		0755C36D1715335800AAF81F /* EPMemoryDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPMemoryDebug.m; sourceTree = "<group>"; };
 		0755C36F1715463600AAF81F /* NOTES.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NOTES.txt; sourceTree = "<group>"; };
-		0755C3821716442600AAF81F /* EPFolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPFolder.h; sourceTree = "<group>"; };
-		0755C3831716442600AAF81F /* EPFolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPFolder.m; sourceTree = "<group>"; };
-		0755C38517164DFE00AAF81F /* EPEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPEntry.h; sourceTree = "<group>"; };
-		0755C38617164DFE00AAF81F /* EPEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPEntry.m; sourceTree = "<group>"; };
+		0755C3821716442600AAF81F /* EPFolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EPFolder.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		0755C3831716442600AAF81F /* EPFolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EPFolder.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		0755C38517164DFE00AAF81F /* EPEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EPEntry.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		0755C38617164DFE00AAF81F /* EPEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EPEntry.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		075A44C41E9D872900A574F6 /* RLMCollection+EPRealm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RLMCollection+EPRealm.h"; sourceTree = "<group>"; };
+		075A44C51E9D872900A574F6 /* RLMCollection+EPRealm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RLMCollection+EPRealm.m"; sourceTree = "<group>"; };
 		076779E11718E11300D1784D /* EPPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayerController.h; sourceTree = "<group>"; };
 		076779E21718E11300D1784D /* EPPlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayerController.m; sourceTree = "<group>"; };
 		07677A40171924F200D1784D /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
@@ -202,14 +199,6 @@
 		078A3C00172CD7ED009A8FF5 /* EPTrackController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPTrackController.m; sourceTree = "<group>"; };
 		078A3C3D172FA1E0009A8FF5 /* EPRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPRoot.h; sourceTree = "<group>"; };
 		078A3C3E172FA1E0009A8FF5 /* EPRoot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPRoot.m; sourceTree = "<group>"; };
-		078FB1421BC60A5B0012D7D3 /* EPREntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPREntry.h; sourceTree = "<group>"; };
-		078FB1431BC60A5B0012D7D3 /* EPREntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPREntry.m; sourceTree = "<group>"; };
-		078FB16F1BC6105C0012D7D3 /* EPRFolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPRFolder.h; sourceTree = "<group>"; };
-		078FB1701BC6105C0012D7D3 /* EPRFolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPRFolder.m; sourceTree = "<group>"; };
-		078FB1721BC613830012D7D3 /* EPRSong.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPRSong.h; sourceTree = "<group>"; };
-		078FB1731BC613830012D7D3 /* EPRSong.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPRSong.m; sourceTree = "<group>"; };
-		078FB1751BC613F70012D7D3 /* EPRRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPRRoot.h; sourceTree = "<group>"; };
-		078FB1761BC613F70012D7D3 /* EPRRoot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPRRoot.m; sourceTree = "<group>"; };
 		079B411A171A60340036F0D4 /* EPPlayerCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPPlayerCellView.h; sourceTree = "<group>"; };
 		079B411B171A60340036F0D4 /* EPPlayerCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EPPlayerCellView.m; sourceTree = "<group>"; };
 		079B411F171B4F400036F0D4 /* EPBrowseTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EPBrowseTableController.h; sourceTree = "<group>"; };
@@ -310,6 +299,8 @@
 				0719E37817262A7C00D325B5 /* UIImage+EPCrop.m */,
 				07E600471B659BBC00970FBB /* UIView+EPUtil.h */,
 				07E600481B659BBC00970FBB /* UIView+EPUtil.m */,
+				075A44C41E9D872900A574F6 /* RLMCollection+EPRealm.h */,
+				075A44C51E9D872900A574F6 /* RLMCollection+EPRealm.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -404,7 +395,6 @@
 				07677A3F171924F200D1784D /* Images */,
 				0755C36F1715463600AAF81F /* NOTES.txt */,
 				07E6FFAA1B62E80100970FBB /* TEST NOTES.txt */,
-				0755C3491714EC6300AAF81F /* MusicModel.xcdatamodeld */,
 				0755C33A1714BFC900AAF81F /* Classes */,
 				07E3F4821A4F6475000B390E /* Images.xcassets */,
 				0755C2F81714BE0400AAF81F /* Supporting Files */,
@@ -454,7 +444,6 @@
 				078A3BF6172BC019009A8FF5 /* Views */,
 				07E6FF9C1B5EE1B300970FBB /* Audio Controllers */,
 				07475EB7172726A9001BB7AA /* Main Controllers */,
-				078FB1411BC60A0E0012D7D3 /* Realm */,
 				0755C3711716215400AAF81F /* Models */,
 				0755C3611714F12200AAF81F /* AppDelegate.h */,
 				0755C3621714F12200AAF81F /* AppDelegate.m */,
@@ -535,21 +524,6 @@
 				07E6004B1B67FD6700970FBB /* EPInfoPopup.m */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		078FB1411BC60A0E0012D7D3 /* Realm */ = {
-			isa = PBXGroup;
-			children = (
-				078FB1421BC60A5B0012D7D3 /* EPREntry.h */,
-				078FB1431BC60A5B0012D7D3 /* EPREntry.m */,
-				078FB16F1BC6105C0012D7D3 /* EPRFolder.h */,
-				078FB1701BC6105C0012D7D3 /* EPRFolder.m */,
-				078FB1721BC613830012D7D3 /* EPRSong.h */,
-				078FB1731BC613830012D7D3 /* EPRSong.m */,
-				078FB1751BC613F70012D7D3 /* EPRRoot.h */,
-				078FB1761BC613F70012D7D3 /* EPRRoot.m */,
-			);
-			path = Realm;
 			sourceTree = "<group>";
 		};
 		079B4139171CF2550036F0D4 /* UI */ = {
@@ -738,13 +712,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				0755C2FE1714BE0400AAF81F /* main.m in Sources */,
-				0755C34B1714EC6300AAF81F /* MusicModel.xcdatamodeld in Sources */,
 				0755C3631714F12200AAF81F /* AppDelegate.m in Sources */,
-				078FB1741BC613830012D7D3 /* EPRSong.m in Sources */,
 				07E3F4781A4A5577000B390E /* NSNotificationCenter+MainThread.m in Sources */,
 				0755C36B1715244A00AAF81F /* EPSong.m in Sources */,
 				0755C36E1715335800AAF81F /* EPMemoryDebug.m in Sources */,
-				078FB1771BC613F70012D7D3 /* EPRRoot.m in Sources */,
 				0755C3841716442600AAF81F /* EPFolder.m in Sources */,
 				0755C38717164DFE00AAF81F /* EPEntry.m in Sources */,
 				07E6FFA51B61E1B600970FBB /* EPPlayerMPMusic.m in Sources */,
@@ -753,6 +724,7 @@
 				07C841531832232900AEBA07 /* SVProgressHUD.m in Sources */,
 				07677A67171A006600D1784D /* EPGradientView.m in Sources */,
 				07E600491B659BBC00970FBB /* UIView+EPUtil.m in Sources */,
+				075A44C61E9D872900A574F6 /* RLMCollection+EPRealm.m in Sources */,
 				07E600431B656C8400970FBB /* EPSortPopup.m in Sources */,
 				079B411C171A60340036F0D4 /* EPPlayerCellView.m in Sources */,
 				079B4121171B4F400036F0D4 /* EPBrowseTableController.m in Sources */,
@@ -763,7 +735,6 @@
 				079B4150171E9F980036F0D4 /* EPBrowserCell.m in Sources */,
 				07E6FF9F1B5EE23D00970FBB /* EPPlayer.m in Sources */,
 				079B4153171F55F00036F0D4 /* EPTableSectionView.m in Sources */,
-				078FB1441BC60A5B0012D7D3 /* EPREntry.m in Sources */,
 				07E6FFA21B5EE24E00970FBB /* EPPlayerAVAudio.m in Sources */,
 				0719E37917262A7D00D325B5 /* UIImage+EPCrop.m in Sources */,
 				07BE575519CD025800D45EC0 /* NSMutableDictionary+EP.m in Sources */,
@@ -773,7 +744,6 @@
 				078A3BFC172CA779009A8FF5 /* EPLyricView.m in Sources */,
 				078A3C01172CD7ED009A8FF5 /* EPTrackController.m in Sources */,
 				078A3C3F172FA1E1009A8FF5 /* EPRoot.m in Sources */,
-				078FB1711BC6105C0012D7D3 /* EPRFolder.m in Sources */,
 				07D8F1BC1738728A0044DEC9 /* EPStretchButton.m in Sources */,
 				07D8F1BF173895D60044DEC9 /* EPGearTableController.m in Sources */,
 				0746FA88181A398E0056D3A5 /* EPPlayButton.m in Sources */,
@@ -1044,19 +1014,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		0755C3491714EC6300AAF81F /* MusicModel.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				0755C34A1714EC6300AAF81F /* MusicModel.xcdatamodel */,
-			);
-			currentVersion = 0755C34A1714EC6300AAF81F /* MusicModel.xcdatamodel */;
-			path = MusicModel.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 0755C2E61714BE0300AAF81F /* Project object */;
 }
