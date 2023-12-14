@@ -17,7 +17,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.initializing = YES;
-
     [application beginReceivingRemoteControlEvents];
 
     // Set up audio.
@@ -44,6 +43,54 @@
     self.mainTabController = (EPMainTabController *)self.window.rootViewController;
     [self.mainTabController mainInit];
 
+    [self checkAccess:[MPMediaLibrary authorizationStatus]];
+
+    return YES;
+}
+
+- (void)checkAccess:(MPMediaLibraryAuthorizationStatus)status
+{
+    switch (status) {
+        // Weird compiler issue requires a block here due to the inner block.
+        case MPMediaLibraryAuthorizationStatusNotDetermined: {
+            // Ask the user for access.
+            [MPMediaLibrary requestAuthorization: ^(MPMediaLibraryAuthorizationStatus status) {
+                [self checkAccess:status];
+            }];
+            }
+            break;
+        case MPMediaLibraryAuthorizationStatusDenied:
+        case MPMediaLibraryAuthorizationStatusRestricted:
+            [self reallyAskForAccess];
+            break;
+        case MPMediaLibraryAuthorizationStatusAuthorized:
+            [self libraryAccessAuthorized];
+            break;
+    }
+}
+
+- (void)reallyAskForAccess
+{
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:@"Media Permission Required"
+                                message:@"This app requires premission to your music library in order to work.  Please enable in Settings."
+                                preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Don't Allow"
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Go To Settings"
+                                              style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction *action) {
+        NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+        [[UIApplication sharedApplication] openURL:url];
+    }]];
+    // Window isn't yet key, which prevents alert from showing.  Fix it.
+    [self.window makeKeyAndVisible];
+    [self.mainTabController presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)libraryAccessAuthorized
+{
     if ([self loadData]) {
         // Database is ready.  Populate the view.
         // XXX restore state
@@ -55,8 +102,6 @@
     }
 
     [self.mainTabController.playerController mainInit];
-
-    return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -361,9 +406,6 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
             [self importUpdateProgress:@((float)songsScanned/(float)libSize)];
 
             EPMediaItemWrapper *wrapper = [EPMediaItemWrapper wrapperFromItem:item];
-            if ([wrapper.title isEqual:@"Day Breaks"]) {
-                NSLog(@"Found it.");
-            }
             [allItems setObject:wrapper forKey:wrapper.persistentID];
             if (![allSongs objectsWhere:@"persistentID = %@", wrapper.persistentID].count) {
                 // This song needs to be added to the database.
@@ -484,7 +526,6 @@ NSString *artistNameFromMediaItem(MPMediaItem *item)
             [results appendFormat:@"\t%@ - %@ - %@\n", wrapper.artist, wrapper.albumTitle, wrapper.title];
         }
     }
-
     [self performSelectorOnMainThread:@selector(updateDBDone:) withObject:results waitUntilDone:NO];
 }
 

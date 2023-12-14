@@ -59,7 +59,7 @@ static NSString *kSpecialSectionTitle = @"SPECIAL";
                                  initWithSearchResultsController:nil];
         self.searchController.searchResultsUpdater = self;
         self.searchController.delegate = self;
-        self.searchController.dimsBackgroundDuringPresentation = NO;
+        self.searchController.obscuresBackgroundDuringPresentation = NO;
         self.tableView.tableHeaderView = self.searchController.searchBar;
 //        self.definesPresentationContext = YES;
 
@@ -127,7 +127,7 @@ static NSString *kSpecialSectionTitle = @"SPECIAL";
 {
     EPBrowserCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EntryCell"];
     assert (cell != nil);
-    if (!cell.playButton.gestureRecognizers.count) {
+    if (!cell.gesturesConfigured) {
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
                                               initWithTarget:self
                                               action:@selector(playTapped:)];
@@ -136,6 +136,7 @@ static NSString *kSpecialSectionTitle = @"SPECIAL";
                                                      initWithTarget:self
                                                      action:@selector(playHeld:)];
         [cell.playButton addGestureRecognizer:longGesture];
+        cell.gesturesConfigured = true;
     }
     BOOL useDateLabel = ((self.sortOrder==EPSortOrderAddDate ||
                           self.sortOrder==EPSortOrderPlayDate ||
@@ -862,7 +863,7 @@ sectionForSectionIndexTitle:(NSString *)title
     }
     [self.folder removeEntries:entriesToDelete];
     // Will be committed when editing is done.
-    
+
     [sectionsToDelete enumerateKeysAndObjectsUsingBlock:^(NSNumber *key, NSMutableIndexSet *obj, BOOL *stop) {
         NSMutableArray *section = self.sections[key.integerValue];
         [section removeObjectsAtIndexes:obj];

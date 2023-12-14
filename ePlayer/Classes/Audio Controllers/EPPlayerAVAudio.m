@@ -155,7 +155,7 @@ static NSTimeInterval seekAmount = 2.0;
     player = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:&error];
     player.delegate = self;
     if (error) {
-        NSLog(@"Failed to create AVAudioPlayer: %@", error);
+        NSLog(@"Failed to create AVAudioPlayer url %@: %@", url, error);
         return nil;
     }
     return player;

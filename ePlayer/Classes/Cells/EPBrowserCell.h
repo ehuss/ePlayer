@@ -19,5 +19,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property (weak, nonatomic) EPBrowseTableController *parentController;
 @property (strong, nonatomic) EPEntry *entry;
+@property (nonatomic) bool gesturesConfigured;
 
 @end

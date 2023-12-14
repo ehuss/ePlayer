@@ -6,6 +6,18 @@
 //  Copyright © 2015 Eric Huss. All rights reserved.
 //
 
+/*
+ Note: Realm does not exactly support abstract base classes.
+ There is some faking going on to support the inverse
+ relationship "parents".
+ 
+ See:
+ https://github.com/realm/realm-cocoa/issues/1109
+ https://github.com/realm/realm-java/issues/761
+ https://github.com/realm/realm-cocoa/issues/3241
+ 
+*/
+
 #import <Realm/Realm.h>
 
 @class EPEntry;
